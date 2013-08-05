@@ -1,0 +1,17 @@
+{ "manifest_version": 2
+
+, "name": "GEFS-Online Great Circle Autopilot Addon (ICAO/coords)"
+, "description": "This extension (by Qantas 94 Heavy) adds a great circle path track mode to the GEFS autopilot function."
+, "version": "0.2.2.0001"
+
+, "content_scripts":
+	[  { "matches":
+	       [  "http://gefs-online.com/gefs.php*"
+	       ,  "http://www.gefs-online.com/gefs.php*" ]
+	   , "js":
+		   [ "script.js" ]
+	   , "run_at": "document_end"
+	   }
+	]
+, "web_accessible_resources": [ "gc-coords_v0.1.js" ]
+}
