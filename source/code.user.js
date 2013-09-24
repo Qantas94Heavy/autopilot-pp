@@ -4,14 +4,19 @@
 // @namespace http://www.eyredaero.frihost.org
 // @include /^http://(www\.)?gefs-online\.com/gefs\.php.*$/
 // @run-at document-end
-// @version 0.3.1.0
+// @version 0.3.2.4
 // @grant none
 // ==/UserScript==
 
 // no need for $(function(){}) as already checked by Greasemonkey
-(function ($, Infinity, NaN, undefined)
+(function main($, Infinity, NaN, undefined)
 {	'use strict';
 
+	if (typeof controls !== 'object')
+	{	setTimeout(main, 10);
+		return;
+	}
+	
 	// fix up the look of bad "inputs"
 	$('head').append($('<style>').text('.gefs-autopilot .input-prepend div,.gefs-autopilot .input-append div{margin-bottom:1px;display:inline-block}'));
 	// $('head').append($('<style>').text('.gefs-autopilot .input-prepend div,.gefs-autopilot .input-append div{margin-bottom:1px;display:inline-block}'));
@@ -116,7 +121,7 @@
 	};
 	var apDisconnectSound = 
 		{ id: 'apDisconnect'
-		, file: 'http://eyredaero.frihost.org/compressed.mp3' };
+		, file: 'http://eyredaero.frihost.org/test.mp3' };
 	// make sure people don't f*cking start mucking about with the thrust
 	V3.duplicate = V3.dup;
 	Aircraft.prototype.load = function (aircraftName, coordinates, justReload)
@@ -224,6 +229,7 @@
 					ges.aircraft.setup.sounds.push(apDisconnectSound);
 					audio.init(ges.aircraft.setup.soundSet, ges.aircraft.setup.sounds);
 					ges.preferences.aircraft = aircraftName;
+					if (ges.aircraft.setup.airbrakesTravelTime) ges.aircraft.setup.airbrakesTravelTime = 1;
 					if (!ges.aircraft.setup.autopilot) autopilot.turnOff();
 					var READ_ONLY = { writable: false };
 					if (Object.defineProperties) for (var i = 0, engines = ges.aircraft.engines, l = engines.length; i < l; ++i) Object.defineProperties(
@@ -237,7 +243,7 @@
 				{	alert('Error loading aircraft file');
 					ges.undoPause();
 				}
-			}, 0);
+			});
 		});
 	};
 	function addPapi()
@@ -275,16 +281,15 @@
 				addPapi();
 			}
 		}
-	); else setInterval(function () { if (ges.fx.RunwayLights.prototype.refreshPapi) addPapi(); }); // no interval specified, run ASAP
+	); else setInterval(function () { ges.fx.RunwayLights.prototype.refreshPapi && addPapi(); }); // no interval specified, run ASAP
 
 	// create global great circle public interface
-	(function init()
+	(function gcInit()
 	{	// make sure ges.aircraft exists - if not try again later
-		if (!(typeof ges === 'object' && ges.aircraft))
-		{	setTimeout(init, 1000);
+		if (!(typeof ges === 'object' && ges.aircraft && ges.aircraft.setup))
+		{	setTimeout(gcInit, 100);
 			return;
 		}
-		
 		var timer, lat, lon;
 		var status = 'off';
 		var aircraft = ges.aircraft;
@@ -317,7 +322,6 @@
 			}
 			controls.setPartAnimationDelta(airbrakes);
 		};
-		if (ges.aircraft.setup.airbrakesTravelTime) ges.aircraft.setup.airbrakesTravelTime = 1;
 		
 		// create public interface for great circle fuction
 		window.gc =
@@ -7009,4 +7013,4 @@
 		.append(icaoPreSpan, icaoInput, icaoAppSpan)
 		.insertAfter(hdgDiv)
 		.hide();
-})(jQuery, 1e999, Number.NaN);
+})(window.jQuery, 1e999, Number.NaN);
