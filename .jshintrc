@@ -1,0 +1,85 @@
+{ "globals":
+    { "ges": true
+	, "V3": true
+	, "M33": true
+	, "ge": true
+	, "fixAngle": true
+	, "camera": true
+	, "fixAngle360": true
+	, "google": true
+	, "PAGE_PATH": true
+	, "M3": true
+	, "V2": true 
+	, "clamp": true 
+	, "instruments": true
+	, "Overlay": true 
+	, "clone": true
+	, "jsonp": true
+	, "flight": true
+	, "weather": true 
+	, "ui": true 
+	, "degreesToRad": true 
+	, "objects": true
+	, "metersToLocalLat": true 
+	, "exponentialSmoothing": true 
+	, "ActiveXObject": true 
+	, "radToDegrees": true 
+	, "GRAVITY": true
+	, "multiplayer": true
+	, "audio": true
+	, "controls": true
+	, "Indicator": true
+	, "metersToFeet": true
+	, "xyz2lla": true
+	, "lla2xyz": true
+	, "xy2ll": true
+	, "intersect_RayTriangle": true
+	, "swfobject": true
+	, "halfPi": true
+	, "twoPi": true
+	, "PID": true
+	, "Object3D": true
+	, "rigidBody": true
+	, "Joystick": true
+	, "meridionalRadius": true
+	, "lookAt": true
+	, "SMOOTH_BUFFER": true
+	, "SMOOTHING_FACTOR": true
+	, "Aircraft": true
+	, "Persist": true
+	, "airDensitySL": true
+	, "feetToMeters": true
+	, "viewportReferenceWidth": true
+	, "viewportReferenceHeight": true
+	, "minDragCoef": true
+	, "dragConstant": true
+	, "getBuildingCollision": true
+	, "majorRunwayGrid": true
+	, "ll2xy": true
+	, "_gat": false
+	, "axisToIndex": true 
+	, "knotsToMs": true 
+	, "msToKnots": true
+	, "kmhToKnots": true }
+, "laxcomma": true
+, "laxbreak": true
+, "es5": false
+, "es3": true
+, "eqnull": true
+, "smarttabs": true
+, "globalstrict": true
+, "jquery": true
+, "curly": false
+, "browser": true
+, "expr": true
+, "devel": true
+, "debug": true
+, "funcscope": true
+, "unused": false
+, "bitwise": true
+, "boss": true
+, "-W079": false
+, "-W058": false
+, "-W002": false
+, "-W004": false
+}
