@@ -5,23 +5,20 @@
 // @match http://www.gefs-online.com/gefs.php*
 // @match http://gefs-online.com/gefs.php*
 // @run-at document-end
-// @version 0.3.2.5
+// @version 0.3.3.0
 // @grant none
 // ==/UserScript==
 
 // no need for $(function(){}) as already checked by Greasemonkey
-/*global ges*/
-(function main($, Infinity, NaN, undefined)
+(function main(Infinity, NaN, undefined)
 {	'use strict';
-
 	if (typeof controls !== 'object')
-	{	setTimeout(main, 10);
+	{	setTimeout(function () { main(window.exponentialSmoothing, 1e999, +{}) }, 10);
 		return;
 	}
 	
 	// fix up the look of bad "inputs"
 	$('head').append($('<style>').text('.gefs-autopilot .input-prepend div,.gefs-autopilot .input-append div{margin-bottom:1px;display:inline-block}'));
-	// $('head').append($('<style>').text('.gefs-autopilot .input-prepend div,.gefs-autopilot .input-append div{margin-bottom:1px;display:inline-block}'));
 
 	// fix up the GEFS autopilot functions
 	function fixAngle360(angle)
@@ -94,7 +91,6 @@
 	};
 	autopilot.turnOn = function ()
 	{	if (!ges.aircraft.setup.autopilot) return;
-		var values = ges.aircraft.animationValue;
 		autopilot.climbPID.reset();
 		autopilot.pitchPID.reset();
 		autopilot.rollPID.reset();
@@ -258,10 +254,10 @@
 				var distance = V3.length(lla2xyz(V3.sub(relativeAicraftLla, _this.papiLocation), _this.papiLocation));
 				var height = ges.aircraft.llaLocation[2] - _this.papiLocation[2];
 				var slope = Math.atan2(height, distance) * radToDegrees;
-				var tooLow = slope < 2.5;
-				var slightlyLow = slope < 2.8333333333333333;
-				var slightlyHigh = slope < 3.1666666666666667;
-				var tooHigh = slope < 3.5;
+				var tooLow = slope < 15/6;
+				var slightlyLow = slope < 17/6;
+				var slightlyHigh = slope < 19/6;
+				var tooHigh = slope < 21/6;
 				_this.papy[3].white.placemark.setVisibility(!tooLow);
 				_this.papy[3].red.placemark.setVisibility(tooLow);
 				_this.papy[2].white.placemark.setVisibility(!slightlyLow);
@@ -273,17 +269,18 @@
 			}, 1000);
 		};
 	}
-	if (Object.defineProperty && /\s/.test('\uFEFF')) Object.defineProperty( // check for ES5 compatibility
+	// check for ES5 compatibility
+	if (Object.defineProperty && /\s/.test('\uFEFF')) Object.defineProperty(
 		ges.fx.RunwayLights.prototype,
 		'refreshPapi',
 		{ enumerable: true
 		, configurable: true
-		, set: function (a)
+		, set: function ()
 			{	delete ges.fx.RunwayLights.prototype.refreshPapi;
 				addPapi();
 			}
 		}
-	); else setInterval(function () { ges.fx.RunwayLights.prototype.refreshPapi && addPapi(); }); // no interval specified, run ASAP
+	); else setInterval(function () { if (ges.fx.RunwayLights.prototype.refreshPapi) addPapi(); }); // no interval specified, run ASAP
 
 	// create global great circle public interface
 	(function gcInit()
@@ -6960,7 +6957,7 @@
 		.attr('type', 'text')
 		.keydown(stopPropagation)
 		.keyup(stopPropagation)
-		.change(function (event)
+		.change(function ()
 		{	var inputVal = this.value;
 			var code = inputVal.toUpperCase();
 			if (icaos[code])
@@ -7018,4 +7015,4 @@
 		.append(icaoPreSpan, icaoInput, icaoAppSpan)
 		.insertAfter(hdgDiv)
 		.hide();
-})(window.jQuery, 1e999, Number.NaN);
+})(1e999, Number.NaN);
