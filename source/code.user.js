@@ -5,7 +5,7 @@
 // @match http://www.gefs-online.com/gefs.php*
 // @match http://gefs-online.com/gefs.php*
 // @run-at document-end
-// @version 0.3.3.0
+// @version 0.3.4.0
 // @grant none
 // ==/UserScript==
 
@@ -13,7 +13,7 @@
 (function main(Infinity, NaN, undefined)
 {	'use strict';
 	if (typeof controls !== 'object')
-	{	setTimeout(function () { main(window.exponentialSmoothing, 1e999, +{}) }, 10);
+	{	setTimeout(function () { main(1e999, Number.NaN) }, 10);
 		return;
 	}
 	
@@ -30,7 +30,7 @@
 	var decimalsOnly = /^[-+]?\d+\.?\d*$/;
 	var wholeNumbersOnly = /^[+-]?\d+$/;
 	var autopilot = controls.autopilot;
-	var metersToFeet = 3.2808398950131235;
+	var metersToFeet = 1/0.3048;
 	autopilot.setHeading = function (heading)
 	{	var newHdg = fixAngle360(parseInt(heading, 10));
 		// check new heading is not NaN
@@ -6961,8 +6961,8 @@
 		{	var inputVal = this.value;
 			var code = inputVal.toUpperCase();
 			if (icaos[code])
-			{	gc.setLatitude(icaos[code][5], true);
-				gc.setLongitude(icaos[code][6], true);
+			{	gc.setLatitude(icaos[code][0], true);
+				gc.setLongitude(icaos[code][1], true);
 			} else alert('Sorry, code "' + inputVal + '" is an invalid or unrecognised ICAO airport code.');
 		});
 		

@@ -14,8 +14,13 @@ INSTALLATION INSTRUCTIONS
 6. Click "Accept" when it asks for permissions.
 7. Installed!  Just open GEFS and enjoy your "new and improved" autopilot!
 
-CHANGES SINCE v0.3.2 (last version)
+CHANGES SINCE v0.3.3 (last version)
 -----------------------------------
+
+ - Resolved a regression involving a previous issue with the Great Circle code
+
+CHANGES SINCE v0.3.2
+--------------------
 
  - Fixed issue with build process preventing Great Circle mode from working
 
@@ -32,5 +37,5 @@ CHANGES SINCE v0.3.0
 CHANGES SINCE v0.2.2 (last minor version)
 -----------------------------------------
 
- - Brand new autopilot disconnect sound effect (may be slightly buggy, please report)
- - Renamed Autopilot++ for GEFS-Online (previously named "GEFS Great Circle Plugin")
+ - New autopilot disconnect sound effect (may be slightly buggy, please report)
+ - Previously named GEFS Great Circle Plugin, now Autopilot++ for GEFS-Online
