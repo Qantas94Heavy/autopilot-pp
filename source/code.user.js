@@ -5,7 +5,7 @@
 // @match http://www.gefs-online.com/gefs.php*
 // @match http://gefs-online.com/gefs.php*
 // @run-at document-end
-// @version 0.4.0.8
+// @version 0.4.0.14
 // @grant none
 // ==/UserScript==
 
@@ -50,7 +50,7 @@
 	}
 	
 	// fix up the look of bad "inputs"
-	$('head').append($('<style>').text('.gefs-autopilot .input-prepend div,.gefs-autopilot .input-append div{margin-bottom:1px;display:inline-block}'));
+	$('head').append($('<style>').text('.gefs-autopilot .input-prepend div,.gefs-autopilot .input-append div{margin-bottom:1px;display:inline-block}.add-on.btn-warning{text-shadow:0 -1px 0 rgba(0,0,0,.25) !important}'));
 
 	// fix up the GEFS autopilot functions
 	function fixAngle360(angle)
@@ -75,6 +75,11 @@
 	{	var newSpd = parseInt(kias, 10);
 		$('.gefs-autopilot-kias').val(isFinite(newSpd) ? autopilot.kias = newSpd : autopilot.kias); // deliberate assignment
 	};
+	var enabled =
+		{ heading: false
+		, altitude: false
+		, speed: false };
+	autopilot.throttlePID = new PID(0.1, 0.01, 0.001); // fix throttle PID
 	autopilot.update = function (dt)
 	{	var values = ges.aircraft.animationValue;
 	
@@ -140,9 +145,9 @@
 			ges.debug.watch('throttle', controls.throttle);
 		}
 		
-		updateHeading();
-		updateAltitude();
-		updateThrottle();
+		if (enabled.heading) updateHeading();
+		if (enabled.altitude) updateAltitude();
+		if (enabled.speed) updateThrottle();
 	};
 	autopilot.turnOn = function ()
 	{	if (!ges.aircraft.setup.autopilot) return;
@@ -165,6 +170,13 @@
 			.first()
 			.text('Disengaged')
 			.removeClass('btn-warning');
+		enabled =
+			{ heading: false
+			, altitude: false
+			, speed: false };
+		$('#Qantas94Heavy-ap-alt').removeClass('btn-warning');
+		$('#Qantas94Heavy-ap-hdg').removeClass('btn-warning');
+		$('#Qantas94Heavy-ap-spd').removeClass('btn-warning');
 		audio.playSoundLoop('apDisconnect');
 	};
 	autopilot.setVs = function (vs)
@@ -351,6 +363,8 @@
 				{   clearInterval(timer);
 					timer = setInterval(setHeading, 1000);
 					status = 'on';
+					enabled.heading = true;
+					$('.gefs-autopilot-heading').addClass('btn-warning');
 				}
 			, off: function ()
 				{   clearInterval(timer);
@@ -396,8 +410,11 @@
 		.addClass('input-prepend input-append')
 		.append(
 			$('<span>')
+				.attr('id', 'Qantas94Heavy-ap-hdg')
 				.addClass('add-on')
-				.text('Hdg.'),
+				.text('Hdg.')
+				// deliberate assignment
+				.click(function () { $(this)[(enabled.heading = autopilot.on ? !enabled.heading : false) ? 'addClass' : 'removeClass']('btn-warning'); }),
 			$('<input>')
 				.attr('type', 'number')
 				.addClass('gefs-autopilot-heading span2')
@@ -419,8 +436,11 @@
 			.addClass('input-prepend input-append')
 			.append(
 				$('<span>')
+					.attr('id', 'Qantas94Heavy-ap-spd')
 					.addClass('add-on')
-					.text('Spd.'),
+					.text('Spd.')
+					// deliberate assignment
+					.click(function () { $(this)[(enabled.speed = autopilot.on ? !enabled.speed : false) ? 'addClass' : 'removeClass']('btn-warning'); }),
 				$('<input>')
 					.attr('type', 'number')
 					.addClass('gefs-autopilot-kias span2')
@@ -445,8 +465,11 @@
 						.css('margin', '0 10px 0 0')
 						.append(
 							$('<span>')
+								.attr('id', 'Qantas94Heavy-ap-alt')
 								.addClass('add-on')
-								.text('Alt.'),
+								.text('Alt.')
+								// deliberate assignment
+								.click(function () { $(this)[(enabled.altitude = autopilot.on ? !enabled.altitude : false) ? 'addClass' : 'removeClass']('btn-warning'); }),
 							$('<input>')
 								.attr('type', 'number')
 								.addClass('gefs-autopilot-altitude span1')

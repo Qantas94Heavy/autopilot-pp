@@ -80,7 +80,7 @@ except OSError:
     if not os.path.isdir(path):
         raise
 
-print("var d=document;top==window&&d.getElementByTagName('head')[0].appendChild(d.createElement('script')).text='"+parts[1]+"'", end='', file=open(path +'l.js', 'w', encoding='utf-8'))
+print("var d=document;top==window&&(d.getElementsByTagName('head')[0].appendChild(d.createElement('script')).text='"+parts[1]+"')", end='', file=open(path +'l.js', 'w', encoding='utf-8'))
 print(json.JSONEncoder(separators=(',',':')).encode(d), end="", file=open(path +'manifest.json', 'w', encoding='utf-8'))
 
 subprocess.check_call(['C:/Program Files (x86)/Google/Chrome/Application/chrome.exe', '--pack-extension=' + path, '--pack-extension-key=C:/Users/Karl Cheng/Desktop/' + setup + '.pem'], shell=False)

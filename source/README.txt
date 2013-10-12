@@ -1,7 +1,7 @@
 README
-------
+======
 
-Autopilot++ for GEFS-Online v{0} for Google Chrome/Chromium versions 28+
+Autopilot++ for GEFS-Online v{0} for Google Chrome/Chromium
 
 INSTALLATION INSTRUCTIONS
 -------------------------
@@ -14,9 +14,14 @@ INSTALLATION INSTRUCTIONS
 6. Click "Accept" when it asks for permissions.
 7. Installed!  Just open GEFS and enjoy your "new and improved" autopilot!
 
-CHANGES SINCE v0.3.3 (last version)
+CHANGES SINCE v0.3.4 (last version)
 -----------------------------------
 
+ - Separate autopilot controls (click on alt, hdg or spd)
+ - A variety of bugfixes :)
+
+CHANGES SINCE v0.3.3
+--------------------
  - Resolved a regression involving a previous issue with the Great Circle code
 
 CHANGES SINCE v0.3.2
@@ -33,9 +38,3 @@ CHANGES SINCE v0.3.0
 --------------------
 
  - Fixed instrument panel bug (instrument panel not loading)
-
-CHANGES SINCE v0.2.2 (last minor version)
------------------------------------------
-
- - New autopilot disconnect sound effect (may be slightly buggy, please report)
- - Previously named GEFS Great Circle Plugin, now Autopilot++ for GEFS-Online
