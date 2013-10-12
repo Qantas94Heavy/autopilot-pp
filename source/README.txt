@@ -1,7 +1,7 @@
 README
 ------
 
-Autopilot++ for GEFS-Online v{0} for Google Chrome/Chromium (versions 28+)
+Autopilot++ for GEFS-Online v{0} for Google Chrome/Chromium versions 28+
 
 INSTALLATION INSTRUCTIONS
 -------------------------
