@@ -14,27 +14,15 @@ INSTALLATION INSTRUCTIONS
 6. Click "Accept" when it asks for permissions.
 7. Installed!  Just open GEFS and enjoy your "new and improved" autopilot!
 
-CHANGES SINCE v0.3.4 (last version)
+CHANGES SINCE v0.4.0 (last version)
 -----------------------------------
+
+ - Fix for GEFS -180/180 longitude camera bug
+ - Increased size of inputs
+ - Fix for autopilot disconnect sound
+
+CHANGES SINCE v0.3.4 (last major version)
+-----------------------------------------
 
  - Separate autopilot controls (click on alt, hdg or spd)
  - A variety of bugfixes :)
-
-CHANGES SINCE v0.3.3
---------------------
- - Resolved a regression involving a previous issue with the Great Circle code
-
-CHANGES SINCE v0.3.2
---------------------
-
- - Fixed issue with build process preventing Great Circle mode from working
-
-CHANGES SINCE v0.3.1
---------------------
-
- - Fixed loading bug (prevented GEFS from loading)
-
-CHANGES SINCE v0.3.0
---------------------
-
- - Fixed instrument panel bug (instrument panel not loading)
