@@ -5,49 +5,87 @@
 // @match http://www.gefs-online.com/gefs.php*
 // @match http://gefs-online.com/gefs.php*
 // @run-at document-end
-// @version 0.4.2.1
+// @version 0.4.3.27
 // @grant none
 // ==/UserScript==
 
-// no need for $(function(){}) as already checked by Greasemonkey
-(function main(Infinity, NaN, undefined)
-{	'use strict';
-	function addPapi()
-	{	ges.fx.RunwayLights.prototype.refreshPapi = function () // fix papi angle
-		{	var _this = this;
-			this.papiInterval = setInterval(function ()
-			{	var collResult = ges.getGroundAltitude(_this.papiLocation[0], _this.papiLocation[1]);
-				_this.papiLocation[2] = collResult.location[2];
-				var relativeAicraftLla = [ges.aircraft.llaLocation[0], ges.aircraft.llaLocation[1], _this.papiLocation[2]];
-				var distance = V3.length(lla2xyz(V3.sub(relativeAicraftLla, _this.papiLocation), _this.papiLocation));
-				var height = ges.aircraft.llaLocation[2] - _this.papiLocation[2];
-				var slope = Math.atan2(height, distance) * radToDegrees;
-				var tooLow = slope < 15/6;
-				var slightlyLow = slope < 17/6;
-				var slightlyHigh = slope < 19/6;
-				var tooHigh = slope < 21/6;
-				_this.papy[3].white.placemark.setVisibility(!tooLow);
-				_this.papy[3].red.placemark.setVisibility(tooLow);
-				_this.papy[2].white.placemark.setVisibility(!slightlyLow);
-				_this.papy[2].red.placemark.setVisibility(slightlyLow);
-				_this.papy[1].white.placemark.setVisibility(!slightlyHigh);
-				_this.papy[1].red.placemark.setVisibility(slightlyHigh);
-				_this.papy[0].white.placemark.setVisibility(!tooHigh);
-				_this.papy[0].red.placemark.setVisibility(tooHigh);
-			}, 1000);
-		};
-	}
-	var a = setInterval(function ()
+(function ()
+{	var t1 = setInterval(function ()
 	{ 	if (window.ges && ges.fx && ges.fx.RunwayLights && ges.fx.RunwayLights.prototype && ges.fx.RunwayLights.prototype.refreshPapi)
-		{	clearInterval(a);
-			addPapi();
+		{	clearInterval(t1);
+			ges.fx.RunwayLights.prototype.refreshPapi = function () // fix papi angle
+			{	var _this = this;
+				this.papiInterval = setInterval(function ()
+				{	var collResult = ges.getGroundAltitude(_this.papiLocation[0], _this.papiLocation[1]);
+					_this.papiLocation[2] = collResult.location[2];
+					var relativeAicraftLla = [ges.aircraft.llaLocation[0], ges.aircraft.llaLocation[1], _this.papiLocation[2]];
+					var distance = V3.length(lla2xyz(V3.sub(relativeAicraftLla, _this.papiLocation), _this.papiLocation));
+					var height = ges.aircraft.llaLocation[2] - _this.papiLocation[2];
+					var slope = Math.atan2(height, distance) * radToDegrees;
+					var tooLow = slope < 15/6;
+					var slightlyLow = slope < 17/6;
+					var slightlyHigh = slope < 19/6;
+					var tooHigh = slope < 21/6;
+					_this.papy[3].white.placemark.setVisibility(!tooLow);
+					_this.papy[3].red.placemark.setVisibility(tooLow);
+					_this.papy[2].white.placemark.setVisibility(!slightlyLow);
+					_this.papy[2].red.placemark.setVisibility(slightlyLow);
+					_this.papy[1].white.placemark.setVisibility(!slightlyHigh);
+					_this.papy[1].red.placemark.setVisibility(slightlyHigh);
+					_this.papy[0].white.placemark.setVisibility(!tooHigh);
+					_this.papy[0].red.placemark.setVisibility(tooHigh);
+				}, 1000);
+			};
 		}
 	}); // no interval specified, run ASAP
-	
+})();
+
+// no need for $(function(){}) as already checked by Greasemonkey
+(function main(Infinity, NaN, undefined)
+{	'use strict';	
 	if (typeof controls !== 'object')
 	{	setTimeout(function () { main(Infinity, NaN); }, 10); // Infinity/NaN are both already set properly
 		return;
 	}
+	
+	function PID(kp, ki, kd, min, max)
+	{	var errSum = 0;
+		var lastInput = 0;
+		if (!kp) kp = 0;
+		if (!ki) ki = 0;
+		if (!kd) kd = 0;
+		if (typeof min !== 'number') min = -Infinity;
+		else if (typeof max !== 'number') max = Infinity;
+		
+		var abs = Math.abs;
+		this.set = function (setPoint)
+		{   this.compute = function (input, dt)
+			{	var error = setPoint - input;
+				// rate of change of input, delta input over time
+				var dInput = (input - lastInput) / dt;
+				lastInput = input;
+				errSum += error * dt;
+				var proportional = kp * error;
+				var integral = ki * errSum;
+				var derivative = kd * dInput;
+				
+				// correct integrator windup
+				var output = proportional + integral + derivative;
+				
+				if (output > max) errSum -= abs(output - max) / ki;
+				else if (output < min) errSum += abs(output - min) / ki;
+				integral = ki * errSum;
+				console.log(setPoint + ' ' + errSum + ' ' + (proportional + integral + derivative));
+				return proportional + integral + derivative;
+			};
+		};
+		this.set(0); // initialise compute function
+		this.reset = function ()
+		{	lastInput = 0;
+			errSum = 0;
+		};
+	}
+	window.PID = PID;
 	
 	// fix up the look of bad "inputs"
 	$('head').append($('<style>')
@@ -82,133 +120,153 @@
 	function clamp(val, min, max) { return typeof val === 'number' && typeof min === 'number' && typeof max === 'number' ? val < min ? min : val > max ? max : val : NaN; }
 	var decimalsOnly = /^[+-]?\d+\.?\d*$/;
 	var wholeNumbersOnly = /^[+-]?\d+$/;
-	var autopilot = controls.autopilot;
-	var metersToFeet = 1/0.3048;
-	autopilot.setHeading = function (heading)
-	{	var newHdg = fixAngle360(parseInt(heading, 10));
-		$('.gefs-autopilot-heading').val(isFinite(newHdg) ? autopilot.heading = newHdg : autopilot.heading); // deliberate assignment
-	};
-	autopilot.setAltitude = function (altitude)
-	{	var newAlt = parseInt(altitude, 10);
-		$('.gefs-autopilot-altitude').val(isFinite(newAlt) ? autopilot.altitude = newAlt : autopilot.altitude); // deliberate assignment
-	};
-	autopilot.setKias = function (kias)
-	{	var newSpd = parseInt(kias, 10);
-		$('.gefs-autopilot-kias').val(isFinite(newSpd) ? autopilot.kias = newSpd : autopilot.kias); // deliberate assignment
-	};
 	var enabled =
 		{ heading: false
 		, altitude: false
 		, speed: false };
-	autopilot.throttlePID = new PID(0.1, 0, 0.001); // fix throttle PID
-	autopilot.update = function (dt)
-	{	var values = ges.aircraft.animationValue;
+	var metersToFeet = 1/0.3048;
 	
-		// ensure autopilot not used if we're below 500ft AGL - turn off AP if that's the case and other extreme flight conditions
-		if (values.altitude - Math.max(ges.groundElevation * metersToFeet, -1000) < 500 || ui.hud.stallAlarmOn || Math.abs(values.aroll) > 45 || values.atilt > 20 || values.atilt < -35)
-		{	autopilot.turnOff();
-			return;
-		}
-		
-		var speedRatio = clamp(values.kias / 100, 1, 5); // calculate relative speed of aircraft as correction factor
-		
-		function updateHeading()
-		{	// set aileron/rudder, heading mode
-			var deltaHeading = fixAngle(values.heading - autopilot.heading); // difference in target/current headings, bound to range -180 to 180 degrees
-			var targetBankAngle = clamp(deltaHeading, -autopilot.maxBankAngle, autopilot.maxBankAngle); // bank angle equal to difference in headings, up to limit (10° heading = 10° bank)
-			controls.yaw = exponentialSmoothing('apYaw', targetBankAngle / -60, 0.1);
-			autopilot.rollPID.set(targetBankAngle);
-			controls.roll = exponentialSmoothing('apRoll', -autopilot.rollPID.compute(values.aroll, dt) / speedRatio, 0.9);
-		}
-		
-		function updateAltitude()
-		{	// elevator setting, altitude/vertical speed mode
-			var deltaAltitude = autopilot.altitude - values.altitude;
-			var maxClimbRate = clamp(speedRatio * autopilot.commonClimbrate, 0, autopilot.maxClimbrate);
-			var maxDescentRate = clamp(speedRatio * autopilot.commonDescentrate, autopilot.maxDescentrate, 0);
-			
-			var vsInput = $('#Qantas94Heavy-gc-vs');
-			var vsValue = vsInput.val();
-			var targetClimbrate;
-			// check if vertical speed manually set
-			if (typeof autopilot.vs === 'number' && isFinite(autopilot.vs))
-			{	if (autopilot.vs === 0)
-				{	//force vertical speed to be 0
-					targetClimbrate = 0;
-					if (vsValue !== '0' && notFocused) vsInput.val('0');
-				} else if (autopilot.vs > 0 && deltaAltitude > 200 || autopilot.vs < 0 && deltaAltitude < -200)	// check that vertical speed is in right direction to altitude
-				{	targetClimbrate = autopilot.vs;
-					if (vsValue !== targetClimbrate + '' && notFocused) vsInput.val(targetClimbrate + '');
-				} else // not valid for conditions
-				{	// automatically calculate vertical speed
-					targetClimbrate = clamp(deltaAltitude * 5, maxDescentRate, maxClimbRate);
-					if (vsValue !== '' && notFocused) vsInput.val('');
-				}
-			} else 
-			{	// automatically calculate vertical speed
-				targetClimbrate = clamp(deltaAltitude * 5, maxDescentRate, maxClimbRate);
-				if (vsValue !== '' && notFocused) vsInput.val('');
+	// replacing autopilot completely gives more flexibility to us, with no loss of backwards-compatibility.
+	var autopilot = controls.autopilot =
+		{ setHeading: function (heading)
+			{	var newHdg = fixAngle360(parseInt(heading, 10));
+				$('.gefs-autopilot-heading').val(isFinite(newHdg) ? autopilot.heading = newHdg : autopilot.heading); // deliberate assignment
 			}
-		
-			autopilot.climbPID.set(-targetClimbrate);
-			var currentClimbRate = clamp(values.climbrate, maxDescentRate, maxClimbRate);
-			var aTargetTilt = autopilot.climbPID.compute(-currentClimbRate, dt) / speedRatio;
-			aTargetTilt = clamp(aTargetTilt, -autopilot.maxPitchAngle, -autopilot.minPitchAngle);
-			autopilot.pitchPID.set(-aTargetTilt);
-			controls.rawPitch = exponentialSmoothing('apPitch', autopilot.pitchPID.compute(-values.atilt, dt) / speedRatio, 0.9);
-			ges.debug.watch('targetClimbrate', targetClimbrate);
-			ges.debug.watch('aTargetTilt', aTargetTilt);
-		}
-		
-		function updateThrottle()
-		{	autopilot.throttlePID.set(autopilot.kias);
-			controls.throttle = clamp(exponentialSmoothing('apThrottle', autopilot.throttlePID.compute(values.kias, dt), 0.9), 0, 1);
-			ges.debug.watch('throttle', controls.throttle);
-		}
-		
-		if (enabled.heading) updateHeading();
-		if (enabled.altitude) updateAltitude();
-		if (enabled.speed) updateThrottle();
-	};
-	autopilot.turnOn = function ()
-	{	if (!ges.aircraft.setup.autopilot) return;
-		autopilot.climbPID.reset();
-		autopilot.pitchPID.reset();
-		autopilot.rollPID.reset();
-		autopilot.throttlePID.reset();
-		autopilot.setAltitude($('.gefs-autopilot-altitude').val());
-		autopilot.setHeading($('.gefs-autopilot-heading').val());
-		autopilot.setKias($('.gefs-autopilot-kias').val());
-		ui.hud.autopilotIndicator(autopilot.on = true); // deliberate assignment
-		$('.gefs-autopilot-toggle')
-			.first()
-			.text('Engaged')
-			.addClass('btn-warning');
-		if (!enabled.heading && (mode === 'GC mode (lat/long)' || mode === 'Great Circle (ICAO)'))
-		{	enabled.heading = true;
-			$('#Qantas94Heavy-ap-hdg').addClass('btn-warning');
-		}
-	};
-	autopilot.turnOff = function ()
-	{	ui.hud.autopilotIndicator(autopilot.on = false); // deliberate assignment
-		$('.gefs-autopilot-toggle')
-			.first()
-			.text('Disengaged')
-			.removeClass('btn-warning');
-		enabled =
-			{ heading: false
-			, altitude: false
-			, speed: false };
-		$('#Qantas94Heavy-ap-alt').removeClass('btn-warning');
-		$('#Qantas94Heavy-ap-hdg').removeClass('btn-warning');
-		$('#Qantas94Heavy-ap-spd').removeClass('btn-warning');
-		audio.playSoundLoop('apDisconnect', 1);
-	};
-	autopilot.setVs = function (vs)
-	{	var newVs = parseInt(vs, 10);
-		// check new speed is not NaN
-		$('#Qantas94Heavy-gc-vs').val(isFinite(newVs) ? autopilot.vs = newVs : autopilot.vs); // deliberate assignment
-	};
+		, setAltitude: function (altitude)
+			{	var newAlt = parseInt(altitude, 10);
+				$('.gefs-autopilot-altitude').val(isFinite(newAlt) ? autopilot.altitude = newAlt : autopilot.altitude); // deliberate assignment
+			}
+		, setKias: function (kias)
+			{	var newSpd = parseInt(kias, 10);
+				$('.gefs-autopilot-kias').val(isFinite(newSpd) ? autopilot.kias = newSpd : autopilot.kias); // deliberate assignment
+			}
+		, setVs: function (vs)
+			{	var newVs = parseInt(vs, 10);
+				// check new speed is not NaN
+				$('#Qantas94Heavy-gc-vs').val(isFinite(newVs) || vs === '' ? autopilot.climbrate = newVs : autopilot.climbrate); // deliberate assignment
+			}
+		, update: function (dt)
+			{	var values = ges.aircraft.animationValue;
+			
+				// ensure autopilot not used if we're below 500ft AGL - turn off AP if that's the case and other extreme flight conditions
+				if (values.altitude - Math.max(ges.groundElevation * metersToFeet, -1000) < 500 || ui.hud.stallAlarmOn || Math.abs(values.aroll) > 45 || values.atilt > 20 || values.atilt < -35)
+				{	autopilot.turnOff();
+					return;
+				}
+				
+				var speedRatio = clamp(values.kias / 100, 1, 5); // calculate relative speed of aircraft as correction factor
+				
+				function updateHeading()
+				{	// set aileron/rudder, heading mode
+					var deltaHeading = fixAngle(values.heading - autopilot.heading); // difference in target/current headings, bound to range -180 to 180 degrees
+					var targetBankAngle = clamp(deltaHeading, -autopilot.maxBankAngle, autopilot.maxBankAngle); // bank angle equal to difference in headings, up to limit (10° heading = 10° bank)
+					controls.yaw = exponentialSmoothing('apYaw', targetBankAngle / -60, 0.1); // FIXME: incorrect usage of target bank angle for rudder deflection
+					autopilot.rollPID.set(targetBankAngle);
+					controls.roll = exponentialSmoothing('apRoll', -autopilot.rollPID.compute(values.aroll, dt) / speedRatio, 0.9);
+				}
+				
+				function updateAltitude()
+				{	// elevator setting, altitude/vertical speed mode
+					var deltaAltitude = autopilot.altitude - values.altitude;
+					var maxClimbRate = clamp(speedRatio * autopilot.commonClimbrate, 0, autopilot.maxClimbrate);
+					var maxDescentRate = clamp(speedRatio * autopilot.commonDescentrate, autopilot.maxDescentrate, 0);
+					
+					var vsInput = $('#Qantas94Heavy-gc-vs');
+					var vsValue = vsInput.val();
+					var targetClimbrate;
+					// check if vertical speed manually set
+					if (typeof autopilot.climbrate === 'number' && isFinite(autopilot.climbrate))
+					{	if (autopilot.climbrate === 0)
+						{	//force vertical speed to be 0
+							targetClimbrate = 0;
+							if (vsValue !== '0' && notFocused) vsInput.val('0');
+						} else if (autopilot.climbrate < 0 ? deltaAltitude < -200 : deltaAltitude > 200) // check that vertical speed is in right direction to altitude
+						{	targetClimbrate = autopilot.climbrate;
+							if (vsValue !== targetClimbrate + '' && notFocused) vsInput.val(targetClimbrate + '');
+						} else // not valid for conditions
+						{	// automatically calculate vertical speed
+							targetClimbrate = clamp(deltaAltitude * 5, maxDescentRate, maxClimbRate);
+							if (vsValue !== '' && notFocused) vsInput.val('');
+						}
+					} else 
+					{	// automatically calculate vertical speed
+						targetClimbrate = clamp(deltaAltitude * 5, maxDescentRate, maxClimbRate);
+						if (vsValue !== '' && notFocused) vsInput.val('');
+					}
+				
+					autopilot.climbPID.set(-targetClimbrate);
+					var currentClimbRate = clamp(values.climbrate, maxDescentRate, maxClimbRate);
+					var aTargetTilt = autopilot.climbPID.compute(-currentClimbRate, dt) / speedRatio;
+					aTargetTilt = clamp(aTargetTilt, -autopilot.maxPitchAngle, -autopilot.minPitchAngle);
+					autopilot.pitchPID.set(-aTargetTilt);
+					controls.rawPitch = exponentialSmoothing('apPitch', autopilot.pitchPID.compute(-values.atilt, dt) / speedRatio, 0.9);
+					ges.debug.watch('targetClimbrate', targetClimbrate);
+					ges.debug.watch('aTargetTilt', aTargetTilt);
+				}
+				
+				function updateThrottle()
+				{	autopilot.throttlePID.set(autopilot.kias);
+					controls.throttle = clamp(exponentialSmoothing('apThrottle', autopilot.throttlePID.compute(values.kias, dt), 0.9), 0, 1);
+					ges.debug.watch('throttle', controls.throttle);
+				}
+				
+				if (enabled.heading) updateHeading();
+				if (enabled.altitude) updateAltitude();
+				if (enabled.speed) updateThrottle();
+			}
+		, turnOn: function ()
+			{	if (!ges.aircraft.setup.autopilot) return;
+				autopilot.climbPID.reset();
+				autopilot.pitchPID.reset();
+				autopilot.rollPID.reset();
+				autopilot.throttlePID.reset();
+				autopilot.setAltitude($('.gefs-autopilot-altitude').val());
+				autopilot.setHeading($('.gefs-autopilot-heading').val());
+				autopilot.setKias($('.gefs-autopilot-kias').val());
+				ui.hud.autopilotIndicator(autopilot.on = true); // deliberate assignment
+				$('.gefs-autopilot-toggle')
+					.first()
+					.text('Engaged')
+					.addClass('btn-warning');
+				if (!enabled.heading && (mode === 'GC mode (lat/long)' || mode === 'Great Circle (ICAO)'))
+				{	enabled.heading = true;
+					$('#Qantas94Heavy-ap-hdg').addClass('btn-warning');
+				}
+			}
+		, turnOff: function ()
+			{	ui.hud.autopilotIndicator(autopilot.on = false); // deliberate assignment
+				$('.gefs-autopilot-toggle')
+					.first()
+					.text('Disengaged')
+					.removeClass('btn-warning');
+				enabled =
+					{ heading: false
+					, altitude: false
+					, speed: false };
+				$('#Qantas94Heavy-ap-alt').removeClass('btn-warning');
+				$('#Qantas94Heavy-ap-hdg').removeClass('btn-warning');
+				$('#Qantas94Heavy-ap-spd').removeClass('btn-warning');
+				audio.playSoundLoop('apDisconnect', 1);
+			}
+		, toggle: function () { autopilot[autopilot.on ? 'turnOff' : 'turnOn'](); }
+		, on: false
+		, maxBankAngle: 30
+		, maxPitchAngle: 10
+		, minPitchAngle: -20
+		, commonClimbrate: 500
+		, commonDescentrate: -750
+		, maxClimbrate: 3000
+		, maxDescentrate: -4000
+		, heading: 0
+		, altitude: 0
+		, kias: 0
+		, climbrate: undefined
+		, climbPID: new PID(0.01, 0, 0.0001) // no limit to commanded climb rate - limited by pitch (do NOT add integral)
+		, pitchPID: new PID(0.03, 0.003, 0.003, -20, 10)
+		, rollPID: new PID(0.02, 0.00001, 0, -30, 30)
+		, throttlePID: new PID(0.01, 0.0025, 0.0002, 0, 1)
+		};
+	
 	var apDisconnectSound = 
 		{ id: 'apDisconnect'
 		, file: 'http://dl.dropbox.com/s/uyqz78wget1tetj/test3.mp3' };
@@ -359,15 +417,14 @@
 		var radToDegrees = 180 / pi;
 		var twoPi = pi * 2;
 		
-		function isNumber()
-		{	var isNumber = true;
-			for (var i = 0, l = arguments.length; i < l; ++i) isNumber = isNumber && typeof arguments[i] === 'number';
-			return isNumber;
+		function isNumber(arg1) // arg1, [arg2, ...argN]
+		{	var l = arguments.length;
+			if (!l) return false;
+			for (var i = 0; i < l; ++i) if (typeof arguments[i] !== 'number') return false;
+			return true;
 		}
 		
-		function setHeading()
-		{ 	if (isNumber(lat, lon)) autopilot.setHeading(Math.round(gc.getHeading(lat, lon)));
-		}
+		function setHeading() { if (isNumber(lat, lon)) autopilot.setHeading(Math.round(gc.getHeading(lat, lon))); }
 		
 		var setTimer;
 		// while we're at it, let's add a flight spoiler mode
@@ -525,7 +582,7 @@
 								.attr('id', 'Qantas94Heavy-gc-vs')
 								.addClass('Qantas94Heavy-ap-input')
 								.css('width', '54px')
-								.change(function () { autopilot.setVs(this.value); })
+								.change(function () { console.log('call'); autopilot.setVs(this.value); })
 								.focus(function () { notFocused = false; })
 								.blur(function () { notFocused = true; })
 						)		

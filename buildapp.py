@@ -9,7 +9,8 @@ parser.add_argument('--version', help='Provide a specific version number to use.
 version = parser.parse_args().version
 node = 'C:/Web Server/nodejs/node.exe'
 uglifyjs = 'C:/Users/Karl Cheng/node_modules/uglify-js/bin/uglifyjs'
-base = 'C:/Users/Karl Cheng/Desktop/Dropbox/GitHub/gefs-plugins/'
+dropbox = 'C:/Users/Karl Cheng/Desktop/Dropbox/'
+base = dropbox + 'GitHub/gefs-plugins/'
 root = base + 'source/'
 setup = 'gefs_gc-setup'
 folderShortName = 'app'
@@ -85,7 +86,7 @@ print(json.JSONEncoder(separators=(',',':')).encode(d), end="", file=open(path +
 
 subprocess.check_call(['C:/Program Files (x86)/Google/Chrome/Application/chrome.exe', '--pack-extension=' + path, '--pack-extension-key=C:/Users/Karl Cheng/Desktop/' + setup + '.pem'], shell=False)
 
-zipfile = build + extension + '.zip'
+zipfile = dropbox + 'gefs-plugins releases/' + extension + '.zip'
 try:
 	os.remove(zipfile)
 except OSError:
