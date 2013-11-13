@@ -3,6 +3,14 @@ README
 
 Autopilot++ for GEFS-Online v{0} for Google Chrome/Chromium
 
+LICENSE
+-------
+
+This is free, open source software released under the GNU GPLv3. For the source
+code of this program, see <http://github.com/Qantas94Heavy/gefs-plugins>. The
+full license (GNU General Public License, Version 3) is available any time at
+<http://www.gnu.org/licenses/gpl-3.0.html>.
+
 INSTALLATION INSTRUCTIONS
 -------------------------
 

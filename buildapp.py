@@ -56,7 +56,7 @@ if 1 <= len(list) <= 4:
 else:
 	raise Exception('Invalid version in Greasemonkey metadata')
 
-build = base + 'package/'
+build = base + 'package/chrome/'
 pack = build + extension + '/'
 try: 
     shutil.rmtree(pack)
