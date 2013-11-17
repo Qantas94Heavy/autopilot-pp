@@ -5,7 +5,7 @@
 // @match http://www.gefs-online.com/gefs.php*
 // @match http://gefs-online.com/gefs.php*
 // @run-at document-end
-// @version 0.4.1.22
+// @version 0.4.2.1
 // @grant none
 // ==/UserScript==
 
@@ -211,7 +211,7 @@
 	};
 	var apDisconnectSound = 
 		{ id: 'apDisconnect'
-		, file: 'http://eyredaero.frihost.org/test3.mp3' };
+		, file: 'http://dl.dropbox.com/s/uyqz78wget1tetj/test3.mp3' };
 	// make sure people don't f*cking start mucking about with the thrust
 	V3.duplicate = V3.dup;
 	Aircraft.prototype.load = function (aircraftName, coordinates, justReload)
