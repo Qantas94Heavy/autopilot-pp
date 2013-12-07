@@ -5,7 +5,7 @@
 // @match http://www.gefs-online.com/gefs.php*
 // @match http://gefs-online.com/gefs.php*
 // @run-at document-end
-// @version 0.5.0.43
+// @version 0.5.0.45
 // @grant none
 // ==/UserScript==
 
@@ -14,7 +14,8 @@
 // uglifyjs does not like the use of var, so we have to use window
 
 (function (window)
-{  function replacePapiFunction()
+{  if (typeof DEBUG === 'undefined') window.DEBUG = true;
+   function replacePapiFunction()
    {  ges.fx.RunwayLights.prototype.refreshPapi = function () // fix papi angle
       {  this.papiInterval = setInterval(function ()
          {  var collResult = ges.getGroundAltitude(this.papiLocation[0], this.papiLocation[1]);
@@ -54,7 +55,7 @@
          });
       }
    }, 0); // will be adjusted to minimum timer possible
-})(window);
+})(this);
 
 // no need for $(function(){}) as already checked by Greasemonkey
 (function main(Infinity, NaN, undefined)
@@ -87,9 +88,10 @@
       
       // cache function
       var abs = Math.abs;
+      var sumcallback = function (previous, current) { return previous + current; }
        
        // two ways of doing the same thing
-      function sum(arr) { return Array.prototype.reduce.call(arr, function (previous, current) { return previous + current; }); }
+      function sum(arr) { return Array.prototype.reduce.call(arr, sumcallback); }
        
       function sum(arr)
       {  var total = 0;
@@ -97,35 +99,48 @@
          return total;
       }
       
-      // noop, just for compatibility
-      this.set = function () { console[console.warn ? 'warn' : 'log']('[warning] PID.prototype.set is depreceated. Pass the setpoint to PID.prototype.compute instead.'); };
+      // just for compatibility
+      var _setPoint = 0;
+      this.set = function (sp)
+      {  if (window.console) console[console.warn ? 'warn' : 'log']('[warning] PID.prototype.set is depreceated. Pass the setpoint to PID.prototype.compute instead.');
+         _setPoint = sp;
+      };
       
-      this.compute = function (input, setPoint, dt, tracking)
-      {  var error = setPoint - input;
+      var lastInput = 0; // bandaid until I can fix this
+      
+      this.compute = function (input, dt, setPoint, tracking)
+      {  // compatibility reasons
+         if (typeof setPoint !== 'number') setPoint = _setPoint;
+        
+         var error = setPoint - input;
          errorStream.push(error * dt);
          
          // use derivative on measurement instead of derivative on error to prevent derivative kick
            // see http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-derivative-kick
          var dInput = -(input - lastInput) / dt;
+         lastInput = input;
          
          var errorSum = sum(errorStream);
          var proportional = kp * error;
          var integral = ki * errorSum;
          var derivative = kd * dInput;
            
-           var output = proportional + integral + derivative;
+         var output = proportional + integral + derivative;
          
          // correct integrator windup
          if (ki)
-            if (tracking) ; // we'll add something later
-            else if (output > max) errorStream.push(-abs(output - max) / ki);
-            else if (output < min) errorStream.push(abs(output - max) / ki);
+            if (tracking) errorStream.push(-(output - setPoint) / ki); // we'll add something later
+            else if (output > max) errorStream.push(-(output - max) / ki);
+            else if (output < min) errorStream.push(-(output - min) / ki);
          var correctedIntegral = ki * sum(errorStream);
-
+         
          return proportional + correctedIntegral + derivative;
       };
       
-      this.reset = function () { errorStream = []; };
+      this.reset = function ()
+      {  errorStream = [];
+         _setPoint = 0;
+      };
    }
    window.PID = PID;
    
@@ -217,8 +232,7 @@
                      var startTime = new Date().getTime();
                      var originalTrim = controls.elevatorTrim;
                      var resetTrim = setInterval(function ()
-                     {  if (DEBUG) console.log('test');
-                        var timeSince = new Date().getTime() - startTime;
+                     {  var timeSince = new Date().getTime() - startTime;
                         if (timeSince >= 5000)
                         {  clearInterval(resetTrim);
                            controls.elevatorTrim = 0;
@@ -228,11 +242,11 @@
                      }, 4);
                   }
                   
-                 var deltaAltitude = autopilot.altitude - values.altitude;
+                  var deltaAltitude = autopilot.altitude - values.altitude;
                   var maxClimbRate = clamp(speedRatio * autopilot.commonClimbrate, 0, autopilot.maxClimbrate);
                   var maxDescentRate = clamp(speedRatio * autopilot.commonDescentrate, autopilot.maxDescentrate, 0);
                   
-                 var vsInput = $('#Qantas94Heavy-gc-vs');
+                  var vsInput = $('#Qantas94Heavy-gc-vs');
                   var vsValue = vsInput.val();
                   var targetClimbrate;
                   // check if vertical speed manually set
@@ -255,31 +269,32 @@
                      if (vsValue !== '' && notFocused) vsInput.val('');
                   }
                
-                 autopilot.climbPID.set(targetClimbrate);
-                  var aTargetTilt = autopilot.climbPID.compute(values.climbrate, dt);
+                  //autopilot.climbPID.set(targetClimbrate);
+                  var aTargetTilt = autopilot.climbPID.compute(values.climbrate, dt, targetClimbrate);
                   aTargetTilt = clamp(aTargetTilt, autopilot.minPitchAngle, autopilot.maxPitchAngle);
-                  autopilot.pitchPID.set(aTargetTilt);
-                  controls.rawPitch = exponentialSmoothing('apPitch', autopilot.pitchPID.compute(-values.atilt, dt) / speedRatio, 0.9);
+                  // autopilot.pitchPID.set(aTargetTilt);
+                  controls.rawPitch = exponentialSmoothing('apPitch', autopilot.pitchPID.compute(-values.atilt, dt, aTargetTilt) / speedRatio, 0.9);
                   
                  /*if (typeof lastElevatorPosition !== 'number') lastElevatorPosition = controls.rawPitch;
                   var travelPerSecond = (controls.rawPitch - lastElevatorPosition) / dt;
                   if (travelPerSecond > 0.8) controls.rawPitch = lastElevatorPosition + 0.8 * dt;
                   if (travelPerSecond < -0.8) controls.rawPitch = lastElevatorPosition - 0.8 * dt;*/
                   
-                 ges.debug.watch('targetClimbrate', targetClimbrate);
+                  ges.debug.watch('targetClimbrate', targetClimbrate);
                   ges.debug.watch('aTargetTilt', aTargetTilt);
                }
                function updateHeading()
                {  // set aileron/rudder, heading mode
                   var deltaHeading = fixAngle(values.heading - autopilot.heading); // difference in target/current headings, bound to range -180 to 180 degrees
                   
-                 var maxBankAngle = min(arctan(0.0027467328927254283 * values.ktas) * radToDegrees, autopilot.maxBankAngle); // double standard rate turn or max bank angle, whichever is less
+                  var maxBankAngle = min(arctan(0.0027467328927254283 * values.ktas) * radToDegrees, autopilot.maxBankAngle); // double standard rate turn or max bank angle, whichever is less
                   var targetBankAngle = clamp(deltaHeading, -maxBankAngle, maxBankAngle); // bank angle equal to difference in headings, up to limit (10° heading = 10° bank)
                   controls.yaw = exponentialSmoothing('apYaw', values.roll / 2, 0.1); // FIXME: incorrect usage of target bank angle for rudder deflection
-                  autopilot.rollPID.set(targetBankAngle);
-                  controls.roll = exponentialSmoothing('apRoll', -autopilot.rollPID.compute(values.aroll, dt) / speedRatio, 0.9);
+                  // autopilot.rollPID.set(targetBankAngle);
+                  controls.roll = exponentialSmoothing('apRoll', -autopilot.rollPID.compute(values.aroll, dt, targetBankAngle) / speedRatio, 0.9);
                   
-                 if (ges.aircraft.name === 'a380') controls.roll *= 2;
+                  // 100% haxoring
+                  if (ges.aircraft.name === 'a380') controls.roll *= 2.5;
                   
                  /*if (typeof lastAileronPosition !== 'number') lastAileronPosition = controls.roll;
                   var travelPerSecond = (controls.roll - lastAileronPosition) / dt;
@@ -287,8 +302,8 @@
                   if (travelPerSecond < -1.2) controls.roll = lastAileronPosition - 1.2 * dt;*/
                }
                function updateThrottle()
-               {  autopilot.throttlePID.set(autopilot.kias);
-                  controls.throttle = clamp(exponentialSmoothing('apThrottle', autopilot.throttlePID.compute(values.kias, dt), 0.9), 0, 1);
+               {  // autopilot.throttlePID.set(autopilot.kias);
+                  controls.throttle = clamp(exponentialSmoothing('apThrottle', autopilot.throttlePID.compute(values.kias, dt, autopilot.kias), 0.9), 0, 1);
                   ges.debug.watch('throttle', controls.throttle);
                }
                if (enabled.heading) updateHeading();
@@ -342,10 +357,10 @@
       , altitude: 0
       , kias: 0
       , climbrate: null
-      , climbPID: new PID(0.01, 0.0005, 0.0001, -20, 10)
-      , pitchPID: new PID(0.03, 0.005, 0.001, -1, 1)
+      , climbPID: new PID(0.01, 0.0005, 0.001, -20, 10)
+      , pitchPID: new PID(0.02, 0.01, 0.001, -1, 1)
       , rollPID: new PID(0.02, 0, 0.01, -1, 1)
-      , throttlePID: new PID(0.01, 0.005, 0.005, 0, 1)
+      , throttlePID: new PID(0.01, 0.005, 0.01, 0, 1)
       };
    
    var apDisconnectSound = 
@@ -364,8 +379,9 @@
       this._cockpitLoaded = false;
       google.earth.fetchKml(ge, href, function (kmlObject)
       {  // is setTimeout necessary? (fetchKml is already async)
-         setTimeout(function ()
-         {  if (kmlObject)
+         //setTimeout(function ()
+         //{ if (kmlObject)
+            if (kmlObject)
             {  var aircraft = ges.aircraft;
                try { aircraft.setup = eval(kmlObject.getDescription())[0]; }
                catch (e)
@@ -478,7 +494,7 @@
             {  alert('Error loading aircraft file');
                ges.undoPause();
             }
-         });
+         //});
       });
    };
 

@@ -39,7 +39,7 @@ node = 'C:/Web Server/nodejs/node.exe'
 userhome = 'C:/Users/Karl Cheng/'
 uglifyjs = userhome + 'node_modules/uglify-js/bin/uglifyjs'
 dropbox = userhome + 'Desktop/Dropbox/'
-base = userhome + 'GitHub/gefs-plugins/'
+base = userhome + 'GitHub/autopilot-pp/'
 license = base + 'LICENSE.md'
 
 # perhaps make this more configurable through arguments
@@ -69,9 +69,7 @@ chromeManifest = {
 	}]
 }
 
-for i in c:
-	key = i[0]
-	value = i[1]
+for key, value in c:
 	if key in chromeManifest:
 		# make array in JSON if more than one value
 		chromeManifest[key] = [chromeManifest[key], value]
@@ -106,6 +104,7 @@ if 1 <= len(list) <= 4:
 	if notCustomVersion:
 		list[3] = str(int(list[3]) + 1)
 		chromeManifest['version'] = version = '.'.join(list)
+		print(version)
 	else:
 		chromeManifest['version'] = '.'.join(list)
 	extension = folderShortName + '_v' + '.'.join(list[:3])
@@ -118,10 +117,9 @@ deleteDir(pack)
 createDir(pack)
 
 # build the greasemonkey script
-greasemonkey = dict(c)
-greasemonkey['version'] = version
+
 # don't you just *love* list comprehensions?
-metadata = '\n'.join(['// @' + i.strip() + ' ' + greasemonkey[i] for i in greasemonkey])
+metadata = '\n'.join(['// @' + key.strip() + ' ' + value if key != 'version' else '// @version ' + version for key, value in c]) 
 userscript = pack + extension + '.user.js'
 print('// ==UserScript==\n' + metadata + '\n// ==/UserScript==\n' + parts[1], end="", file=open(userscript, 'w', encoding='utf-8', newline='\r\n'))
 
@@ -141,7 +139,7 @@ removeFile(zipfile)
 # format README file with variables, then write to zip file
 readme = pack + 'README.md'
 with open(root + 'README.txt') as file:
-	print(file.read().format(version), end='', file=open(readme, 'w', encoding='utf-8', newline='\r\n'))
+	print(file.read().format(version, extension), end='', file=open(readme, 'w', encoding='utf-8', newline='\r\n'))
 
 # zip the folder together for release
 subprocess.call(['C:/Program Files/7-Zip/7z.exe', 'a', '-tzip', '-mx9', '-mm=Deflate', zipfile, readme, license, userscript, pack + setup + '.crx'], shell=False)
