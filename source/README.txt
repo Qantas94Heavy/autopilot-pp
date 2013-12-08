@@ -7,7 +7,7 @@ LICENSE
 -------
 
 This is free, open source software released under the GNU GPLv3. For the source
-code of this program, see <http://github.com/Qantas94Heavy/gefs-plugins>. The
+code of this program, see <http://github.com/Qantas94Heavy/autopilot-pp>. The
 full license (GNU General Public License, Version 3) is available any time at
 <http://www.gnu.org/licenses/gpl-3.0.html>.
 
@@ -32,17 +32,15 @@ INSTALLATION INSTRUCTIONS (Greasemonkey)
 5. Click "Install" after the timer countdown finishes.
 6. Installed!  Just open GEFS and enjoy your "new and improved" autopilot!
 
-CHANGES SINCE v0.4.2 (last version)
+CHANGES SINCE v0.5.0 (last version)
 -----------------------------------
+
+ - Fixed bug where the new ICAO airports database was not being included
+
+CHANGES SINCE v0.4.2 (last major version)
+-----------------------------------------
 
  - Added tracking to the PID implementation
  - Better tuned PID constants
  - New ICAO airports database
  - All-new Greasemonkey support
-
-CHANGES SINCE v0.4.0 (last major version)
------------------------------------------
-
- - Fix for GEFS -180/180 longitude camera bug
- - Increased size of inputs
- - Fix for autopilot disconnect sound
