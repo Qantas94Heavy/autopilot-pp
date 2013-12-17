@@ -32,8 +32,23 @@ INSTALLATION INSTRUCTIONS (Greasemonkey)
 5. Click "Install" after the timer countdown finishes.
 6. Installed!  Just open GEFS and enjoy your "new and improved" autopilot!
 
-CHANGES SINCE v0.5.0 (last version)
+HOW TO USE
+----------
+
+Load up GEFS and open the Nav panel. To activate the master switch, click the
+"disconnected" button. Once the master switch is enabled, click the "Hdg", "Alt"
+or "Spd" buttons to activate the specific modes. Click the "Heading Mode" button
+to switch between heading mode, lat/long mode and ICAO airport mode. In the non-
+heading modes, the lateral mode of the autopilot is always activiated -- to
+turn the lateral mode off, first switch to "Heading Mode", then click "Hdg".
+
+CHANGES SINCE v0.5.1 (last version)
 -----------------------------------
+
+ - Fixed issue with PID controller setting making SU-35 and Concorde unstable
+
+CHANGES SINCE v0.5.0
+--------------------
 
  - Fixed bug where the new ICAO airports database was not being included
 
