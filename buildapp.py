@@ -49,12 +49,12 @@ folderShortName = 'app'
 
 # FIXME: I've been naughty and modified uglifyjs to add the --source-map-nopragma option: this will break if run somewhere else
 minified = (subprocess
-	.check_output([node, uglifyjs, root + 'code.user.js', '-m toplevel=false', '-c loops=true', '-d DEBUG=false', '-b beautify=false,max-line-len=99999', '--source-map-nopragma', '--source-map-output'], stdin=open(root + 'code.user.js', encoding='utf-8'), shell=False)
+	.check_output([node, uglifyjs, root + 'code.user.js', '-m toplevel=false', '-c loops=true', '-d DEBUG=false', '-b beautify=false,max-line-len=99999'], stdin=open(root + 'code.user.js', encoding='utf-8'), shell=False)
 	.decode('utf-8')
 	.replace('\uFEFF', r'\uFEFF')
 	.replace('\n', '')
 	.rstrip(';'))
-parts = minified.split('\x04')
+parts = ['',minified]
 # get metadata from greasemonkey directives
 with open(root + 'code.user.js', encoding='utf-8') as file:
 	c = [re.search(r'// @(\S+)(?:\s+(.*))?', re.sub(r'\s+$', '', meta)).groups() if meta else ''
