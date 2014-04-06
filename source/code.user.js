@@ -62,7 +62,7 @@
   setInterval(function () {
     if (window.ges && ges.aircraft && ges.aircraft.animationValue) {
       var animationValue = ges.aircraft.animationValue;
-      animationValue.kcas = airspeedConversions.tasToCas(animationValue.ktas, animationValue.altitude);
+      animationValue.kcas = airspeedConversions.tasToCas(animationValue.ktas, animationValue.altitude * 0.3048);
     }
   }, 16);
     
@@ -83,17 +83,17 @@
     if (typeof min !== 'number') min = -Infinity;
     else if (typeof max !== 'number') max = Infinity;
     // setup for closure
-    var errorStream = [];
-    var inputStream = [];
+    var errorStream = this.errorStream = [];
+    var inputStream = this.inputStream = [];
     // cache function
     var abs = Math.abs;
     
-    
     function sum(arr) {
-      return Array.prototype.reduce.call(arr, function (previous, current) {
-        return previous + current;
-      }, 0);
+      var total = 0;
+      for (var i = 0, l = arr.length; i < l; ++i) total += arr[i];
+      return total;
     }
+    
     // just for compatibility
     var _setPoint = 0;
     this.set = function (sp) {
@@ -132,7 +132,8 @@
       return kp * (proportional + correctedIntegral + derivative);
     };
     this.reset = function () {
-      errorStream = [];
+      errorStream = this.errorStream = [];
+      inputStream = this.inputStream = [];
       _setPoint = 0;
     };
   }
@@ -397,36 +398,15 @@
     this.clearForces();
   };
   
-  // fix up the GEFS autopilot functions
-  function fixAngle(angle, min, max) {
-    if (typeof angle !== 'number') return NaN;
-    if (typeof min !== 'number') min = -180;
-    else if (!isFinite(min)) return NaN;
-    if (typeof max !== 'number') max = 180;
-    else if (!isFinite(max)) return NaN;
-    
-    var step = max - min;
-    while (angle < min) angle += step;
-    while (angle >= max) angle -= step;
-    return angle;
-  }
-
-  function fixAngle360(angle) {
-    return fixAngle(angle, 0, 360);
-  }
-
-  function clamp(val, min, max) {
-    return typeof val === 'number' && typeof min === 'number' && typeof max === 'number' ? val < max ? val > min ? val : min : max : NaN;
-  }
   var decimalsOnly = /^[+-]?\d+\.?\d*$/;
   var wholeNumbersOnly = /^[+-]?\d+$/;
+  
   var enabled =
     { heading: false
     , altitude: false
     , speed: false
     };
   var altitudeChanged = false;
-  var metersToFeet = 3.2808398950131234;
   
   var autopilot = controls.autopilot =
     { setHeading: function (heading) {
@@ -464,7 +444,8 @@
                          ui.hud.stallAlarmOn || abs(values.aroll) > 45 ||
                          values.atilt > 20 || values.atilt < -35)) return void autopilot.turnOff();
   
-          function updateAltitude() { // elevator setting, altitude/vertical speed mode
+          // elevator setting, altitude/vertical speed mode
+          function updateAltitude() {
             // make sure autopilot starts in trim
             if (altitudeChanged !== enabled.altitude) {
               controls.elevatorTrim = clamp(controls.pitch, controls.elevatorTrimMin, controls.elevatorTrimMax);
@@ -512,15 +493,17 @@
             var aTargetTilt = autopilot.climbPID.compute(values.climbrate, dt, targetClimbrate);
             aTargetTilt = clamp(aTargetTilt, autopilot.minPitchAngle, autopilot.maxPitchAngle);
             
-            controls.rawPitch = exponentialSmoothing('apPitch', autopilot.pitchPID.compute(-values.atilt, dt, aTargetTilt) / speedRatio, 0.9);
-            // meant to be an elevator deflection rate limiter
-            // doesn't work right now, need to fix it
-            /*
-            if (typeof lastElevatorPosition !== 'number') lastElevatorPosition = controls.rawPitch;
-            var travelPerSecond = (controls.rawPitch - lastElevatorPosition) / dt;
-            if (travelPerSecond > 0.8) controls.rawPitch = lastElevatorPosition + 0.8 * dt;
-            if (travelPerSecond < -0.8) controls.rawPitch = lastElevatorPosition - 0.8 * dt;
-            */
+            if (+aTargetTilt !== +aTargetTilt) {
+              console.log('aTargetTilt: ' + aTargetTilt);
+              console.log(values.climbrate);
+              console.log(dt, targetClimbrate);
+            }
+  
+            var result = autopilot.pitchPID.compute(-values.atilt, dt, aTargetTilt);
+            console.warn(result);
+            controls.rawPitch = exponentialSmoothing('apPitch', result / speedRatio, 0.9);
+            // add an elevator deflection rate limiter
+
             ges.debug.watch('targetClimbrate', targetClimbrate);
             ges.debug.watch('aTargetTilt', aTargetTilt);
           }
@@ -537,23 +520,17 @@
             // rudder equal to half the aileron deflection
             controls.yaw = exponentialSmoothing('apYaw', values.roll / 2, 0.1);
             
-            // autopilot.rollPID.set(targetBankAngle);
-            controls.roll = exponentialSmoothing('apRoll', -autopilot.rollPID.compute(values.aroll, dt, targetBankAngle) / speedRatio, 0.9);
+            var result = -autopilot.rollPID.compute(values.aroll, dt, targetBankAngle);
+            controls.roll = exponentialSmoothing('apRoll', result / speedRatio, 0.9);
             // 100% haxoring, A380 ailerons suck
             if (ges.aircraft.name === 'a380') controls.roll *= 3.5;
             
-            // meant to be an aileron deflection rate limiter
-            // doesn't work right now, need to fix it
-            /*
-            if (typeof lastAileronPosition !== 'number') lastAileronPosition = controls.roll;
-            var travelPerSecond = (controls.roll - lastAileronPosition) / dt;
-            if (travelPerSecond > 1.2) controls.roll = lastAileronPosition + 1.2 * dt;
-            if (travelPerSecond < -1.2) controls.roll = lastAileronPosition - 1.2 * dt;
-            */
+            // add an aileron deflection rate limiter
           }
   
-          function updateThrottle() { // autopilot.throttlePID.set(autopilot.kias);
-            controls.throttle = clamp(exponentialSmoothing('apThrottle', autopilot.throttlePID.compute(values.kias, dt, autopilot.kias), 0.9), 0, 1);
+          function updateThrottle() {
+            var result = autopilot.throttlePID.compute(values.kcas, dt, autopilot.kias);
+            controls.throttle = clamp(exponentialSmoothing('apThrottle', result, 0.9), 0, 1);
             ges.debug.watch('throttle', controls.throttle);
           }
           if (enabled.heading) updateHeading();
