@@ -28,7 +28,7 @@ def removeFile(path):
 		if os.path.isfile(path):
 			raise
 			
-parser = argparse.ArgumentParser(description='Packages the Nose Wheel Steering plugin for GEFS.')
+parser = argparse.ArgumentParser(description='Packages the Autopilot++ plugin for GEFS.')
 parser.add_argument('--version', help='Provide a specific version number to use.  Defaults to metadata value.')
 arguments = parser.parse_args()
 version = arguments.version
@@ -37,24 +37,23 @@ version = arguments.version
 # FIXME: highly dependent on user setup, should make locations customisable/standardised
 node = 'C:/Web Server/nodejs/node.exe'
 userhome = 'C:/Users/Karl Cheng/'
-uglifyjs = userhome + 'node_modules/uglify-js/bin/uglifyjs'
 dropbox = userhome + 'Desktop/Dropbox/'
 base = userhome + 'GitHub/autopilot-pp/'
-license = base + 'LICENSE.md'
+uglifyjs = base + 'node_modules/uglify-js/bin/uglifyjs'
+licence = base + 'LICENCE.md'
 
 # perhaps make this more configurable through arguments
 root = base + 'source/'
 setup = 'gefs_gc-setup'
 folderShortName = 'app'
 
-# FIXME: I've been naughty and modified uglifyjs to add the --source-map-nopragma option: this will break if run somewhere else
 minified = (subprocess
-	.check_output([node, uglifyjs, root + 'code.user.js', '-m toplevel=false', '-c loops=true', '-d DEBUG=false', '-b beautify=false,max-line-len=99999'], stdin=open(root + 'code.user.js', encoding='utf-8'), shell=False)
+	.check_output([node, uglifyjs, root + 'code.user.js', '-m toplevel=false', '-c loops=true', '-d DEBUG=false', '-b beautify=false'], stdin=open(root + 'code.user.js', encoding='utf-8'), shell=False)
 	.decode('utf-8')
 	.replace('\uFEFF', r'\uFEFF')
 	.replace('\n', '')
 	.rstrip(';'))
-parts = ['',minified]
+parts = ['', minified]
 # get metadata from greasemonkey directives
 with open(root + 'code.user.js', encoding='utf-8') as file:
 	c = [re.search(r'// @(\S+)(?:\s+(.*))?', re.sub(r'\s+$', '', meta)).groups() if meta else ''
@@ -95,18 +94,14 @@ if not version:
 	except KeyError:
 		raise Exception('Version missing from Greasemonkey metadata')
 		
-# increment build version if not explicitly specified as custom argument
 list = version.split('.')
-if 1 <= len(list) <= 4:
+if 1 <= len(list) <= 3:
 	for val in list:
 		if not re.search(r'^(0|[1-9][0-9]{0,4})$', val) or int(val) > 65535:
 			raise InvalidVersionException
-	if notCustomVersion:
-		list[3] = str(int(list[3]) + 1)
-		chromeManifest['version'] = version = '.'.join(list)
-		print(version)
-	else:
-		chromeManifest['version'] = '.'.join(list)
+      
+	chromeManifest['version'] = version = '.'.join(list)
+	print(version)
 	extension = folderShortName + '_v' + '.'.join(list[:3])
 else:
 	raise InvalidVersionException
@@ -116,7 +111,7 @@ pack = base + 'package/' + extension + '/'
 deleteDir(pack)
 createDir(pack)
 
-# build the greasemonkey script
+# build the Greasemonkey script
 
 # don't you just *love* list comprehensions?
 metadata = '\n'.join(['// @' + key.strip() + ' ' + value if key != 'version' else '// @version ' + version for key, value in c]) 
@@ -126,7 +121,7 @@ print('// ==UserScript==\n' + metadata + '\n// ==/UserScript==\n' + parts[1], en
 # create the files needed to package the CRX file
 path = pack + setup + '/'
 createDir(path)
-print("var d=document;top==window&&(d.getElementsByTagName('head')[0].appendChild(d.createElement('script')).text='" + parts[1].replace('\\', r'\\').replace("'", r"\'") + "')", end='', file=open(path + 'c.js', 'w', encoding='utf-8', newline='\r\n'))
+print("var d=document;top==this&&(d.head.appendChild(d.createElement('script')).text='" + parts[1].replace('\\', r'\\').replace("'", r"\'") + "')", end='', file=open(path + 'c.js', 'w', encoding='utf-8', newline='\r\n'))
 print(json.JSONEncoder(separators=(',',':')).encode(chromeManifest), end='', file=open(path + 'manifest.json', 'w', encoding='utf-8', newline='\r\n'))
 
 # call Chrome and write extension to file
@@ -142,4 +137,4 @@ with open(root + 'README.txt') as file:
 	print(file.read().format(version, extension), end='', file=open(readme, 'w', encoding='utf-8', newline='\r\n'))
 
 # zip the folder together for release
-subprocess.call(['C:/Program Files/7-Zip/7z.exe', 'a', '-tzip', '-mx9', '-mm=Deflate', zipfile, readme, license, userscript, pack + setup + '.crx'], shell=False)
+subprocess.call(['C:/Program Files/7-Zip/7z.exe', 'a', '-tzip', '-mx9', '-mm=Deflate', zipfile, readme, licence, userscript, pack + setup + '.crx'], shell=False)
