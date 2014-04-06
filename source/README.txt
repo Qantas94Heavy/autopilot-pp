@@ -42,20 +42,17 @@ to switch between heading mode, lat/long mode and ICAO airport mode. In the non-
 heading modes, the lateral mode of the autopilot is always activiated -- to
 turn the lateral mode off, first switch to "Heading Mode", then click "Hdg".
 
-CHANGES SINCE v0.5.1 (last version)
+CHANGES SINCE v0.5.2 (last version)
 -----------------------------------
+
+ - New CAS mode -- airspeed indicator now shows CAS instead of TAS
+
+CHANGES SINCE v0.5.1
+--------------------
 
  - Fixed issue with PID controller setting making SU-35 and Concorde unstable
 
-CHANGES SINCE v0.5.0
---------------------
-
- - Fixed bug where the new ICAO airports database was not being included
-
-CHANGES SINCE v0.4.2 (last major version)
+CHANGES SINCE v0.5.0 (last major version)
 -----------------------------------------
 
- - Added tracking to the PID implementation
- - Better tuned PID constants
- - New ICAO airports database
- - All-new Greasemonkey support
+ - Fixed bug where the new ICAO airports database was not being included
