@@ -12,8 +12,7 @@
   , "V2": true 
   , "clamp": true 
   , "instruments": true
-  , "Overlay": true 
-  , "clone": true
+  , "Overlay": true
   , "jsonp": true
   , "flight": true
   , "weather": true 
@@ -34,11 +33,8 @@
   , "xy2ll": true
   , "intersect_RayTriangle": true
   , "swfobject": true
-  , "halfPi": true
-  , "twoPi": true
   , "Object3D": true
   , "rigidBody": true
-  , "Joystick": true
   , "meridionalRadius": true
   , "lookAt": true
   , "Aircraft": true
@@ -52,11 +48,10 @@
   , "getBuildingCollision": true
   , "majorRunwayGrid": true
   , "ll2xy": true
-  , "_gat": false
-  , "axisToIndex": true 
-  , "knotsToMs": true 
-  , "msToKnots": true
-  , "kmhToKnots": true
+  , "axisToIndex": false
+  , "DEBUG": true
+  , "define": false
+  , "require": false
   }
 , "laxcomma": true
 , "laxbreak": true
@@ -73,9 +68,10 @@
 , "funcscope": true
 , "unused": false
 , "bitwise": true
-, "maxerr": "9999"
+, "validthis": true
+, "maxerr": 50
 , "-W058": false
 , "-W002": false
 , "-W004": false
-, "maxlen": 152
+, "maxlen": 154
 }

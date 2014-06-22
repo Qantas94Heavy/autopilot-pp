@@ -1,5 +1,6 @@
 'use strict';
-var airspeedConversions = (function () {
+
+define(function () {
   // Mohr, P. J., Taylor, B. N. & Newell, D. B. (2012). CODATA recommended values of the fundamental physical constants: 2010.
   var molar = 8.3144621;
   var avogardo = 6.02214129e23;
@@ -10,7 +11,8 @@ var airspeedConversions = (function () {
   var gravity = 9.80665;
 
   // Gatley, D. P., Herrmann, S. & Kretzschmar, H.-J. (2008). A Twenty-First Century Molar Mass for Dry Air.
-  // var airMass = 28.965369-3; // kilograms per mole
+  // kilograms per mole
+  // var airMass = 28.965369-3; 
 
   // ICAO Standard Atmosphere (assumption based on 1.225kg/m3 @ SL)
   var airMass = 28.96491498930052e-3;
@@ -29,8 +31,9 @@ var airspeedConversions = (function () {
   // @param {Number} temperature
   function speedOfSound(temperature) {
     if (typeof temperature !== 'number') return NaN;
-    // gamma * airGasConstant * temperature
-    return Math.sqrt(401.87402394586153 * temperature); // metres per second
+    
+    // metres per second
+    return Math.sqrt(gamma * airGasConstant * temperature); 
   }
 
   // sea level defaults
@@ -44,23 +47,46 @@ var airspeedConversions = (function () {
     return pressure / temperature / airGasConstant;
   }
 
-  function mach(ktas, celsius) {
-    return ktas * knotsToMs / speedOfSound(celsius + 273.15);
+  function tasToMach(ktas, temperature) {
+    return ktas * knotsToMs / speedOfSound(temperature);
   }
+  
+  function casToMach(kcas, pressure, temperature) {
+    if (arguments.length === 2) {
+      var altitude = pressure;
+      var condition = standardConditions(altitude);
+      pressure = condition[0];
+      temperature = condition[1];
+    }
+  
+    return tasToMach(casToTas(kcas, pressure, temperature), temperature);
+  }
+  
+  function machToCas(mach, pressure, temperature) {
+    // check if second argument is altitude (instead of pressure)
+    if (arguments.length === 2) {
+      var altitude = pressure;
+      var condition = standardConditions(altitude);
+      pressure = condition[0];
+      temperature = condition[1];
+    }
+    
+    return tasToCas(mach * speedOfSound(temperature), pressure, temperature);
+  }
+  
 
   function tasToEas(ktas, density) {
     return ktas * Math.sqrt(density / densitySL);
   }
+  
   // TEST: TODO (i.e. check this)
   function easToTas(keas, density) {
     return keas * Math.sqrt(densitySL / density);
   }
 
-  //TAS = EAS * mach / (machSL * Math.sqrt(pressure / pressureSL));
+  // TAS = EAS * mach / (machSL * Math.sqrt(pressure / pressureSL));
 
-  /**
-   * Has the following signature: (altitude:Number)
-   */
+  /** @param {Number} altitude */
   // National Aeronautics and Space Administration. (1976). U.S. Standard Atmosphere.
   // TEST: PASS
   function standardConditions(altitude) {
@@ -96,15 +122,9 @@ var airspeedConversions = (function () {
     }, 101325);
   }
 
-  /**
-   * Converts KTAS to KCAS. Has two signatures:
-   * (ktas:Number, altitude:Number)
-   * (ktas:Number, pressure:Number, temperature:Number)
-   */
-  // TEST: PASS
   function tasToCas(ktas, pressure, temperature) {
-    // second argument is altitude, not pressure
     if (arguments.length === 2) {
+      // second argument is actually altitude, not pressure
       var altitude = pressure;
       var condition = standardConditions(altitude);
       pressure = condition[0];
@@ -127,6 +147,7 @@ var airspeedConversions = (function () {
     // how does this take into account compressibility (it apparently does)?
 
     // impact pressure
+    // sqrt(pow(x, 7)) or pow(x, 7 / 2)?
     var Qc = P * (pow((T0 * ktas * ktas) / (5 * T * A0 * A0) + 1, 7 / 2) - 1);
     // subsonic compressible flow formula
     return A0 * sqrt(5 * (pow(Qc / P0 + 1, 2 / 7) - 1));
@@ -221,23 +242,16 @@ var airspeedConversions = (function () {
 
   var airspeed =
     { speedOfSound: speedOfSound
-    , mach: mach
+    , tasToMach: tasToMach
     , airDensity: airDensity
     , standardConditions: standardConditions
+    , casToMach: casToMach
+    , machToCas: machToCas
     , tasToCas: tasToCas
     , casToTas: casToTas
     , tasToEas: tasToEas
     , easToTas: easToTas
     };
+    
   return airspeed;
-})();
-
-/* usage:
-
-instruments.list.airspeedJet.overlay.children[0].definition.animations[0].value = 'kcas';
-setInterval(function () {
-  var animationValue = ges.aircraft.animationValue;
-  animationValue.kcas = airspeedConversions.tasToCas(animationValue.ktas, animationValue.altitude * 0.3048);
-}, 16);
-
-*/
+});

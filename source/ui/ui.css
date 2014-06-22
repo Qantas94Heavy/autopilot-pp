@@ -1,0 +1,20 @@
+/* necessary as .addon overrides the default .btn-warning style */
+.add-on.btn-warning {
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25) !important
+}
+
+.gefs-autopilot input {
+  text-overflow: clip;
+  width: 146px;
+}
+
+.Qantas94Heavy-ap-container {
+	margin-bottom: -1px;
+  display: inline-block;
+}
+
+.gefs-autopilot button {
+  /* For some reason 5% doesn't work when it used to. Need to investigate. */
+  margin: 0 4% 5px;
+  width: 40%;
+}

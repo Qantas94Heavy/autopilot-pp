@@ -1,4 +1,5 @@
-package
+source/require.js
+source/text.js
 .gitignore
 .gitattributes
 .git
