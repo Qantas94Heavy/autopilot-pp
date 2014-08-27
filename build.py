@@ -53,7 +53,9 @@ minified = (subprocess
 	.replace('\uFEFF', r'\uFEFF')
 	.replace('\n', '')
 	.rstrip(';'))
-parts = ['', minified]
+  
+with open(root + 'require.js', encoding='utf-8') as file:
+  parts = ['', file.read() + ';' + minified]
 # get metadata from greasemonkey directives
 with open(root + 'code.user.js', encoding='utf-8') as file:
 	c = [re.search(r'// @(\S+)(?:\s+(.*))?', re.sub(r'\s+$', '', meta)).groups() if meta else ''
@@ -121,8 +123,7 @@ print('// ==UserScript==\n' + metadata + '\n// ==/UserScript==\n' + parts[1], en
 # create the files needed to package the CRX file
 path = pack + setup + '/'
 createDir(path)
-with open(root + 'require.js', encoding='utf-8') as file:
-  print("var d=document;top==this&&(d.head.appendChild(d.createElement('script')).text='" + (file.read() + parts[1]).replace('\\', r'\\').replace("'", r"\'") + "')", end='', file=open(path + 'c.js', 'w', encoding='utf-8', newline='\r\n'))
+print("var d=document;top==this&&(d.head.appendChild(d.createElement('script')).text='" + parts[1].replace('\\', r'\\').replace("'", r"\'") + "')", end='', file=open(path + 'c.js', 'w', encoding='utf-8', newline='\r\n'))
 print(json.JSONEncoder(separators=(',',':')).encode(chromeManifest), end='', file=open(path + 'manifest.json', 'w', encoding='utf-8', newline='\r\n'))
 
 # call Chrome and write extension to file
