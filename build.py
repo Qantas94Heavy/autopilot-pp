@@ -35,12 +35,12 @@ version = arguments.version
 
 # stop calling the C drive - will break on OSX/Linux
 # FIXME: highly dependent on user setup, should make locations customisable/standardised
-node = 'C:/Web Server/nodejs/node.exe'
+node = 'C:/Program Files/nodejs/node.exe'
 userhome = 'C:/Users/Karl Cheng/'
-dropbox = userhome + 'Desktop/Dropbox/'
-base = userhome + 'GitHub/autopilot-pp/'
-uglifyjs = base + 'node_modules/uglify-js/bin/uglifyjs'
-licence = base + 'LICENCE.md'
+releaseFolder = userhome + 'Sync/Development/gefs-plugins releases/'
+base = userhome + 'Sync/Development/GitHub/autopilot-pp/'
+uglifyjs = userhome + 'AppData/Roaming/npm/node_modules/uglify-js/bin/uglifyjs'
+licence = base + 'LICENSE.md'
 
 # perhaps make this more configurable through arguments
 root = base + 'source/'
@@ -121,19 +121,20 @@ print('// ==UserScript==\n' + metadata + '\n// ==/UserScript==\n' + parts[1], en
 # create the files needed to package the CRX file
 path = pack + setup + '/'
 createDir(path)
-print("var d=document;top==this&&(d.head.appendChild(d.createElement('script')).text='" + parts[1].replace('\\', r'\\').replace("'", r"\'") + "')", end='', file=open(path + 'c.js', 'w', encoding='utf-8', newline='\r\n'))
+with open(root + 'require.js', encoding='utf-8') as file:
+  print("var d=document;top==this&&(d.head.appendChild(d.createElement('script')).text='" + (file.read() + parts[1]).replace('\\', r'\\').replace("'", r"\'") + "')", end='', file=open(path + 'c.js', 'w', encoding='utf-8', newline='\r\n'))
 print(json.JSONEncoder(separators=(',',':')).encode(chromeManifest), end='', file=open(path + 'manifest.json', 'w', encoding='utf-8', newline='\r\n'))
 
 # call Chrome and write extension to file
-subprocess.check_call(['C:/Program Files (x86)/Google/Chrome/Application/chrome.exe', '--pack-extension=' + path, '--pack-extension-key=' + userhome + 'Desktop/' + setup + '.pem'], shell=False)
+subprocess.check_call(['C:/Users/Karl Cheng/AppData/Local/Chromium/Application/chrome.exe', '--pack-extension=' + path, '--pack-extension-key=' + userhome + 'Desktop/' + setup + '.pem'], shell=False)
 
 # delete the zip file if it already exists (we'll recreate it later)
-zipfile = dropbox + 'gefs-plugins releases/' + extension + '.zip'
+zipfile = releaseFolder + extension + '.zip'
 removeFile(zipfile)
 
 # format README file with variables, then write to zip file
 readme = pack + 'README.md'
-with open(root + 'README.txt') as file:
+with open(root + 'README.md') as file:
 	print(file.read().format(version, extension), end='', file=open(readme, 'w', encoding='utf-8', newline='\r\n'))
 
 # zip the folder together for release
