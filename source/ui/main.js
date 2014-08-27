@@ -1,7 +1,7 @@
 'use strict';
 
-define(['greatcircle', 'autopilot/main', 'text!ui/ui.html', 'text!ui/ui.css', 'bugfixes', 'kcas'],
-        function (gc, autopilot, uihtml, uicss) {
+define(['greatcircle', 'autopilot/main', 'icaoairports', 'text!ui/ui.html', 'text!ui/ui.css', 'bugfixes', 'kcas'],
+        function (gc, autopilot, icaos, uihtml, uicss) {
   /* MAKE THE USER INTERFACE */
   $('head').append($('<style>').text(uicss));
   
