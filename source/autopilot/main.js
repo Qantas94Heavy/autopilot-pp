@@ -114,9 +114,9 @@ define(['pid', 'autopilot/pidcontrols', 'autopilot/modes', 'speedconversions'], 
         ges.debug.watch('throttle', controls.throttle);
       }
       
-     if (apModes.altitude.enabled) updateAltitude();
-      if (apModes.heading.enabled) updateHeading();
-      if (apModes.speed.enabled) updateThrottle();
+      if (apModes.altitude.isEnabled) updateAltitude();
+      if (apModes.heading.isEnabled) updateHeading();
+      if (apModes.speed.isEnabled) updateThrottle();
     };
   })();
 

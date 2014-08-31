@@ -25,6 +25,13 @@ define(['greatcircle', 'autopilot/main', 'icaoairports', 'text!ui/ui.html', 'tex
     } else autopilot.turnOff();
   }
   
+  function enableHeading() {
+    if (!heading.isEnabled) {
+      heading.enable();
+      $('#Qantas94Heavy-ap-hdg-span').addClass('btn-warning');
+    }
+  }
+  
   $(window).on('autopilotengaged', function () {
     $('#Qantas94Heavy-ap-toggle')
       .text('Engaged')
@@ -114,13 +121,6 @@ define(['greatcircle', 'autopilot/main', 'icaoairports', 'text!ui/ui.html', 'tex
     autopilot.heading.set(newHdg);
     $(this).val(autopilot.heading.value);
   });
-  
-  function enableHeading() {
-    if (!heading.isEnabled) {
-      heading.enable();
-      $('#Qantas94Heavy-ap-hdg').addClass('btn-warning');
-    }
-  }
   
   $('#Qantas94Heavy-ap-gc-lat').change(function () {
     enableHeading();
