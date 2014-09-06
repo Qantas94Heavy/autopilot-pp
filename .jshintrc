@@ -17,7 +17,7 @@
   , "flight": true
   , "weather": true 
   , "ui": true 
-  , "degreesToRad": true 
+  , "degreesToRad": true
   , "objects": true
   , "metersToLocalLat": true 
   , "exponentialSmoothing": true

@@ -1,6 +1,8 @@
 'use strict';
 
 define(function () {
+  // NOTE: unless otherwise stated, all temperatures are in kelvin.
+  
   // Mohr, P. J., Taylor, B. N. & Newell, D. B. (2012). CODATA recommended values of the fundamental physical constants: 2010.
   var molar = 8.3144621;
   var avogardo = 6.02214129e23;
@@ -29,10 +31,8 @@ define(function () {
   var airGasConstant = molar / airMass;
 
   // @param {Number} temperature
+  // @returns {Number} Speed of sound in metres per second.
   function speedOfSound(temperature) {
-    if (typeof temperature !== 'number') return NaN;
-    
-    // metres per second
     return Math.sqrt(gamma * airGasConstant * temperature); 
   }
 

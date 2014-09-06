@@ -1,6 +1,6 @@
 'use strict';
 
-define(['autopilot/pidcontrols'], function (pidControls) {
+define(['autopilot/pidcontrols', 'speedconversions'], function (pidControls, speedConversions) {
   var modes = 
     { heading:
       { isEnabled: false
@@ -27,8 +27,8 @@ define(['autopilot/pidcontrols'], function (pidControls) {
           this.isEnabled = false;
         }
       , value: 0
-      , set: function (heading) {
-          if (isFinite(heading)) this.value = fixAngle360(heading);
+      , set: function (altitude) {
+          if (isFinite(altitude)) this.value = altitude;
         }
       }
     , speed:

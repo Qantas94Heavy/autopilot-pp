@@ -69,8 +69,5 @@ define(function () {
     this.lastInput = 0;
   };
   
-  
-  if (DEBUG) window.pid = new PID;
-  
   return PID;
 });

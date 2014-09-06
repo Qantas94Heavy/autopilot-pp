@@ -8,6 +8,10 @@ define(['pid', 'autopilot/pidcontrols', 'autopilot/modes', 'speedconversions'], 
       pidControls[prop].reset();
     });
       
+    Object.keys(apModes).forEach(function (prop) {
+      apModes[prop].isEnabled = false;
+    });
+    
     apModes.altitude.set(altitude);
     apModes.heading.set(heading);
     apModes.speed.set(speed);
@@ -20,7 +24,7 @@ define(['pid', 'autopilot/pidcontrols', 'autopilot/modes', 'speedconversions'], 
 
   function turnOff() {
     Object.keys(apModes).forEach(function (prop) {
-      apModes[prop].enabled = false;
+      apModes[prop].isEnabled = false;
     });
   
     autopilot.on = false;
@@ -34,7 +38,6 @@ define(['pid', 'autopilot/pidcontrols', 'autopilot/modes', 'speedconversions'], 
     var max = Math.max;
     var min = Math.min;
     var arctan = Math.atan;
-    var lastAileronPosition, lastElevatorPosition;
     
     return function (dt) {
       var values = ges.aircraft.animationValue;
@@ -59,19 +62,19 @@ define(['pid', 'autopilot/pidcontrols', 'autopilot/modes', 'speedconversions'], 
         var targetClimbRate;
         
         // check if vertical speed manually set or not
-        if (apModes.vs.enabled) {
+        if (apModes.vs.isEnabled) {
           // check that vertical speed is in right direction to altitude
           if (vsValue === 0 || vsValue < 0 ? deltaAltitude < -200 : deltaAltitude > 200) targetClimbRate = vsValue;
           else {
             // TODO: refactor to remove repetition of code below
-            apModes.vs.enabled = false;
+            apModes.vs.isEnabled = false;
             targetClimbRate = clamp(deltaAltitude * 2.5, maxDescentRate, maxClimbRate);
-            if (vsInput.val()) vsInput.val('');
+            if (vsInput.val() && !vsInput.is(':focus')) vsInput.val('');
           }
         } else {
           // automatically calculate vertical speed
           targetClimbRate = clamp(deltaAltitude * 2.5, maxDescentRate, maxClimbRate);
-          if (vsInput.val()) vsInput.val('');
+          if (vsInput.val() && !vsInput.is(':focus')) vsInput.val('');
         }
         
         var aTargetTilt = pidControls.climb.compute(values.climbrate, dt, targetClimbRate);
@@ -107,7 +110,7 @@ define(['pid', 'autopilot/pidcontrols', 'autopilot/modes', 'speedconversions'], 
 
       function updateThrottle() {
         var conditions = speedConversions.standardConditions(values.altitude);
-        var speed = apModes.speed.isMach ? speedConversions.machToCas() : apModes.speed.value;
+        var speed = apModes.speed.isMach ? speedConversions.machToCas(apModes.speed.value, conditions[0], conditions[1]) : apModes.speed.value;
         
         var result = pidControls.throttle.compute(values.kcas, dt, speed);
         controls.throttle = clamp(exponentialSmoothing('apThrottle', result, 0.9), 0, 1);
@@ -121,10 +124,11 @@ define(['pid', 'autopilot/pidcontrols', 'autopilot/modes', 'speedconversions'], 
   })();
 
   var autopilot =
-    { modes: apModes
-    , update: update
+    { update: update
     , turnOn: turnOn
     , turnOff: turnOff
+    , modes: apModes
+    , pid: pidControls
     , on: false
     , maxBankAngle: 25
     , minPitchAngle: -10
@@ -133,7 +137,6 @@ define(['pid', 'autopilot/pidcontrols', 'autopilot/modes', 'speedconversions'], 
     , commonDescentRate: -750
     , maxClimbRate: 3000
     , maxDescentRate: -4000
-    , pid: pidControls
     };
   
   // needed for compatibility reasons at the moment (mainly autopilot.update)

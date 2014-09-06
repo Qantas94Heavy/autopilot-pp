@@ -1,7 +1,7 @@
 'use strict';
 
 // TODO: would like to remove dependency on autopilot at some point
-define(['autopilot/main'], function (autopilot) {
+define(['autopilot/modes'], function (apModes) {
   var timer, lat, lon;
   var aircraft = ges.aircraft;
   var atan2 = Math.atan2;
@@ -28,7 +28,7 @@ define(['autopilot/main'], function (autopilot) {
   
   // TODO: separate logic from view
   function setHeading() {
-    if (typeof lat === 'number' && typeof lon === 'number') autopilot.heading.set(round(getHeading(lat, lon)));
+    if (typeof lat === 'number' && typeof lon === 'number') apModes.heading.set(round(getHeading(lat, lon)));
   }
   
   var gc =

@@ -2,14 +2,10 @@
 
 define(['speedconversions'], function (speedConversions) {
   // convert KTAS to KCAS
-  var timer = setInterval(function () {
-    if (window.instruments && instruments.definitions) {
-      ['airspeed', 'airspeedJet', 'airspeedSupersonic'].forEach(function (prop) {
-        instruments.definitions[prop].overlay.overlays[0].animations[0].value = 'kcas';
-      });
-      clearInterval(timer);
-    }
-  }, 16);
+  ['airspeed', 'airspeedJet', 'airspeedSupersonic'].forEach(function (prop) {
+    instruments.definitions[prop].overlay.overlays[0].animations[0].value = 'kcas';
+  });
+  instruments.init();
   
   // ensure KCAS property is set
   google.earth.addEventListener(ge, 'frameend', function () {
