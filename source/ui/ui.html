@@ -2,7 +2,7 @@
 	<h6>Autopilot</h6>
 	
 	<!-- top button menu -->
-	<div style="width: 100%; display: inline-block">
+	<div id="Qantas94Heavy-ap-button-div">
 		<button id="Qantas94Heavy-ap-toggle" class="btn btn-mini">Disengaged</button>
 		<button id="Qantas94Heavy-ap-mode" class="btn btn-mini">Heading mode</button>
 	</div>
@@ -11,12 +11,12 @@
 	<div class="Qantas94Heavy-ap-container">
 		<div class="input-prepend pull-left" style="margin: 0 5px 0 0">
 			<span id="Qantas94Heavy-ap-alt-span" class="add-on">Alt.</span>
-			<input id="Qantas94Heavy-ap-alt" type="number" style="width: 66px">
+			<input id="Qantas94Heavy-ap-alt" type="number" step="100" style="width: 66px">
 		</div>
 		
 		<div class="input-prepend pull-right" style="margin: 0 0 0 6px">
 			<span  id="Qantas94Heavy-ap-vs-span" class="add-on">V/S.</span>
-			<input id="Qantas94Heavy-ap-vs" type="number" step="100" style="width: 54px">
+			<input id="Qantas94Heavy-ap-vs" type="number" step="100" min="-9900" max="9900" style="width: 54px">
 		</div>
 	</div>
   

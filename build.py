@@ -37,10 +37,12 @@ version = arguments.version
 # FIXME: highly dependent on user setup, should make locations customisable/standardised
 node = 'C:/Program Files/nodejs/node.exe'
 userhome = 'C:/Users/Karl Cheng/'
-releaseFolder = userhome + 'Sync/Development/gefs-plugins releases/'
-base = userhome + 'Sync/Development/GitHub/autopilot-pp/'
+development = userhome + 'My Cubby/Development/'
+releaseFolder = development + 'gefs-plugins releases/'
+base = userhome + 'GitHub/autopilot-pp/'
 uglifyjs = userhome + 'AppData/Roaming/npm/node_modules/uglify-js/bin/uglifyjs'
 licence = base + 'LICENSE.md'
+chrome = 'C:/Users/Karl Cheng/AppData/Local/Chromium/Application/chrome.exe'
 
 # perhaps make this more configurable through arguments
 root = base + 'source/'
@@ -48,15 +50,13 @@ setup = 'gefs_gc-setup'
 folderShortName = 'app'
 
 minified = (subprocess
-	.check_output([node, uglifyjs, root + 'code.user.js', '-m toplevel=false', '-c loops=true', '-d DEBUG=false', '-b beautify=false'], stdin=open(root + 'code.user.js', encoding='utf-8'), shell=False)
+	.check_output([node, uglifyjs, root + 'require.js', root + 'code.user.js', '-m toplevel=false', '-c loops=true', '-d DEBUG=false', '-b beautify=false'], stdin=open(root + 'code.user.js', encoding='utf-8'), shell=False)
 	.decode('utf-8')
 	.replace('\uFEFF', r'\uFEFF')
 	.replace('\n', '')
 	.rstrip(';'))
   
-with open(root + 'require.js', encoding='utf-8') as file:
-  parts = ['', file.read() + ';' + minified]
-# get metadata from greasemonkey directives
+# get metadata from Greasemonkey directives
 with open(root + 'code.user.js', encoding='utf-8') as file:
 	c = [re.search(r'// @(\S+)(?:\s+(.*))?', re.sub(r'\s+$', '', meta)).groups() if meta else ''
 	for meta in re.findall(r'.+', re.search(r'^// ==UserScript==([\s\S]*?)^// ==/UserScript==', file.read(), re.M | re.U).group(1))]
@@ -118,16 +118,16 @@ createDir(pack)
 # don't you just *love* list comprehensions?
 metadata = '\n'.join(['// @' + key.strip() + ' ' + value if key != 'version' else '// @version ' + version for key, value in c]) 
 userscript = pack + extension + '.user.js'
-print('// ==UserScript==\n' + metadata + '\n// ==/UserScript==\n' + parts[1], end="", file=open(userscript, 'w', encoding='utf-8', newline='\r\n'))
+print('// ==UserScript==\n' + metadata + '\n// ==/UserScript==\n' + minified, end='', file=open(userscript, 'w', encoding='utf-8', newline='\r\n'))
 
 # create the files needed to package the CRX file
 path = pack + setup + '/'
 createDir(path)
-print("var d=document;top==this&&(d.head.appendChild(d.createElement('script')).text='" + parts[1].replace('\\', r'\\').replace("'", r"\'") + "')", end='', file=open(path + 'c.js', 'w', encoding='utf-8', newline='\r\n'))
-print(json.JSONEncoder(separators=(',',':')).encode(chromeManifest), end='', file=open(path + 'manifest.json', 'w', encoding='utf-8', newline='\r\n'))
+print("var d=document;top==this&&(d.head.appendChild(d.createElement('script')).text='" + minified.replace('\\', r'\\').replace("'", r"\'") + "')", end='', file=open(path + 'c.js', 'w', encoding='utf-8', newline='\n'))
+print(json.JSONEncoder(separators=(',', ':')).encode(chromeManifest), end='', file=open(path + 'manifest.json', 'w', encoding='utf-8', newline='\n'))
 
 # call Chrome and write extension to file
-subprocess.check_call(['C:/Users/Karl Cheng/AppData/Local/Chromium/Application/chrome.exe', '--pack-extension=' + path, '--pack-extension-key=' + userhome + 'Desktop/' + setup + '.pem'], shell=False)
+subprocess.check_call([chrome, '--pack-extension=' + path, '--pack-extension-key=' + userhome + 'Desktop/' + setup + '.pem'], shell=False)
 
 # delete the zip file if it already exists (we'll recreate it later)
 zipfile = releaseFolder + extension + '.zip'

@@ -42,10 +42,11 @@ define(['autopilot/pidcontrols', 'speedconversions'], function (pidControls, spe
         }
       , isMach: false
       , toMach: function () {
-          this.value = speedConversions.casToMach(this.value);
+          // round to nearest 0.01
+          this.value = Math.round(100 * speedConversions.casToMach(this.value, ges.aircraft.animationValue.altitude * 0.3048)) / 100;
         }
       , toKias: function () {
-          this.value = speedConversions.machToCas(this.value);
+          this.value = Math.round(speedConversions.machToCas(this.value, ges.aircraft.animationValue.altitude * 0.3048));
         }
       , set: function (speed) {
           if (isFinite(speed)) this.value = speed;

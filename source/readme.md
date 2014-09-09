@@ -6,6 +6,14 @@ Autopilot++ v{0} for GEFS-Online
 Installation Instructions
 -------------------------
 
+**Note: due to restrictions by Google, Windows users of Google Chrome will not
+be able to install this extension.** Alternatives include:
+
+ - Tampermonkey extension in Chrome to use the .user.js file
+ - Firefox and Greasemonkey to use the .user.js file
+ - Opera, which runs on the same base platform as Google Chrome
+ - The development version of Chrome or Chromium (not recommended)
+
 ### Opera 15+:
 
 1. Extract this zip file into an empty folder.
@@ -14,7 +22,7 @@ Installation Instructions
 4. Drag and drop "gefs_gc-setup.crx" into the Extensions page.
 5. Click Install on the popup.
 
-### Chrome:
+### Google Chrome/Chromium:
 
 1. Extract this zip file into an empty folder.
 2. Open Google Chrome/Chromium, then click on the menu button at the top right.
@@ -56,6 +64,9 @@ Release Notes
 
 ### Fixed bugs:
 
+ - Activating the throttle control on some platforms no longer hangs GEFS
+ - Significant internal reworking to make future improvements easier to add
+
 ### New features:
 
-### Known issues:
+ - Clicking the KIAS label will convert the speed to Mach and vice versa.

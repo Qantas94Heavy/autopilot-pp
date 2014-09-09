@@ -64,8 +64,10 @@ define(['pid', 'autopilot/pidcontrols', 'autopilot/modes', 'speedconversions'], 
         // check if vertical speed manually set or not
         if (apModes.vs.isEnabled) {
           // check that vertical speed is in right direction to altitude
-          if (vsValue === 0 || vsValue < 0 ? deltaAltitude < -200 : deltaAltitude > 200) targetClimbRate = vsValue;
-          else {
+          if (vsValue === 0 || (vsValue < 0 ? deltaAltitude < -200 : deltaAltitude > 200)) {
+            targetClimbRate = vsValue;
+            if (vsInput.val() !== targetClimbRate + '' && !vsInput.is(':focus')) vsInput.val(targetClimbRate);
+          } else {
             // TODO: refactor to remove repetition of code below
             apModes.vs.isEnabled = false;
             targetClimbRate = clamp(deltaAltitude * 2.5, maxDescentRate, maxClimbRate);
@@ -79,10 +81,10 @@ define(['pid', 'autopilot/pidcontrols', 'autopilot/modes', 'speedconversions'], 
         
         var aTargetTilt = pidControls.climb.compute(values.climbrate, dt, targetClimbRate);
         aTargetTilt = clamp(aTargetTilt, autopilot.minPitchAngle, autopilot.maxPitchAngle);
-
+        
+        // TODO: add an elevator deflection rate limiter
         var result = pidControls.pitch.compute(-values.atilt, dt, aTargetTilt);
         controls.rawPitch = exponentialSmoothing('apPitch', result / speedRatio, 0.9);
-        // add an elevator deflection rate limiter
 
         ges.debug.watch('targetClimbrate', targetClimbRate);
         ges.debug.watch('aTargetTilt', aTargetTilt);
@@ -105,12 +107,11 @@ define(['pid', 'autopilot/pidcontrols', 'autopilot/modes', 'speedconversions'], 
         // 100% hack, A380 ailerons suck
         if (ges.aircraft.name === 'a380') controls.roll *= 3.5;
         
-        // add an aileron deflection rate limiter
+        // TODO: add an aileron deflection rate limiter
       }
 
       function updateThrottle() {
-        var conditions = speedConversions.standardConditions(values.altitude);
-        var speed = apModes.speed.isMach ? speedConversions.machToCas(apModes.speed.value, conditions[0], conditions[1]) : apModes.speed.value;
+        var speed = apModes.speed.isMach ? speedConversions.machToCas(apModes.speed.value, values.altitude * 0.3048) : apModes.speed.value;
         
         var result = pidControls.throttle.compute(values.kcas, dt, speed);
         controls.throttle = clamp(exponentialSmoothing('apThrottle', result, 0.9), 0, 1);

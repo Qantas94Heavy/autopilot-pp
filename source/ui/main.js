@@ -1,7 +1,7 @@
 'use strict';
 
-define(['greatcircle', 'autopilot/main', 'icaoairports', 'text!ui/ui.html', 'text!ui/ui.css', 'bugfixes', 'kcas'],
-        function (gc, autopilot, icaos, uihtml, uicss) {
+define(['greatcircle', 'autopilot/main', 'icaoairports', 'ui/apdisconnectsound', 'text!ui/ui.html', 'text!ui/ui.css', 'bugfixes', 'kcas'],
+        function (gc, autopilot, icaos, apDisconnectSound, uihtml, uicss) {
   /* MAKE THE USER INTERFACE */
   $('head').append($('<style>').text(uicss));
   
@@ -11,9 +11,6 @@ define(['greatcircle', 'autopilot/main', 'icaoairports', 'text!ui/ui.html', 'tex
   $(document).keydown(function (event) {
     if (event.which === 192) autopilot.turnOff();
   });
-  
-  // TODO: move to a proper host in the future
-  var apDisconnectSound = new Audio('http://dl.dropbox.com/s/uyqz78wget1tetj/test3.mp3');
     
   function toggleAutopilot() {
     if (autopilot.on) autopilot.turnOff();
@@ -48,7 +45,7 @@ define(['greatcircle', 'autopilot/main', 'icaoairports', 'text!ui/ui.html', 'tex
         .text('Disengaged')
         .removeClass('btn-warning');
 
-      apDisconnectSound.play();
+      if (ges.preferences.sound) apDisconnectSound.play();
     }
   });
   
@@ -71,13 +68,12 @@ define(['greatcircle', 'autopilot/main', 'icaoairports', 'text!ui/ui.html', 'tex
     for (var i = 0; i < divs.length; ++i) divs[i].toggle(i === currentMode);
     
     $(this).text(modes[currentMode]);
-    
-    console.log(modes[currentMode], currentMode);
   });
   
   var altitude = autopilot.modes.altitude;
   var heading = autopilot.modes.heading;
   var speed = autopilot.modes.speed;
+  var vs = autopilot.modes.vs;
   
   $('#Qantas94Heavy-ap-alt-span').click(function () {
     if (autopilot.on) {
@@ -87,6 +83,7 @@ define(['greatcircle', 'autopilot/main', 'icaoairports', 'text!ui/ui.html', 'tex
   });
   
   $('#Qantas94Heavy-ap-alt').change(function () {
+    vs.isEnabled = true;
     $(this).val(function (_, val) {
       var newAlt = parseInt(val, 10);
       altitude.set(newAlt);
@@ -95,9 +92,12 @@ define(['greatcircle', 'autopilot/main', 'icaoairports', 'text!ui/ui.html', 'tex
   });
   
   $('#Qantas94Heavy-ap-vs').change(function () {
-    if (this.value) autopilot.modes.vs.isEnabled = true;
-    var vs = parseInt(this.value, 10);
-    autopilot.modes.vs.set(vs);
+    vs.isEnabled = true;
+    $(this).val(function (_, val) {
+      var newVs = parseInt(val, 10);
+      vs.set(newVs);
+      return vs.value;
+    });
   });
   
   $('#Qantas94Heavy-ap-hdg-span').click(function () {
@@ -175,7 +175,7 @@ define(['greatcircle', 'autopilot/main', 'icaoairports', 'text!ui/ui.html', 'tex
     speed.isMach = !speed.isMach;
     
     if (speed.isMach) {
-      $(this).text('Mach');
+      $(this).text('M.');
       speed.toMach();
     } else {
       $(this).text('KIAS');

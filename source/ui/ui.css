@@ -13,6 +13,11 @@
   display: inline-block;
 }
 
+#Qantas94Heavy-ap-button-div {
+  width: 100%;
+  display: inline-block;
+}
+
 .gefs-autopilot button {
   /* For some reason 5% doesn't work when it used to. Need to investigate. */
   margin: 0 4% 5px;

@@ -71,7 +71,7 @@ define(function () {
       temperature = condition[1];
     }
     
-    return tasToCas(mach * speedOfSound(temperature), pressure, temperature);
+    return tasToCas(mach * msToKnots * speedOfSound(temperature), pressure, temperature);
   }
   
 
@@ -251,6 +251,8 @@ define(function () {
     , casToTas: casToTas
     , tasToEas: tasToEas
     , easToTas: easToTas
+    , casToEas: casToEas
+    , easToCas: easToCas
     };
     
   return airspeed;

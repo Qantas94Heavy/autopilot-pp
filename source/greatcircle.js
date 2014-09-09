@@ -4,6 +4,8 @@
 define(['autopilot/modes'], function (apModes) {
   var timer, lat, lon;
   var aircraft = ges.aircraft;
+  var apHeading = apModes.heading;
+  
   var atan2 = Math.atan2;
   var sin = Math.sin;
   var cos = Math.cos;
@@ -28,7 +30,10 @@ define(['autopilot/modes'], function (apModes) {
   
   // TODO: separate logic from view
   function setHeading() {
-    if (typeof lat === 'number' && typeof lon === 'number') apModes.heading.set(round(getHeading(lat, lon)));
+    if (typeof lat === 'number' && typeof lon === 'number') {
+      apHeading.set(round(getHeading(lat, lon)));
+      $('#Qantas94Heavy-ap-hdg').val(apHeading.value);
+    }
   }
   
   var gc =
