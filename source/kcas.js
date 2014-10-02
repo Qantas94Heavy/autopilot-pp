@@ -5,7 +5,7 @@ define(['speedconversions'], function (speedConversions) {
   ['airspeed', 'airspeedJet', 'airspeedSupersonic'].forEach(function (prop) {
     instruments.definitions[prop].overlay.overlays[0].animations[0].value = 'kcas';
   });
-  instruments.init();
+  instruments.init(instruments.list);
   
   // ensure KCAS property is set
   google.earth.addEventListener(ge, 'frameend', function () {

@@ -12,10 +12,6 @@ define(['pid', 'autopilot/pidcontrols', 'autopilot/modes', 'speedconversions'], 
       apModes[prop].isEnabled = false;
     });
     
-    apModes.altitude.set(altitude);
-    apModes.heading.set(heading);
-    apModes.speed.set(speed);
-    
     autopilot.on = true;
     ui.hud.autopilotIndicator(true);
     
@@ -57,27 +53,29 @@ define(['pid', 'autopilot/pidcontrols', 'autopilot/modes', 'speedconversions'], 
         var deltaAltitude = apModes.altitude.value - values.altitude;
         var maxClimbRate = clamp(speedRatio * autopilot.commonClimbRate, 0, autopilot.maxClimbRate);
         var maxDescentRate = clamp(speedRatio * autopilot.commonDescentRate, autopilot.maxDescentRate, 0);
-        var vsInput = $('#Qantas94Heavy-ap-vs');
         var vsValue = apModes.vs.value;
         var targetClimbRate;
         
         // check if vertical speed manually set or not
         if (apModes.vs.isEnabled) {
           // check that vertical speed is in right direction to altitude
-          if (vsValue === 0 || (vsValue < 0 ? deltaAltitude < -200 : deltaAltitude > 200)) {
-            targetClimbRate = vsValue;
-            if (vsInput.val() !== targetClimbRate + '' && !vsInput.is(':focus')) vsInput.val(targetClimbRate);
-          } else {
+          if (vsValue === 0 || (vsValue < 0 ? deltaAltitude < -200 : deltaAltitude > 200)) targetClimbRate = vsValue;
+          else {
             // TODO: refactor to remove repetition of code below
-            apModes.vs.isEnabled = false;
+            apModes.vs.disable();
+            
+            // automatically calculate vertical speed
             targetClimbRate = clamp(deltaAltitude * 2.5, maxDescentRate, maxClimbRate);
-            if (vsInput.val() && !vsInput.is(':focus')) vsInput.val('');
           }
-        } else {
-          // automatically calculate vertical speed
-          targetClimbRate = clamp(deltaAltitude * 2.5, maxDescentRate, maxClimbRate);
-          if (vsInput.val() && !vsInput.is(':focus')) vsInput.val('');
         }
+        // if previously under manual control, reaches assigned altitude, then commanded
+        // to change altitude in same direction, use the previously assigned V/S value
+        // use different comparison to exclude 0 and null (user explicitly wants automatic V/S control)
+        else if ((vsValue > 0 && deltaAltitude < -200) || (vsValue < 0 && deltaAltitude > 200)) {
+          apModes.vs.enable();
+          targetClimbRate = vsValue;
+        }
+        else targetClimbRate = clamp(deltaAltitude * 2.5, maxDescentRate, maxClimbRate);
         
         var aTargetTilt = pidControls.climb.compute(values.climbrate, dt, targetClimbRate);
         aTargetTilt = clamp(aTargetTilt, autopilot.minPitchAngle, autopilot.maxPitchAngle);

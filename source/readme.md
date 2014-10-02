@@ -6,14 +6,6 @@ Autopilot++ v{0} for GEFS-Online
 Installation Instructions
 -------------------------
 
-**Note: due to restrictions by Google, Windows users of Google Chrome will not
-be able to install this extension.** Alternatives include:
-
- - Tampermonkey extension in Chrome to use the .user.js file
- - Firefox and Greasemonkey to use the .user.js file
- - Opera, which runs on the same base platform as Google Chrome
- - The development version of Chrome or Chromium (not recommended)
-
 ### Opera 15+:
 
 1. Extract this zip file into an empty folder.
@@ -30,6 +22,14 @@ be able to install this extension.** Alternatives include:
 4. If applicable, uninstall any previous versions of the plugin.
 5. Drag and drop "gefs_gc-setup.crx" into the Extensions page.
 6. Click "Accept" when it asks for permissions.
+
+**Note: due to restrictions by Google, Windows users of Google Chrome will not
+be able to install this extension using this method.** Alternatives include:
+
+ - Installing the Tampermonkey extension in Chrome to use the .user.js file
+ - Using Firefox and installing Greasemonkey to use the .user.js file
+ - Using Opera, which runs on the same base platform as Google Chrome
+ - Using the development version of Chrome or Chromium (not recommended)
 
 ### Firefox (Greasemonkey):
 

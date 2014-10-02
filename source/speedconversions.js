@@ -108,17 +108,22 @@ define(function () {
       ];
   
     return layers.reduce(function (pressure, currentLayer, i, arr) {
+      if (Array.isArray(pressure)) return pressure;
+      
       var baseTemperature = currentLayer[0];
       var layerHeight = currentLayer[1];
-      var nextLayerHeight = arr[Math.min(i + 1, arr.length - 1)][1];
+      var nextLayerHeight = arr[min(i + 1, arr.length - 1)][1];
       var lapseRate = currentLayer[2];
-      var newTemperature = baseTemperature + (Math.min(altitude, nextLayerHeight) - layerHeight) * lapseRate;
+      var newTemperature = baseTemperature + (min(altitude, nextLayerHeight) - layerHeight) * lapseRate;
+      
       var newPressure;
-      if (lapseRate === 0) newPressure = pressure * exp(-gravity * airMass * (min(altitude, nextLayerHeight) - layerHeight) / molar / baseTemperature);
+      if (lapseRate === 0) newPressure = pressure * exp(
+        -gravity * airMass * (min(altitude, nextLayerHeight) - layerHeight) / molar / baseTemperature
+      );
       else newPressure = pressure * pow(baseTemperature / newTemperature, gravity * airMass / molar / lapseRate);
     
-      if (nextLayerHeight >= altitude && !Array.isArray(pressure)) return [ newPressure, newTemperature ];
-      return pressure;
+      if (nextLayerHeight >= altitude) return [ newPressure, newTemperature ];
+      return newPressure;
     }, 101325);
   }
 

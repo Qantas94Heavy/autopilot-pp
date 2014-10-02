@@ -8,7 +8,7 @@ define(['autopilot/pidcontrols', 'speedconversions'], function (pidControls, spe
           pidControls.roll.reset();
           this.isEnabled = true;
         }
-      , diable: function () {
+      , disable: function () {
           this.isEnabled = false;
         }
       , value: 0
