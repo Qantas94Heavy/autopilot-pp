@@ -37,7 +37,7 @@ version = arguments.version
 # FIXME: highly dependent on user setup, should make locations customisable/standardised
 node = 'C:/Program Files/nodejs/node.exe'
 userhome = 'C:/Users/Karl Cheng/'
-development = userhome + 'My Cubby/Development/'
+development = userhome + 'Sync/GEFS/'
 releaseFolder = development + 'gefs-plugins releases/'
 base = userhome + 'GitHub/autopilot-pp/'
 uglifyjs = userhome + 'AppData/Roaming/npm/node_modules/uglify-js/bin/uglifyjs'
@@ -50,7 +50,7 @@ setup = 'gefs_gc-setup'
 folderShortName = 'app'
 
 minified = (subprocess
-	.check_output([node, uglifyjs, root + 'require.js', root + 'code.user.js', '-m toplevel=false', '-c loops=true', '-d DEBUG=false', '-b beautify=false'], stdin=open(root + 'code.user.js', encoding='utf-8'), shell=False)
+	.check_output([node, uglifyjs, root + 'almond.js', root + 'code.user.js', '-m toplevel=false', '-c loops=true', '-d DEBUG=false', '-b beautify=false'], stdin=open(root + 'code.user.js', encoding='utf-8'), shell=False)
 	.decode('utf-8')
 	.replace('\uFEFF', r'\uFEFF')
 	.replace('\n', '')

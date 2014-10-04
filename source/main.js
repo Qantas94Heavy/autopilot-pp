@@ -14,7 +14,7 @@ if (DEBUG) require.config({ urlArgs: "_=" + Date.now() });
 // make sure code is run after GEFS is ready
 (function () {
   // check if ges.init has already been called
-  if (typeof ges.map3d !== 'undefined') require(['ui/main']);
+  if (window.ges && ges.map3d) require(['ui/main']);
   else {
     var oldInit = ges.init;
     var timer = setInterval(function () {

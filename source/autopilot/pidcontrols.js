@@ -12,7 +12,7 @@ define(['pid'], function (PID) {
       })
     , pitch: new PID(
       { kp: 0.02
-      , ti: 0.05
+      , ti: 0.5
       , td: 0.05
       , min: -1
       , max: 1

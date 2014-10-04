@@ -1,7 +1,7 @@
 'use strict';
 
 define(['pid', 'autopilot/pidcontrols', 'autopilot/modes', 'speedconversions'], function (PID, pidControls, apModes, speedConversions) {
-  function turnOn(altitude, heading, speed) {
+  function turnOn() {
     if (!ges.aircraft.setup.autopilot) return;
     
     Object.keys(pidControls).forEach(function (prop) {
@@ -71,7 +71,7 @@ define(['pid', 'autopilot/pidcontrols', 'autopilot/modes', 'speedconversions'], 
         // if previously under manual control, reaches assigned altitude, then commanded
         // to change altitude in same direction, use the previously assigned V/S value
         // use different comparison to exclude 0 and null (user explicitly wants automatic V/S control)
-        else if ((vsValue > 0 && deltaAltitude < -200) || (vsValue < 0 && deltaAltitude > 200)) {
+        else if ((vsValue < 0 && deltaAltitude < -200) || (vsValue > 0 && deltaAltitude > 200)) {
           apModes.vs.enable();
           targetClimbRate = vsValue;
         }

@@ -4,7 +4,7 @@
 // @namespace GEFS-Plugins
 // @match http://www.gefs-online.com/gefs.php*
 // @match http://gefs-online.com/gefs.php*
-// @run-at document-start
-// @version 0.7.1
+// @run-at document-end
+// @version 0.7.2
 // @grant none
 // ==/UserScript==
