@@ -9,47 +9,47 @@
 	
 	<!-- altitude and vertical speed -->
 	<div class="Qantas94Heavy-ap-container">
-		<div class="input-prepend pull-left" style="margin: 0 5px 0 0">
-			<span id="Qantas94Heavy-ap-alt-span" class="add-on">Alt.</span>
-			<input id="Qantas94Heavy-ap-alt" type="number" step="100" style="width: 66px">
+		<div id="Qantas94Heavy-ap-alt" class="input-prepend pull-left" style="margin: 0 5px 0 0">
+			<span data-type="name" class="add-on">Alt.</span>
+			<input type="number" step="100" style="width: 66px">
 		</div>
 		
-		<div class="input-prepend pull-right" style="margin: 0 0 0 6px">
-			<span  id="Qantas94Heavy-ap-vs-span" class="add-on">V/S.</span>
-			<input id="Qantas94Heavy-ap-vs" type="number" step="100" min="-9900" max="9900" style="width: 54px">
+		<div id="Qantas94Heavy-ap-vs" class="input-prepend pull-right" style="margin: 0 0 0 6px">
+			<span data-type="name" class="add-on">V/S.</span>
+			<input type="number" step="100" min="-9900" max="9900" style="width: 54px">
 		</div>
 	</div>
   
 	<!-- autopilot modes -->
-	<div id="Qantas94Heavy-ap-hdg-div" class="input-prepend input-append">
-		<span id="Qantas94Heavy-ap-hdg-span" class="add-on">Hdg.</span>
-		<input id="Qantas94Heavy-ap-hdg" type="number">
-		<span class="add-on">deg.</span>
+	<div id="Qantas94Heavy-ap-hdg" class="input-prepend input-append">
+		<span data-type="name" class="add-on">Hdg.</span>
+		<input type="number">
+		<span data-type="unit" class="add-on">deg.</span>
 	</div>
 	
 	<!-- TODO: we're using styles for now as I need to fix CSS overriding order -->
-	<div id="Qantas94Heavy-ap-gc-div" class="Qantas94Heavy-ap-container" style="display: none">
-		<div class="input-prepend pull-left" style="margin: 0 5px 0 0">
-			<span class="add-on">Lat.</span>
-			<input id="Qantas94Heavy-ap-gc-lat" type="number" style="width: 56px">
+	<div class="Qantas94Heavy-gc-container" style="display: inline-block">
+		<div id="Qantas94Heavy-ap-gc-lat" class="input-prepend pull-left" style="margin: 0 5px 0 0">
+			<span data-type="name" class="add-on">Lat.</span>
+			<input type="number" style="width: 56px">
 		</div>
 		
-		<div class="input-prepend pull-right" style="margin: 0 0 0 5px">
-			<span class="add-on">Lon.</span>
-			<input id="Qantas94Heavy-ap-gc-lon" type="number" style="width: 65px">
+		<div id="Qantas94Heavy-ap-gc-lon" class="input-prepend pull-right" style="margin: 0 0 0 5px">
+			<span data-type="name" class="add-on">Lon.</span>
+			<input type="number" style="width: 65px">
 		</div>
 	</div>
 	
-	<div id="Qantas94Heavy-ap-icao-div" class="input-prepend input-append" style="display: none">
-		<span class="add-on">Arpt.</span>
-		<input id="Qantas94Heavy-ap-icao" type="text">
-		<span class="add-on">ICAO</span>
+	<div id="Qantas94Heavy-ap-icao" class="input-prepend input-append">
+		<span data-type="name" class="add-on">Wpt.</span>
+		<input type="text">
+		<span  data-type="unit" class="add-on">ICAO</span>
 	</div>
 	
   <!-- speed selection-->
-	<div class="input-prepend input-append">
-		<span id="Qantas94Heavy-ap-spd-span" class="add-on">Spd.</span>
-		<input id="Qantas94Heavy-ap-spd" type="number" min="0" max="999">
-		<span id="Qantas94Heavy-ap-spd-mach" class="add-on">Kts.</span>
+	<div id="Qantas94Heavy-ap-spd" class="input-prepend input-append">
+		<span data-type="name" class="add-on">Spd.</span>
+		<input type="number" min="0" max="999">
+		<span data-type="unit" class="add-on">Kts.</span>
 	</div>
 </div>

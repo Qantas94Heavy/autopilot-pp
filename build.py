@@ -39,8 +39,9 @@ node = 'C:/Program Files/nodejs/node.exe'
 userhome = 'C:/Users/Karl Cheng/'
 development = userhome + 'Sync/GEFS/'
 releaseFolder = development + 'gefs-plugins releases/'
-base = userhome + 'GitHub/autopilot-pp/'
-uglifyjs = userhome + 'AppData/Roaming/npm/node_modules/uglify-js/bin/uglifyjs'
+base = userhome + 'Dropbox/GitHub/autopilot-pp/'
+uglifyjs = base + 'node_modules/uglify-js/bin/uglifyjs'
+requirejs = base + 'node_modules/requirejs/bin/r.js'
 licence = base + 'LICENSE.md'
 chrome = 'C:/Users/Karl Cheng/AppData/Local/Chromium/Application/chrome.exe'
 
@@ -49,15 +50,19 @@ root = base + 'source/'
 setup = 'gefs_gc-setup'
 folderShortName = 'app'
 
+subprocess.call([node, requirejs, '-o', 'baseUrl=' + root, 'name=main', 'out=' + root + 'code.user.js', 'optimize=none']);
+
 minified = (subprocess
-	.check_output([node, uglifyjs, root + 'almond.js', root + 'code.user.js', '-m toplevel=false', '-c loops=true', '-d DEBUG=false', '-b beautify=false'], stdin=open(root + 'code.user.js', encoding='utf-8'), shell=False)
+	.check_output([node, uglifyjs, root + 'code.user.js', '-m toplevel=false', '-c loops=true', '-d DEBUG=false', '-b beautify=false,ascii-only=true,max-line-len=400'], stdin=open(root + 'code.user.js', encoding='utf-8'), shell=False)
 	.decode('utf-8')
 	.replace('\uFEFF', r'\uFEFF')
-	.replace('\n', '')
 	.rstrip(';'))
+
+with open(root + 'require.js', encoding='utf-8') as file:
+  minified = file.read() + minified + ';var a=window.autopilot_pp={};a.require=require;a.requirejs=requirejs;a.define=define'
   
 # get metadata from Greasemonkey directives
-with open(root + 'code.user.js', encoding='utf-8') as file:
+with open(root + 'userscript.js', encoding='utf-8') as file:
 	c = [re.search(r'// @(\S+)(?:\s+(.*))?', re.sub(r'\s+$', '', meta)).groups() if meta else ''
 	for meta in re.findall(r'.+', re.search(r'^// ==UserScript==([\s\S]*?)^// ==/UserScript==', file.read(), re.M | re.U).group(1))]
 	
@@ -127,7 +132,7 @@ print("var d=document;top==this&&(d.head.appendChild(d.createElement('script')).
 print(json.JSONEncoder(separators=(',', ':')).encode(chromeManifest), end='', file=open(path + 'manifest.json', 'w', encoding='utf-8', newline='\n'))
 
 # call Chrome and write extension to file
-subprocess.check_call([chrome, '--pack-extension=' + path, '--pack-extension-key=' + userhome + 'Desktop/' + setup + '.pem'], shell=False)
+subprocess.check_call([chrome, '--pack-extension=' + path, '--pack-extension-key=' + releaseFolder + setup + '.pem'], shell=False)
 
 # delete the zip file if it already exists (we'll recreate it later)
 zipfile = releaseFolder + extension + '.zip'

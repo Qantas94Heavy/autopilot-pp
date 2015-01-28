@@ -1,5 +1,6 @@
 *.pem
 node_modules
+package
 
 # OS generated files #
 ######################

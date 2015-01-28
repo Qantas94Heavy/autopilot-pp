@@ -1,7 +1,8 @@
 'use strict';
 
-define(['greatcircle', 'autopilot/main', 'icaoairports', 'ui/apdisconnectsound', 'text!ui/ui.html', 'text!ui/ui.css', 'bugfixes', 'kcas'],
-        function (gc, autopilot, icaos, apDisconnectSound, uihtml, uicss) {
+define(['greatcircle', 'autopilot/main', 'icaoairports', 'waypoints', 'ui/apdisconnectsound'
+       , 'text!ui/ui.html', 'text!ui/ui.css', 'bugfixes', 'kcas'
+       ], function (gc, autopilot, icaos, waypoints, apDisconnectSound, uihtml, uicss) {
   /* MAKE THE USER INTERFACE */
   $('head').append($('<style>').text(uicss));
   $('.gefs-autopilot').replaceWith(uihtml);
@@ -11,18 +12,19 @@ define(['greatcircle', 'autopilot/main', 'icaoairports', 'ui/apdisconnectsound',
     if (event.which === 192) autopilot.turnOff();
   });
   
-  var altitude = autopilot.modes.altitude;
-  var heading = autopilot.modes.heading;
-  var speed = autopilot.modes.speed;
-  var vs = autopilot.modes.vs;
+  var apModes = autopilot.modes;
+  var altitude = apModes.altitude;
+  var heading = apModes.heading;
+  var speed = apModes.speed;
+  var vs = apModes.vs;
     
   function toggleAutopilot() {
     if (autopilot.on) autopilot.turnOff();
     else {
-      var altVal = $('#Qantas94Heavy-ap-alt').val();
-      var hdgVal = $('#Qantas94Heavy-ap-hdg').val();
-      var spdVal = $('#Qantas94Heavy-ap-spd').val();
-      var vsVal = $('#Qantas94Heavy-ap-vs').val();
+      var altVal = $('#Qantas94Heavy-ap-alt > input').val();
+      var hdgVal = $('#Qantas94Heavy-ap-hdg > input').val();
+      var spdVal = $('#Qantas94Heavy-ap-spd > input').val();
+      var vsVal = $('#Qantas94Heavy-ap-vs > input').val();
       
       autopilot.turnOn();
       
@@ -36,7 +38,7 @@ define(['greatcircle', 'autopilot/main', 'icaoairports', 'ui/apdisconnectsound',
   function enableHeading() {
     if (!heading.isEnabled) {
       heading.enable();
-      $('#Qantas94Heavy-ap-hdg-span').addClass('btn-warning');
+      $('#Qantas94Heavy-ap-hdg > span[data-type="name"]').addClass('btn-warning');
     }
   }
   
@@ -48,25 +50,25 @@ define(['greatcircle', 'autopilot/main', 'icaoairports', 'ui/apdisconnectsound',
       .addClass('btn-warning');
 
     if (currentMode !== 0) enableHeading();
-
-  });
-  
-  $window.on('autopilotdisengaged', function () {
-    $('#Qantas94Heavy-ap-alt-span, #Qantas94Heavy-ap-hdg-span, #Qantas94Heavy-ap-spd-span').removeClass('btn-warning');
+  }).on('autopilotdisengaged', function () {
+    $('#Qantas94Heavy-ap-alt, #Qantas94Heavy-ap-hdg, #Qantas94Heavy-ap-spd')
+      .children('span[data-type="name"]')
+      .removeClass('btn-warning');
 
     $('#Qantas94Heavy-ap-toggle')
       .text('Disengaged')
       .removeClass('btn-warning');
 
     if (ges.preferences.sound) apDisconnectSound.play();
-
   });
   
   // create heading/great circle mode toggle button
   // allow referencing the current mode when toggling
   var currentMode = 0;
   var modes = ['Heading mode', 'GC mode (lat/long)', 'Great Circle (ICAO)'];
-  var divs = [$('#Qantas94Heavy-ap-hdg-div'), $('#Qantas94Heavy-ap-gc-div'), $('#Qantas94Heavy-ap-icao-div')];
+  var divs = [$('#Qantas94Heavy-ap-hdg'), $('.Qantas94Heavy-gc-container'), $('#Qantas94Heavy-ap-icao')];
+  
+  for (var i = 1; i < divs.length; ++i) divs[i].hide();
   
   // write our own toggle function to avoid compatibility issues
   $('#Qantas94Heavy-ap-toggle').click(toggleAutopilot);
@@ -83,88 +85,80 @@ define(['greatcircle', 'autopilot/main', 'icaoairports', 'ui/apdisconnectsound',
     $(this).text(modes[currentMode]);
   });
   
-  $('#Qantas94Heavy-ap-alt-span').click(function () {
+  $('#Qantas94Heavy-ap-alt').children('input').change(function () {
+    $(this).val(function (_, val) {
+      var newAlt = parseInt(val, 10);
+      altitude.set(newAlt);
+      return altitude.value;
+    });
+  }).end().children('span[data-type="name"]').click(function () {
     if (autopilot.on) {
       altitude[altitude.isEnabled ? 'disable' : 'enable']();
       $(this).toggleClass('btn-warning', altitude.isEnabled);
     }
   });
   
-  $('#Qantas94Heavy-ap-alt').change(function () {
-    $(this).val(function (_, val) {
-      var newAlt = parseInt(val, 10);
-      altitude.set(newAlt);
-      return altitude.value;
-    });
-  });
-  
-  $('#Qantas94Heavy-ap-vs').change(function () {
+  $('#Qantas94Heavy-ap-vs > input').change(function () {
     var newVs = this.value;
     if (newVs) vs.set(parseInt(newVs, 10));
     else vs.set(null);
   });
   
   $window.on('autopilotvsenabled', function () {
-    $('#Qantas94Heavy-ap-vs').val(vs.value);
+    $('#Qantas94Heavy-ap-vs > input').val(vs.value);
   });
   
   $window.on('autopilotvsdisabled', function () {
-    $('#Qantas94Heavy-ap-vs').val('');
+    $('#Qantas94Heavy-ap-vs > input').val('');
   });
   
-  $('#Qantas94Heavy-ap-hdg-span').click(function () {
+  $('#Qantas94Heavy-ap-hdg').children('input').change(function () {
+    $(this).val(function (_, val) {
+      var newHdg = parseInt(val, 10);
+      heading.set(newHdg);
+      return heading.value;
+    });
+  }).end().children('span[data-type="name"]').click(function () {
     if (autopilot.on) {
       heading[heading.isEnabled ? 'disable' : 'enable']();
       $(this).toggleClass('btn-warning', heading.isEnabled);
     }
   });
   
-  $('#Qantas94Heavy-ap-hdg').change(function () {
-    $(this).val(function (_, val) {
-      var newHdg = parseInt(val, 10);
-      heading.set(newHdg);
-      return heading.value;
-    });
-  });
-  
-  $('#Qantas94Heavy-ap-gc-lat').change(function () {
+  $('#Qantas94Heavy-ap-gc-lat > input').change(function () {
     enableHeading();
     gc.setLatitude(this.value);
     $(this).val(gc.getLatitude());
   });
   
-  $('#Qantas94Heavy-ap-gc-lon').change(function () {
+  $('#Qantas94Heavy-ap-gc-lon > input').change(function () {
     enableHeading();
     gc.setLongitude(this.value);
     $(this).val(gc.getLongitude());
   });
   
-  // allow ICAO airport codes input
-  function stopPropagation(event) {
-    event.stopPropagation();
-  }
-  
-  $('#Qantas94Heavy-ap-icao')
-    .keydown(stopPropagation)
-    .keyup(stopPropagation)
+  // allow ICAO airport codes input  
+  $('#Qantas94Heavy-ap-icao > input')
     .change(function () {
       var $this = $(this);
       var inputVal = $this.val();
       
       // ICAO codes are uppercase
       var code = inputVal.trim().toUpperCase();
+      var coord = icaos[code];
+      if (!coord) coord = waypoints[code];
       
-      if (icaos[code]) {
+      if (coord) {
         enableHeading();
         
-        var lat = icaos[code][0];
-        var lon = icaos[code][1];
+        var lat = coord[0];
+        var lon = coord[1];
         
         gc.setLatitude(lat);
         gc.setLongitude(lon);
         
-        $('#Qantas94Heavy-ap-gc-lat').val(lat);
-        $('#Qantas94Heavy-ap-gc-lon').val(lon);
+        $('#Qantas94Heavy-ap-gc-lat > input').val(lat);
+        $('#Qantas94Heavy-ap-gc-lon > input').val(lon);
         
         if (inputVal !== code) $this.val(code);
       } else {
@@ -174,14 +168,9 @@ define(['greatcircle', 'autopilot/main', 'icaoairports', 'ui/apdisconnectsound',
       }
     });
     
-  $('#Qantas94Heavy-ap-spd-span').click(function () {    
-    if (autopilot.on) {
-      speed[speed.isEnabled ? 'disable' : 'enable']();
-      $(this).toggleClass('btn-warning', speed.isEnabled);
-    }
-  });
+  var spdDiv = $('#Qantas94Heavy-ap-spd');
   
-  $('#Qantas94Heavy-ap-spd').change(function () {
+  spdDiv.children('input').change(function () {
     $(this).val(function (_, val) {
       var newSpd = speed.isMach ? parseFloat(val) : parseInt(val, 10);
       speed.set(newSpd);
@@ -189,8 +178,15 @@ define(['greatcircle', 'autopilot/main', 'icaoairports', 'ui/apdisconnectsound',
     });
   });
   
+  spdDiv.children('span[data-type="name"]').click(function () {    
+    if (autopilot.on) {
+      speed[speed.isEnabled ? 'disable' : 'enable']();
+      $(this).toggleClass('btn-warning', speed.isEnabled);
+    }
+  });
+  
   // toggle between KIAS or mach mode
-  $('#Qantas94Heavy-ap-spd-mach').click(function () {
+  spdDiv.children('span[data-type="unit"]').click(function () {
     speed.isMach = !speed.isMach;
     
     if (speed.isMach) {
@@ -203,4 +199,12 @@ define(['greatcircle', 'autopilot/main', 'icaoairports', 'ui/apdisconnectsound',
     
     $('#Qantas94Heavy-ap-spd').val(speed.value);
   });
+  
+  function stopPropagation(event) {
+    event.stopPropagation();
+  }
+  
+  $('.gefs-autopilot input')
+    .keydown(stopPropagation)
+    .keyup(stopPropagation);
 });

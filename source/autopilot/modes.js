@@ -21,6 +21,8 @@ define(['autopilot/pidcontrols', 'speedconversions'], function (pidControls, spe
       , enable: function () {
           pidControls.climb.reset();
           pidControls.pitch.reset();
+          controls.elevatorTrim = controls.rawPitch;
+          controls.rawPitch = 0;
           this.isEnabled = true;
         }
       , disable: function () {
@@ -43,10 +45,12 @@ define(['autopilot/pidcontrols', 'speedconversions'], function (pidControls, spe
       , isMach: false
       , toMach: function () {
           // round to nearest 0.01
-          this.value = Math.round(100 * speedConversions.casToMach(this.value, ges.aircraft.animationValue.altitude * 0.3048)) / 100;
+          var altitude = ges.aircraft.animationValue.altitude * 0.3048;
+          this.value = Math.round(100 * speedConversions.casToMach(this.value, altitude)) / 100;
         }
       , toKias: function () {
-          this.value = Math.round(speedConversions.machToCas(this.value, ges.aircraft.animationValue.altitude * 0.3048));
+          var altitude = ges.aircraft.animationValue.altitude * 0.3048;
+          this.value = Math.round(speedConversions.machToCas(this.value, altitude));
         }
       , set: function (speed) {
           if (isFinite(speed)) this.value = speed;
@@ -57,9 +61,11 @@ define(['autopilot/pidcontrols', 'speedconversions'], function (pidControls, spe
       { isEnabled: false
       , enable: function () {
           this.isEnabled = true;
+          $(window).trigger('autopilotvsenabled');
         }
       , disable: function () {
           this.isEnabled = false;
+          $(window).trigger('autopilotvsdisabled');
         }
       , set: function (vs) {
           if (isFinite(vs)) this.value = vs;

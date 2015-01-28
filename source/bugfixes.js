@@ -18,8 +18,11 @@ define(function () {
   };
   
   // GEFS PAPI is not correctly calibrated
-  for (var i in ges.fx.litRunways) ges.fx.litRunways[i].destroy();
-  
+  for (var i in ges.fx.litRunways) {
+    ges.fx.litRunways[i].destroy();
+    delete ges.fx.litRunways[i];
+  }
+    
   ges.fx.RunwayLights.prototype.refreshPapi = function () {
     this.papiInterval = setInterval(function () {
       var collResult = ges.getGroundAltitude(this.papiLocation[0], this.papiLocation[1]);

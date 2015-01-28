@@ -40,8 +40,7 @@ define(['pid', 'autopilot/pidcontrols', 'autopilot/modes', 'speedconversions'], 
       
       // calculate relative speed of aircraft as correction factor
       // is value arbitrary? Maybe use power of two instead
-      // why aren't we using KCAS instead? Need to investigate
-      var speedRatio = clamp(values.kias / 100, 1, 5);
+      var speedRatio = clamp(values.kcas / 100, 1, 5);
       
       // ensure autopilot not used below 500ft AGL and check for abnormal flight conditions
       if (!DEBUG && (values.altitude - max(ges.groundElevation * metersToFeet, -1000) < 500 ||
@@ -71,7 +70,7 @@ define(['pid', 'autopilot/pidcontrols', 'autopilot/modes', 'speedconversions'], 
         // if previously under manual control, reaches assigned altitude, then commanded
         // to change altitude in same direction, use the previously assigned V/S value
         // use different comparison to exclude 0 and null (user explicitly wants automatic V/S control)
-        else if ((vsValue < 0 && deltaAltitude < -200) || (vsValue > 0 && deltaAltitude > 200)) {
+        else if (vsValue && (vsValue < 0 ? deltaAltitude < -200 : deltaAltitude > 200)) {
           apModes.vs.enable();
           targetClimbRate = vsValue;
         }

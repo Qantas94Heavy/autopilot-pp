@@ -5,7 +5,7 @@ define(['pid'], function (PID) {
   var pidSettings =
     { climb: new PID(
       { kp: 0.01
-      , ti: 0.05
+      , ti: 0.1
       , td: 0.005
       , min: -10
       , max: 10
@@ -13,7 +13,7 @@ define(['pid'], function (PID) {
     , pitch: new PID(
       { kp: 0.02
       , ti: 0.5
-      , td: 0.05
+      , td: 0.01
       , min: -1
       , max: 1
       })
