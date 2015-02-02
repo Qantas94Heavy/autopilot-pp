@@ -197,7 +197,7 @@ define(['greatcircle', 'autopilot/main', 'icaoairports', 'waypoints', 'ui/apdisc
       speed.toKias();
     }
     
-    $('#Qantas94Heavy-ap-spd').val(speed.value);
+    spdDiv.children('input').val(speed.value);
   });
   
   function stopPropagation(event) {

@@ -32,7 +32,7 @@ define(['autopilot/modes'], function (apModes) {
   function setHeading() {
     if (typeof lat === 'number' && typeof lon === 'number') {
       apHeading.set(round(getHeading(lat, lon)));
-      $('#Qantas94Heavy-ap-hdg').val(apHeading.value);
+      $('#Qantas94Heavy-ap-hdg > input').val(apHeading.value);
     }
   }
   
