@@ -1,6 +1,6 @@
-// Copyright (c) Karl Cheng 2014
+// Copyright (c) Karl Cheng 2014-16
 // Licensed under the GNU General Public Licence, version 3 or later.
-// See the LICENCE.md file for details.
+// See the LICENSE.md file for details.
 
 // NOTE: since we are only releasing this plugin for Chrome and Firefox, ES3 compatibility will be no longer be maintained.
 'use strict';
@@ -13,14 +13,14 @@ if (DEBUG) require.config({ urlArgs: "_=" + Date.now() });
 
 // make sure code is run after GEFS is ready
 (function () {
-  // check if ges.init has already been called
-  if (window.ges && ges.map3d) require(['ui/main']);
+  // check if gefs.init has already been called
+  if (window.gefs && gefs.map3d) require(['ui/main']);
   else {
-    var oldInit = ges.init;
+    var oldInit = gefs.init;
     var timer = setInterval(function () {
-      if (window.ges && ges.init) {
+      if (window.gefs && gefs.init) {
         clearInterval(timer);
-        ges.init = function () {
+        gefs.init = function () {
           oldInit();
           require(['ui/main']);
         };

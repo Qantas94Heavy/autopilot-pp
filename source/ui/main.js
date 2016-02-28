@@ -59,7 +59,7 @@ define(['greatcircle', 'autopilot/main', 'icaoairports', 'waypoints', 'ui/apdisc
       .text('Disengaged')
       .removeClass('btn-warning');
 
-    if (ges.preferences.sound) apDisconnectSound.play();
+    if (gefs.preferences.sound) apDisconnectSound.play();
   });
   
   // create heading/great circle mode toggle button

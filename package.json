@@ -10,7 +10,14 @@
 , "dependencies":
   { "uglify-js": "^2.4.15"
   , "requirejs": "^2.1.15"
-  , "robohydra": "^0.5.2"
+  , "robohydra": "^0.6.2"
+  , "yazl": "^2.3.0"
+  , "node-rsa": "^0.3.2"
+  , "stream-to-array": "^2.2.1"
+  , "bluebird": "^3.3.3"
+  , "rimraf": "^2.5.2"
+  , "markdown": "^0.5.0"
+  , "js-string-escape": "^1.0.0"
   }
 , "scripts": { "gefs": "robohydra -I ./ -n -P testing" }
 , "private": true

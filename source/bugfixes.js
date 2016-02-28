@@ -3,7 +3,7 @@
 define(function () {
   // bug fix for camera freeze issue when passing +/-180 degrees longitude
   rigidBody.prototype.integrateTransform = function (s_step) {
-    var aircraft = ges.aircraft;
+    var aircraft = gefs.aircraft;
     var llaTranslation = xyz2lla(V3.scale(this.v_linearVelocity, s_step), aircraft.llaLocation);
     aircraft.llaLocation = V3.add(aircraft.llaLocation, llaTranslation);
     aircraft.llaLocation[0] = fixAngle(aircraft.llaLocation[0], -90, 90);
@@ -18,18 +18,18 @@ define(function () {
   };
   
   // GEFS PAPI is not correctly calibrated
-  for (var i in ges.fx.litRunways) {
-    ges.fx.litRunways[i].destroy();
-    delete ges.fx.litRunways[i];
+  for (var i in gefs.fx.litRunways) {
+    gefs.fx.litRunways[i].destroy();
+    delete gefs.fx.litRunways[i];
   }
     
-  ges.fx.RunwayLights.prototype.refreshPapi = function () {
+  gefs.fx.RunwayLights.prototype.refreshPapi = function () {
     this.papiInterval = setInterval(function () {
-      var collResult = ges.getGroundAltitude(this.papiLocation[0], this.papiLocation[1]);
+      var collResult = gefs.getGroundAltitude(this.papiLocation[0], this.papiLocation[1]);
       this.papiLocation[2] = collResult.location[2];
-      var relativeAicraftLla = [ges.aircraft.llaLocation[0], ges.aircraft.llaLocation[1], this.papiLocation[2]];
+      var relativeAicraftLla = [gefs.aircraft.llaLocation[0], gefs.aircraft.llaLocation[1], this.papiLocation[2]];
       var distance = V3.length(lla2xyz(V3.sub(relativeAicraftLla, this.papiLocation), this.papiLocation));
-      var height = ges.aircraft.llaLocation[2] - this.papiLocation[2];
+      var height = gefs.aircraft.llaLocation[2] - this.papiLocation[2];
       var path = Math.atan2(height, distance) * radToDegrees;
       
       // assuming a 3 degree glideslope
@@ -43,5 +43,5 @@ define(function () {
     }.bind(this), 1000);
   };
   
-  ges.fx.runway.refresh();
+  gefs.fx.runway.refresh();
 });

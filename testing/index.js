@@ -12,15 +12,21 @@ exports.getBodyParts = function (conf) {
   return {
     heads: [
       new RoboHydraHeadFilesystem({
+        path: '/autopilot/require.js',
+        mountPath: '/autopilot',
+        documentRoot: 'node_modules/requirejs'
+      }),
+
+      new RoboHydraHeadFilesystem({
         mountPath: '/autopilot',
         documentRoot: 'source'
       }),
-      
+
       new RoboHydraHead({
         path: '/gefs.php',
         handler: function (request, response) {
           response.headers['Content-Type'] = 'text/html';
-          
+
           fs.readFile(path.resolve(__dirname, 'gefs.php'), { encoding: 'utf-8' }, function (err, data) {
             if (err) throw err;
             response.send(data);

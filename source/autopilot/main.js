@@ -2,7 +2,7 @@
 
 define(['pid', 'autopilot/pidcontrols', 'autopilot/modes', 'speedconversions'], function (PID, pidControls, apModes, speedConversions) {
   function turnOn() {
-    if (!ges.aircraft.setup.autopilot) return;
+    if (!gefs.aircraft.setup.autopilot) return;
     
     Object.keys(pidControls).forEach(function (prop) {
       pidControls[prop].reset();
@@ -36,14 +36,14 @@ define(['pid', 'autopilot/pidcontrols', 'autopilot/modes', 'speedconversions'], 
     var arctan = Math.atan;
     
     return function (dt) {
-      var values = ges.aircraft.animationValue;
+      var values = gefs.aircraft.animationValue;
       
       // calculate relative speed of aircraft as correction factor
       // is value arbitrary? Maybe use power of two instead
       var speedRatio = clamp(values.kcas / 100, 1, 5);
       
       // ensure autopilot not used below 500ft AGL and check for abnormal flight conditions
-      if (!DEBUG && (values.altitude - max(ges.groundElevation * metersToFeet, -1000) < 500 ||
+      if (!DEBUG && (values.altitude - max(gefs.groundElevation * metersToFeet, -1000) < 500 ||
                      ui.hud.stallAlarmOn || abs(values.aroll) > 45 || values.atilt > 20 ||
                      values.atilt < -35)) return void autopilot.turnOff();
 
@@ -83,8 +83,8 @@ define(['pid', 'autopilot/pidcontrols', 'autopilot/modes', 'speedconversions'], 
         var result = pidControls.pitch.compute(-values.atilt, dt, aTargetTilt);
         controls.rawPitch = exponentialSmoothing('apPitch', result / speedRatio, 0.9);
 
-        ges.debug.watch('targetClimbrate', targetClimbRate);
-        ges.debug.watch('aTargetTilt', aTargetTilt);
+        gefs.debug.watch('targetClimbrate', targetClimbRate);
+        gefs.debug.watch('aTargetTilt', aTargetTilt);
       }
       
       // set aileron/rudder, heading mode
@@ -102,7 +102,7 @@ define(['pid', 'autopilot/pidcontrols', 'autopilot/modes', 'speedconversions'], 
         var result = -pidControls.roll.compute(values.aroll, dt, targetBankAngle);
         controls.roll = exponentialSmoothing('apRoll', result / speedRatio, 0.9);
         // 100% hack, A380 ailerons suck
-        if (ges.aircraft.name === 'a380') controls.roll *= 3.5;
+        if (gefs.aircraft.name === 'a380') controls.roll *= 3.5;
         
         // TODO: add an aileron deflection rate limiter
       }
@@ -112,7 +112,7 @@ define(['pid', 'autopilot/pidcontrols', 'autopilot/modes', 'speedconversions'], 
         
         var result = pidControls.throttle.compute(values.kcas, dt, speed);
         controls.throttle = clamp(exponentialSmoothing('apThrottle', result, 0.9), 0, 1);
-        ges.debug.watch('throttle', controls.throttle);
+        gefs.debug.watch('throttle', controls.throttle);
       }
       
       if (apModes.altitude.isEnabled) updateAltitude();

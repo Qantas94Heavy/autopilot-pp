@@ -1,27 +1,26 @@
 { "globals":
-  { "ges": true
+  { "gefs": true
   , "V3": true
   , "M33": true
-  , "ge": true
   , "fixAngle": true
   , "camera": true
   , "fixAngle360": true
   , "google": true
   , "PAGE_PATH": true
   , "M3": true
-  , "V2": true 
-  , "clamp": true 
+  , "V2": true
+  , "clamp": true
   , "instruments": true
   , "Overlay": true
   , "jsonp": true
   , "flight": true
-  , "weather": true 
-  , "ui": true 
+  , "weather": true
+  , "ui": true
   , "degreesToRad": true
   , "objects": true
-  , "metersToLocalLat": true 
+  , "metersToLocalLat": true
   , "exponentialSmoothing": true
-  , "radToDegrees": true 
+  , "radToDegrees": true
   , "GRAVITY": true
   , "multiplayer": true
   , "audio": true
@@ -58,7 +57,7 @@
 , "eqeqeq": true
 , "eqnull": true
 , "smarttabs": true
-, "globalstrict": true
+, "strict": "global"
 , "jquery": true
 , "curly": false
 , "browser": true

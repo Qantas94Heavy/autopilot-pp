@@ -3,7 +3,7 @@
 // TODO: would like to remove dependency on autopilot at some point
 define(['autopilot/modes'], function (apModes) {
   var timer, lat, lon;
-  var aircraft = ges.aircraft;
+  var aircraft = gefs.aircraft;
   var apHeading = apModes.heading;
   
   var atan2 = Math.atan2;

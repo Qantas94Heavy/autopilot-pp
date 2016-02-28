@@ -6,15 +6,35 @@ Autopilot++ v{0} for GEFS-Online
 Installation Instructions
 -------------------------
 
+> Please note that Internet Explorer and Microsoft Edge is *not* supported.
+
+### Firefox (recommended):
+
+1. Install Greasemonkey, if you have not already done so.
+2. Extract this zip file into an empty folder.
+3. Open Firefox, then drag and drop "{1}.user.js" into the Firefox window.
+4. Click "Install" after the timer countdown finishes.
+
 ### Opera 15+:
 
 1. Extract this zip file into an empty folder.
 2. Open Opera, then click on the Opera menu button and click Extensions.
-3. If applicable, uninstall any previous versions of the plugin.
-4. Drag and drop "gefs_gc-setup.crx" into the Extensions page.
-5. Click Install on the popup.
+3. Drag and drop "gefs_gc-setup.crx" into the Extensions page.
+4. Click Install on the popup.
 
-### Google Chrome/Chromium:
+### Google Chrome for Windows:
+
+1. Install Tampermonkey, if you have not already done so.
+2. Extract this zip file into an empty folder.
+3. Open Google Chrome, then click Menu -> More tools -> Extensions.
+4. Find the Tampermonkey extension, then tick "Allow access to file URLs".
+5. Drag and drop "{1}.user.js" into the extensions window.
+6. Click "Install" in the window that appears.
+
+### Google Chrome (other) and Chromium:
+
+**Note: due to restrictions by Google, Windows users of Google Chrome will not
+be able to install Autopilot++ with this method.**  See above for alternatives.
 
 1. Extract this zip file into an empty folder.
 2. Open Google Chrome/Chromium, then click on the menu button at the top right.
@@ -22,22 +42,6 @@ Installation Instructions
 4. If applicable, uninstall any previous versions of the plugin.
 5. Drag and drop "gefs_gc-setup.crx" into the Extensions page.
 6. Click "Accept" when it asks for permissions.
-
-**Note: due to restrictions by Google, Windows users of Google Chrome will not
-be able to install this extension using this method.** Alternatives include:
-
- - Installing the Tampermonkey extension in Chrome to use the .user.js file
- - Using Firefox and installing Greasemonkey to use the .user.js file
- - Using Opera, which runs on the same base platform as Google Chrome
- - Using the development version of Chrome or Chromium (not recommended)
-
-### Firefox (Greasemonkey):
-
-1. Install Greasemonkey, if you have not already done so.
-2. Extract this zip file into an empty folder.
-3. Open Firefox, then uninstall any previous versions (if applicable).
-4. Drag and drop "{1}.user.js" into the Firefox window.
-5. Click "Install" after the timer countdown finishes.
 
 How to Use
 ----------
@@ -62,11 +66,6 @@ full license (GNU General Public License, Version 3) is available any time at
 Release Notes
 -------------
 
-### Fixed bugs:
+This version now supports the Cesium version of GEFS.
 
- - Activating the throttle control on some platforms no longer hangs GEFS
- - Significant internal reworking to make future improvements easier to add
-
-### New features:
-
- - Clicking the KIAS label will convert the speed to Mach and vice versa.
+Also, the README file is now converted to an HTML file for easier viewing.
