@@ -2,15 +2,12 @@ Autopilot++
 ===========
 
 Autopilot++ is an unofficial plugin for GEFS-Online
-(http://www.gefs-online.com), the free flight simulator based on the Google
-Earth Plugin.  It provides new mode settings for the autopilot currently in
-the simulator, as well as other minor changes.
+(http://www.gefs-online.com), a free online flight simulator.  It provides new
+mode settings for the autopilot currently in the simulator, as well as other
+minor changes.
 
 We recommend using Google Earth Plugin v6.2.2.6613, as later versions use a
 new terrain data model which makes GEFS unusuable.
-
-If you're interested in asking and answering question about aviation, come
-and join [Aviation Stack Exchange][1]!
 
 How to contribute
 -----------------
@@ -18,4 +15,21 @@ How to contribute
 If you'd like to contribute to this project, follow the instructions given
 in the file `CONTRIBUTING.md`.
 
-  [1]: http://aviation.stackexchange.com
+License
+-------
+
+    Copyright (c) 2013-2016 Karl Cheng  
+    Email: <qantas94heavy@gmail.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.

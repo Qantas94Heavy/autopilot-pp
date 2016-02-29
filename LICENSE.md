@@ -1,21 +1,3 @@
-LICENSE
-=======
-
-Copyright (c) 2013-2014 Karl Cheng  
-Email: <qantas94heavy@gmail.com>
-
-This program is free software: you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation, either version 3 of the License, or (at your option) any later
-version.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program.  If not, see <http://www.gnu.org/licenses/>.
-
 GNU GENERAL PUBLIC LICENSE
 ==========================
 ### Version 3, 29 June 2007
@@ -95,7 +77,7 @@ follow.
 "Copyright" also means copyright-like laws that apply to other kinds of works,
 such as semiconductor masks.
 
-"The Program" refers to any copyrightable work licensed under this License. 
+"The Program" refers to any copyrightable work licensed under this License.
 Each licensee is addressed as "you".  "Licensees" and "recipients" may be
 individuals or organizations.
 
@@ -109,7 +91,7 @@ Program.
 
 To "propagate" a work means to do anything with it that, without permission,
 would make you directly or secondarily liable for infringement under applicable
-copyright law, except executing it on a computer or modifying a private copy. 
+copyright law, except executing it on a computer or modifying a private copy.
 Propagation includes copying, distribution (with or without modification),
 making available to the public, and in some countries other activities as well.
 
@@ -296,7 +278,7 @@ object code work.
 
 A "User Product" is either (1) a "consumer product", which means any tangible
 personal property which is normally used for personal, family, or household
-purposes, or (2) anything designed or sold for incorporation into a dwelling. 
+purposes, or (2) anything designed or sold for incorporation into a dwelling.
 In determining whether a product is a consumer product, doubtful cases shall be
 resolved in favor of coverage.  For a particular product received by a
 particular user, "normally used" refers to a typical or common use of that
