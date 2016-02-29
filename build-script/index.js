@@ -116,7 +116,9 @@ fs.readFileAsync(path.join(config.baseUrl, 'userscript.js'), 'utf-8').then(funct
     else chromeManifest[key] = value;
   }
 
-  const INVALID_VERSION_ERR = 'Invalid version in Greasemonkey metadata. Version must be in the format x.x.x.x, where x must be a positive integer less than 65536, without leading 0s';
+  const INVALID_VERSION_ERR = 'Invalid version in Greasemonkey metadata. Version must be in the '
+                            + 'format x.x.x.x, where x must be a positive integer less than '
+                            + '65536, without leading zeros';
 
   // check if version was included as argument or not
   let notCustomVersion = false;
@@ -158,10 +160,17 @@ fs.readFileAsync(path.join(config.baseUrl, 'userscript.js'), 'utf-8').then(funct
     }).join('\n');
 
     let zip = new yazl.ZipFile();
-    zip.addBuffer(
-      new Buffer(util.format('// ==UserScript==\n%s\n// ==/UserScript==\n' + minified, metadata)),
-      extension + '.user.js'
+
+    const licenseComment = `// Copyright (c) Karl Cheng 2014-16
+// Licensed under the GNU General Public Licence, version 3 or later.
+// See the LICENSE file for details.`;
+
+    const userscript = util.format(
+      '// ==UserScript==\n%s\n// ==/UserScript==\n\n%s\n\n%s',
+      metadata, licenseComment, minified
     );
+
+    zip.addBuffer(new Buffer(userscript), extension + '.user.js');
 
     function customFormat(formatStr) {
       let formattedStr = formatStr;
