@@ -20,6 +20,8 @@ const argv = require('yargs')
   .string('version')
   .describe('version', 'Provide a specific version number to use.  Defaults to metadata value.')
   .alias('v', 'version')
+  .boolean('debug')
+  .describe('debug', 'Disable minification of the source code.')
   .string('pem')
   .describe('pem', 'Location of the PEM file.')
   .demand([ 'pem' ])
@@ -36,6 +38,7 @@ const config = {
 };
 
 const optimized = new Promise(function (resolve, reject) {
+  console.log(util.format('Building Autopilot++: %s mode', argv.debug ? 'debug' : 'release'));
   console.log('Waiting for RequireJS optimisation to complete...');
   requirejs.optimize(config, resolve, reject);
 }).catch(function (err) {
@@ -46,14 +49,20 @@ const optimized = new Promise(function (resolve, reject) {
   // included. Load the built file for the contents.
   // Use config.out to get the optimized file contents.
   console.log(buildResponse);
-  return fs.readFileAsync(config.out, 'utf8');
+  const gettingContents = fs.readFileAsync(config.out, 'utf-8');
+
+  // Remove the build folder once we've read from it.
+  gettingContents.then(() => rimraf('build'));
+  return gettingContents;
 });
 
 const gettingRequireJSFile = fs.readFileAsync(config.requirejs, 'utf-8');
 const minifying = Promise.join(optimized, gettingRequireJSFile, function (contents, loader) {
   // The RequireJS loader has to come before the contents of the file.
   contents = loader + '\n' + contents;
-  rimraf('build');
+
+  // Disable minification in debug mode.
+  if (argv.debug) return contents;
 
   return UglifyJS.minify(contents, {
     fromString: true,
@@ -132,7 +141,7 @@ fs.readFileAsync(path.join(config.baseUrl, 'userscript.js'), 'utf-8').then(funct
 
   chromeManifest.version = version = list.join('.');
   console.log('Version building: ' + version);
-  const extension = 'app_v' + list.slice(0, 3).join('.');
+  const extension = 'app_v' + list.slice(0, 3).join('.') + (argv.debug ? '-debug' : '');
 
   minifying.then(function (minified) {
     minified += util.format(
@@ -145,7 +154,7 @@ fs.readFileAsync(path.join(config.baseUrl, 'userscript.js'), 'utf-8').then(funct
       const value = arr[1];
 
       if (key === 'version') return '// @version ' + version;
-      return '// @' + key.trim() + ' ' + value;
+      return '// @' + key + ' ' + value;
     }).join('\n');
 
     let zip = new yazl.ZipFile();
