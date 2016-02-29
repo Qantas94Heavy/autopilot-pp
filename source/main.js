@@ -2,7 +2,6 @@
 // Licensed under the GNU General Public Licence, version 3 or later.
 // See the LICENSE.md file for details.
 
-// NOTE: since we are only releasing this plugin for Chrome and Firefox, ES3 compatibility will be no longer be maintained.
 'use strict';
 
 // UglifyJS makes it slightly annoying to make a debug flag
@@ -18,13 +17,15 @@ if (DEBUG) require.config({ urlArgs: "_=" + Date.now() });
   else {
     var oldInit = gefs.init;
     var timer = setInterval(function () {
-      if (window.gefs && gefs.init) {
-        clearInterval(timer);
-        gefs.init = function () {
-          oldInit();
-          require(['ui/main']);
-        };
-      }
-    }, 16);
+      if (!window.gefs || !gefs.init) return;
+
+      clearInterval(timer);
+      // The original gefs.init function might have already run between two checks.
+      if (window.gefs && gefs.map3d) require(['ui/main']);
+      else gefs.init = function () {
+        oldInit();
+        require(['ui/main']);
+      };
+    }, 4);
   }
 })();
