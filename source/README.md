@@ -66,6 +66,11 @@ full license (GNU General Public License, Version 3) is available any time at
 Release Notes
 -------------
 
+ - Fixes several bugs with loading and PAPI functioning
+ - Reduce the size of Autopilot++ with smaller embedded audio file
+
+### Changes in v0.9.0 (last version)
+
 This version now supports the Cesium version of GEFS.
 
 Also, the README file is now converted to an HTML file for easier viewing.
