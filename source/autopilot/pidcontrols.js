@@ -1,3 +1,7 @@
+// Copyright (c) Karl Cheng 2014-16
+// Licensed under the GNU General Public Licence, version 3 or later.
+// See the LICENSE.md file for details.
+
 'use strict';
 
 define(['pid'], function (PID) {
@@ -32,6 +36,6 @@ define(['pid'], function (PID) {
       , max: 1
       })
     };
-    
+
   return pidSettings;
 });

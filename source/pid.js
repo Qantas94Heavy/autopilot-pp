@@ -10,15 +10,15 @@ define(function () {
     , errorSum: 0
     , lastInput: 0
     };
-    
+
   var pidProperties = Object.keys(defaults);
   var hasOwnProperty = {}.hasOwnProperty;
-    
+
   pidProperties.forEach(function (prop) {
     PID.prototype[prop] = defaults[prop];
   });
-  
-  /** 
+
+  /**
    * Creates an object representing a proportional-integral-derivative (PID) controller.
    * @constructor
    */
@@ -35,7 +35,7 @@ define(function () {
   PID.prototype.compute = function (input, dt, setPoint, tracking) {
     var error = setPoint - input;
     this.errorSum += error * dt;
-    
+
     var kp = this.kp;
     var ti = this.ti;
     var td = this.td;
@@ -54,7 +54,7 @@ define(function () {
 
     if (ti) {
       // TODO: fix up tracking mode
-      if (tracking) this.errorSum += diff(setPoint); 
+      if (tracking) this.errorSum += diff(setPoint);
       else if (output > this.max) this.errorSum += diff(this.max);
       else if (output < this.min) this.errorSum += diff(this.min);
 
@@ -68,6 +68,6 @@ define(function () {
     this.errorSum = 0;
     this.lastInput = 0;
   };
-  
+
   return PID;
 });

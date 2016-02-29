@@ -2,7 +2,7 @@
 
 define(function () {
   // NOTE: unless otherwise stated, all temperatures are in kelvin.
-  
+
   // Mohr, P. J., Taylor, B. N. & Newell, D. B. (2012). CODATA recommended values of the fundamental physical constants: 2010.
   var molar = 8.3144621;
   var avogardo = 6.02214129e23;
@@ -14,7 +14,7 @@ define(function () {
 
   // Gatley, D. P., Herrmann, S. & Kretzschmar, H.-J. (2008). A Twenty-First Century Molar Mass for Dry Air.
   // kilograms per mole
-  // var airMass = 28.965369-3; 
+  // var airMass = 28.965369-3;
 
   // ICAO Standard Atmosphere (assumption based on 1.225kg/m3 @ SL)
   var airMass = 28.96491498930052e-3;
@@ -24,7 +24,7 @@ define(function () {
   var gamma = 1.4;
 
   // 1852 / 3600
-  var knotsToMs = 463 / 900; 
+  var knotsToMs = 463 / 900;
   var msToKnots = 900 / 463;
 
   // specific gas constant of air -- equal to molar divided by air mass per mole
@@ -33,7 +33,7 @@ define(function () {
   // @param {Number} temperature
   // @returns {Number} Speed of sound in metres per second.
   function speedOfSound(temperature) {
-    return Math.sqrt(gamma * airGasConstant * temperature); 
+    return Math.sqrt(gamma * airGasConstant * temperature);
   }
 
   // sea level defaults
@@ -50,7 +50,7 @@ define(function () {
   function tasToMach(ktas, temperature) {
     return ktas * knotsToMs / speedOfSound(temperature);
   }
-  
+
   function casToMach(kcas, pressure, temperature) {
     if (arguments.length === 2) {
       var altitude = pressure;
@@ -58,10 +58,10 @@ define(function () {
       pressure = condition[0];
       temperature = condition[1];
     }
-  
+
     return tasToMach(casToTas(kcas, pressure, temperature), temperature);
   }
-  
+
   function machToCas(mach, pressure, temperature) {
     // check if second argument is altitude (instead of pressure)
     if (arguments.length === 2) {
@@ -70,15 +70,15 @@ define(function () {
       pressure = condition[0];
       temperature = condition[1];
     }
-    
+
     return tasToCas(mach * msToKnots * speedOfSound(temperature), pressure, temperature);
   }
-  
+
 
   function tasToEas(ktas, density) {
     return ktas * Math.sqrt(density / densitySL);
   }
-  
+
   // TEST: TODO (i.e. check this)
   function easToTas(keas, density) {
     return keas * Math.sqrt(densitySL / density);
@@ -94,7 +94,7 @@ define(function () {
     var exp = Math.exp;
     var min = Math.min;
     var pow = Math.pow;
-  
+
     // this uses geopotential height -- not sure whether we should be using geometric or geopotential height
     var layers =
       [ [ 288.15, 0, -0.0065 ]
@@ -106,22 +106,22 @@ define(function () {
       , [ 214.65, 71000, -0.002 ]
       , [ 186.946, 84852, 0 ]
       ];
-  
+
     return layers.reduce(function (pressure, currentLayer, i, arr) {
       if (Array.isArray(pressure)) return pressure;
-      
+
       var baseTemperature = currentLayer[0];
       var layerHeight = currentLayer[1];
       var nextLayerHeight = arr[min(i + 1, arr.length - 1)][1];
       var lapseRate = currentLayer[2];
       var newTemperature = baseTemperature + (min(altitude, nextLayerHeight) - layerHeight) * lapseRate;
-      
+
       var newPressure;
       if (lapseRate === 0) newPressure = pressure * exp(
         -gravity * airMass * (min(altitude, nextLayerHeight) - layerHeight) / molar / baseTemperature
       );
       else newPressure = pressure * pow(baseTemperature / newTemperature, gravity * airMass / molar / lapseRate);
-    
+
       if (nextLayerHeight >= altitude) return [ newPressure, newTemperature ];
       return newPressure;
     }, 101325);
@@ -135,7 +135,7 @@ define(function () {
       pressure = condition[0];
       temperature = condition[1];
     }
-  
+
     // mach one at sea level
     var A0 = machSL * msToKnots;
     // sea level pressure
@@ -144,10 +144,10 @@ define(function () {
     // sea level temperature
     var T0 = temperatureSL;
     var T = temperature;
-  
+
     var sqrt = Math.sqrt;
     var pow = Math.pow;
-  
+
     // formula assumes gamma = 1.4
     // how does this take into account compressibility (it apparently does)?
 
@@ -166,7 +166,7 @@ define(function () {
       pressure = condition[0];
       temperature = condition[1];
     }
-    
+
     // mach one at sea level
     var A0 = machSL * msToKnots;
     // sea level pressure
@@ -175,10 +175,10 @@ define(function () {
     // sea level temperature
     var T0 = temperatureSL;
     var T = temperature;
-  
+
     var sqrt = Math.sqrt;
     var pow = Math.pow;
-  
+
     // formula assumes gamma = 1.4
     // how does this take into account compressibility (it apparently does)?
 
@@ -186,7 +186,7 @@ define(function () {
     var Qc = P0 * (pow(kcas * kcas / (5 * A0 * A0) + 1, 7 / 2) - 1);
     return A0 * sqrt(5 * T / T0 * (pow(Qc / P + 1, 2 / 7) - 1));
   }
-  
+
   function easToCas(keas, pressure, temperature) {
     // check if second argument is altitude (instead of pressure)
     if (arguments.length === 2) {
@@ -195,7 +195,7 @@ define(function () {
       pressure = condition[0];
       temperature = condition[1];
     }
-    
+
     // mach one at sea level
     var A0 = machSL * msToKnots;
     // sea level pressure
@@ -204,10 +204,10 @@ define(function () {
     // sea level temperature
     var T0 = temperatureSL;
     var T = temperature;
-  
+
     var sqrt = Math.sqrt;
     var pow = Math.pow;
-  
+
     // formula assumes gamma = 1.4
     // how does this take into account compressibility (it apparently does)?
 
@@ -215,7 +215,7 @@ define(function () {
     var Qc = keas * keas * P0 / 2;
     return A0 * sqrt(5 * (pow(Qc / P0 + 1, 2 / 7) - 1));
   }
-  
+
   function casToEas(kcas, pressure, temperature) {
     // check if second argument is altitude (instead of pressure)
     if (arguments.length === 2) {
@@ -224,7 +224,7 @@ define(function () {
       pressure = condition[0];
       temperature = condition[1];
     }
-    
+
     // mach one at sea level
     var A0 = machSL * msToKnots;
     // sea level pressure
@@ -233,10 +233,10 @@ define(function () {
     // sea level temperature
     var T0 = temperatureSL;
     var T = temperature;
-  
+
     var sqrt = Math.sqrt;
     var pow = Math.pow;
-  
+
     // formula assumes gamma = 1.4
     // how does this take into account compressibility (it apparently does)?
 
@@ -259,6 +259,6 @@ define(function () {
     , casToEas: casToEas
     , easToCas: easToCas
     };
-    
+
   return airspeed;
 });

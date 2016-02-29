@@ -1,7 +1,7 @@
 'use strict';
 
 define(['autopilot/pidcontrols', 'speedconversions'], function (pidControls, speedConversions) {
-  var modes = 
+  var modes =
     { heading:
       { isEnabled: false
       , enable: function () {
@@ -73,6 +73,6 @@ define(['autopilot/pidcontrols', 'speedconversions'], function (pidControls, spe
       , value: 0
       }
     };
-  
+
   return modes;
 });
