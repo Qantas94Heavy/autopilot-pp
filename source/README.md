@@ -66,10 +66,16 @@ full license (GNU General Public License, Version 3) is available any time at
 Release Notes
 -------------
 
+### Changes in this version
+
+ - Fixes bug with KCAS code that intermittently causes GEFS to stop running
+
+### Changes in v0.9.1 (last version)
+
  - Fixes several bugs with loading and PAPI functioning
  - Reduce the size of Autopilot++ with smaller embedded audio file
 
-### Changes in v0.9.0 (last version)
+### Changes in v0.9.0 (last major version)
 
 This version now supports the Cesium version of GEFS.
 
