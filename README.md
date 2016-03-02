@@ -6,9 +6,6 @@ Autopilot++ is an unofficial plugin for GEFS-Online
 mode settings for the autopilot currently in the simulator, as well as other
 minor changes.
 
-We recommend using Google Earth Plugin v6.2.2.6613, as later versions use a
-new terrain data model which makes GEFS unusuable.
-
 How to contribute
 -----------------
 
