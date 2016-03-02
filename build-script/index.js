@@ -122,7 +122,7 @@ fs.readFileAsync(path.join(config.baseUrl, 'userscript.js'), 'utf-8').then(funct
 
   // check if version was included as argument or not
   let notCustomVersion = false;
-  let version;
+  let version = argv.version;
   if (!version) {
     if (chromeManifest.version === undefined) {
       throw new Error('Version missing from Greasemonkey metadata');
