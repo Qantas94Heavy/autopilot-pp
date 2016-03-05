@@ -34,7 +34,7 @@ const config = {
   name: 'main',
   out: 'build/code.user.js',
   optimize: 'none',
-  requirejs: 'node_modules/requirejs/require.js'
+  stubModules: [ 'text', 'json' ]
 };
 
 const optimized = new Promise(function (resolve, reject) {
@@ -56,8 +56,8 @@ const optimized = new Promise(function (resolve, reject) {
   return gettingContents;
 });
 
-const gettingRequireJSFile = fs.readFileAsync(config.requirejs, 'utf-8');
-const minifying = Promise.join(optimized, gettingRequireJSFile, function (contents, loader) {
+const gettingAlmond = fs.readFileAsync('node_modules/almond/almond.js', 'utf-8');
+const minifying = Promise.join(optimized, gettingAlmond, function (contents, loader) {
   // The RequireJS loader has to come before the contents of the file.
   contents = loader + '\n' + contents;
 

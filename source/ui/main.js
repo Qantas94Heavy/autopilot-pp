@@ -1,8 +1,9 @@
 'use strict';
 
-define(['greatcircle', 'autopilot/main', 'icaoairports', 'waypoints', 'ui/apdisconnectsound'
-       , 'text!ui/ui.html', 'text!ui/ui.css', 'bugfixes', 'kcas'
-       ], function (gc, autopilot, icaos, waypoints, apDisconnectSound, uihtml, uicss) {
+define([ 'greatcircle', 'autopilot/main', 'json!data/icaoairports.json', 'json!data/waypoints.json'
+       , 'ui/apdisconnectsound', 'text!ui/ui.html', 'text!ui/ui.css', 'bugfixes', 'kcas'
+       ], function (gc, autopilot, icaos, waypoints,
+                    apDisconnectSound, uihtml, uicss) {
   /* MAKE THE USER INTERFACE */
   $('head').append($('<style>').text(uicss));
   $('.gefs-autopilot').replaceWith(uihtml);
