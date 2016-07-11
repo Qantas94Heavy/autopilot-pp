@@ -1,0 +1,9 @@
+name = "Autopilot++"
+globalVariableName = "autopilot_pp"
+shortName = "app"
+crxName = "gefs_gc-setup"
+
+licenseComment = """
+Copyright (c) 2013-2016 Karl Cheng
+Licensed under the GNU General Public Licence, version 3 or later.
+See the LICENSE file for details."""

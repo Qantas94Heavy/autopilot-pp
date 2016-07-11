@@ -3,23 +3,8 @@
 , "license": "GPL-3.0+"
 , "author": "Karl Cheng <qantas94heavy@gmail.com>"
 , "directories": {}
-, "repository":
-  { "type": "git"
-  , "url": "https://github.com/Qantas94Heavy/autopilot-pp.git"
-  }
-, "dependencies":
-  { "uglify-js": "^2.4.15"
-  , "requirejs": "^2.1.15"
-  , "almond": "^0.3.1"
-  , "robohydra": "^0.6.2"
-  , "yazl": "^2.3.0"
-  , "node-rsa": "^0.3.2"
-  , "stream-to-array": "^2.2.1"
-  , "bluebird": "^3.3.3"
-  , "rimraf": "^2.5.2"
-  , "markdown": "^0.5.0"
-  , "js-string-escape": "^1.0.0"
-  }
+, "repository": "Qantas94Heavy/autopilot-pp"
+, "dependencies": { "robohydra": "^0.6.2" }
 , "scripts": { "gefs": "robohydra -I ./ -n -P testing" }
 , "private": true
 }

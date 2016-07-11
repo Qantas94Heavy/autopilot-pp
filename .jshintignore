@@ -1,6 +1,3 @@
-source/require.js
-source/text.js
-.gitignore
-.gitattributes
 .git
 .brackets.json
+node_modules
