@@ -1,72 +1,51 @@
 /** @license
  * RequireJS plugin for loading JSON files
  * - depends on Text plugin and it was HEAVILY "inspired" by it as well.
- * Author: Miller Medeiros
- * Version: 0.4.0 (2014/04/10)
+ * Author: Miller Medeiros (modifications by Karl Cheng)
+ * Based on version 0.4.0 (2014/04/10)
  * Released under the MIT license
  */
-define(['text'], function(text){
+'use strict';
 
-    var CACHE_BUST_QUERY_PARAM = 'bust',
-        CACHE_BUST_FLAG = '!bust',
-        jsonParse = (typeof JSON !== 'undefined' && typeof JSON.parse === 'function')? JSON.parse : function(val){
-            return eval('('+ val +')'); //quick and dirty
-        },
-        buildMap = {};
+define([ 'text' ], function (text) {
+  var buildMap = Object.create(null);
 
-    function cacheBust(url){
-        url = url.replace(CACHE_BUST_FLAG, '');
-        url += (url.indexOf('?') < 0)? '?' : '&';
-        return url + CACHE_BUST_QUERY_PARAM +'='+ Math.round(2147483647 * Math.random());
+  function load(name, req, onLoad, config) {
+    if (config.isBuild && config.inlineJSON === false || req.toUrl(name).indexOf('empty:') === 0) {
+      onLoad(null);
     }
+    else text.get(req.toUrl(name), callback, onLoad.error, { accept: 'application/json' });
 
-    //API
-    return {
+    function callback(data) {
+      if (config.isBuild) {
+        buildMap[name] = data;
+        onLoad(data);
+        return;
+      }
 
-        load : function(name, req, onLoad, config) {
-            if (( config.isBuild && (config.inlineJSON === false || name.indexOf(CACHE_BUST_QUERY_PARAM +'=') !== -1)) || (req.toUrl(name).indexOf('empty:') === 0)) {
-                //avoid inlining cache busted JSON or if inlineJSON:false
-                //and don't inline files marked as empty!
-                onLoad(null);
-            } else {
-                text.get(req.toUrl(name), function(data){
-                    var parsed;
-                    if (config.isBuild) {
-                        buildMap[name] = data;
-                        onLoad(data);
-                    } else {
-                        try {
-                            parsed = jsonParse(data);
-                        } catch (e) {
-                            onLoad.error(e);
-                        }
-                        onLoad(parsed);
-                    }
-                },
-                    onLoad.error, {
-                        accept: 'application/json'
-                    }
-                );
-            }
-        },
+      try {
+        onLoad(JSON.parse(data));
+      } catch (e) {
+        onLoad.error(e);
+      }
+    }
+  }
 
-        normalize : function (name, normalize) {
-            // used normalize to avoid caching references to a "cache busted" request
-            if (name.indexOf(CACHE_BUST_FLAG) !== -1) {
-                name = cacheBust(name);
-            }
-            // resolve any relative paths
-            return normalize(name);
-        },
+  // Write method based on RequireJS official text plugin by James Burke.
+  // https://github.com/jrburke/requirejs/blob/master/text.js
+  function write(pluginName, moduleName, write) {
+    var content = buildMap[moduleName];
+    if (content !== undefined) {
+      // All JSON is well-formed JavaScript, except for unescaped \u2028 and \u2029.
+      content = content.replace(/u2028/g, '\\u2028').replace(/u2029/g, '\\u2029');
 
-        //write method based on RequireJS official text plugin by James Burke
-        //https://github.com/jrburke/requirejs/blob/master/text.js
-        write : function(pluginName, moduleName, write){
-            if(moduleName in buildMap){
-                var content = buildMap[moduleName];
-                write('define("'+ pluginName +'!'+ moduleName +'", function(){ return '+ content +';});\n');
-            }
-        }
+      // define('json!file.json', {"contents":1});
+      write('define("' + pluginName + '!' + moduleName + '", ' + content + ');\n');
+    }
+  }
 
-    };
+  return {
+    load: load,
+    write: write
+  };
 });
