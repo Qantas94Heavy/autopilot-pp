@@ -6,42 +6,42 @@ Autopilot++ v{0} for GEFS-Online
 Installation Instructions
 -------------------------
 
-> Please note that Internet Explorer and Microsoft Edge is *not* supported.
+> Please note that Internet Explorer and Microsoft Edge are *not* supported.
 
 ### Firefox (recommended):
 
 1. Install Greasemonkey, if you have not already done so.
-2. Extract this zip file into an empty folder.
+2. Extract this ZIP file into an empty folder.
 3. Open Firefox, then drag and drop "{1}.user.js" into the Firefox window.
 4. Click "Install" after the timer countdown finishes.
-
-### Opera 15+:
-
-1. Extract this zip file into an empty folder.
-2. Open Opera, then click on the Opera menu button and click Extensions.
-3. Drag and drop "gefs_gc-setup.crx" into the Extensions page.
-4. Click Install on the popup.
 
 ### Google Chrome for Windows:
 
 1. Install Tampermonkey, if you have not already done so.
-2. Extract this zip file into an empty folder.
+2. Extract this ZIP file into an empty folder.
 3. Open Google Chrome, then click Menu -> More tools -> Extensions.
 4. Find the Tampermonkey extension, then tick "Allow access to file URLs".
-5. Drag and drop "{1}.user.js" into the extensions window.
+5. Open a new tab, then drag and drop "{1}.user.js" into the window.
 6. Click "Install" in the window that appears.
 
 ### Google Chrome (other) and Chromium:
 
-**Note: due to restrictions by Google, Windows users of Google Chrome will not
-be able to install Autopilot++ with this method.**  See above for alternatives.
+**Note: users of Google Chrome on Windows _must_ use the method above to
+install Autopilot++, not this method.**
 
-1. Extract this zip file into an empty folder.
+1. Extract this ZIP file into an empty folder.
 2. Open Google Chrome/Chromium, then click on the menu button at the top right.
 3. Hover over the Tools sub-menu, then click on Extensions.
 4. If applicable, uninstall any previous versions of the plugin.
-5. Drag and drop "gefs_gc-setup.crx" into the Extensions page.
+5. Drag and drop "{2}.crx" into the Extensions page.
 6. Click "Accept" when it asks for permissions.
+
+### Opera 15+:
+
+1. Extract this ZIP file into an empty folder.
+2. Open Opera, then click on the Opera menu button and click Extensions.
+3. Drag and drop "{2}.crx" into the Extensions page.
+4. Click Install on the popup.
 
 How to Use
 ----------
@@ -58,10 +58,14 @@ to "Heading Mode", then click "Hdg".
 Licence
 -------
 
-This is free, open source software released under the GNU GPLv3. For the source
-code of this program, see <http://github.com/Qantas94Heavy/autopilot-pp>. The
-full license (GNU General Public License, Version 3) is available any time at
-<http://www.gnu.org/licenses/gpl-3.0.html>.
+This is free, open source software released under the [GNU General Public
+License][1], version 3 or later.  Version 3 of the GPL is also included in
+LICENSE.html for your reference.
+
+For the source code of this program, see [GitHub][2].
+
+  [1]: http://www.gnu.org/licenses/gpl-3.0.html
+  [2]: http://github.com/Qantas94Heavy/autopilot-pp
 
 Release Notes
 -------------

@@ -1,36 +1,26 @@
 'use strict';
 
-// jshint node:true
-var heads = require('robohydra').heads;
-var RoboHydraHeadFilesystem = heads.RoboHydraHeadFilesystem;
-var RoboHydraHeadProxy = heads.RoboHydraHeadProxy;
-var RoboHydraHead = heads.RoboHydraHead;
-var fs = require('fs');
-var path = require('path');
+// jshint node:true, esversion:6
+const heads = require('robohydra').heads;
+const RoboHydraHeadFilesystem = heads.RoboHydraHeadFilesystem;
+const RoboHydraHeadFilter = heads.RoboHydraHeadFilter;
+const RoboHydraHeadProxy = heads.RoboHydraHeadProxy;
 
-exports.getBodyParts = function (conf) {
+const script = `<script data-main="/autopilot/init"
+                        src="/autopilot/node_modules/requirejs/require.js"></script>`;
+
+exports.getBodyParts = function () {
   return {
     heads: [
-      new RoboHydraHeadFilesystem({
-        path: '/autopilot/require.js',
-        mountPath: '/autopilot',
-        documentRoot: 'node_modules/requirejs'
-      }),
-
       new RoboHydraHeadFilesystem({
         mountPath: '/autopilot',
         documentRoot: 'source'
       }),
 
-      new RoboHydraHead({
-        path: '/gefs.php',
-        handler: function (request, response) {
-          response.headers['Content-Type'] = 'text/html';
-
-          fs.readFile(path.resolve(__dirname, 'gefs.php'), { encoding: 'utf-8' }, function (err, data) {
-            if (err) throw err;
-            response.send(data);
-          });
+      new RoboHydraHeadFilter({
+        path: '/gefs.php*',
+        filter: function (buffer) {
+          return buffer.toString().replace('</head>', script + '</head>');
         }
       }),
 

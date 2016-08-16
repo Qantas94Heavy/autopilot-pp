@@ -1,7 +1,8 @@
 *.pem
 node_modules
 package
-**/.directory
+.directory
+npm-debug.log
 
 # OS generated files #
 ######################
