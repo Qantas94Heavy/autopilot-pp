@@ -7,7 +7,7 @@ Copyright notices and licensing information for these are listed here.
 Geodesy
 -------
 
-The great circle functions and approach calculations are based on code from 
+The great circle functions and approach calculations are based on code from
 [Geodesy](https://github.com/chrisveness/geodesy):
 
 > The MIT License (MIT)
@@ -37,8 +37,7 @@ OurAirports
 
 The ICAO airports database is based on files from OurAirports, which have been
 explicitly released into the public domain by the copyright author.  Here is an
-extract from [their website][1] (current at the time
-of writing):
+extract from [their website][1] (current at the time of writing):
 
 > For more intense work, we have a [CSV][2]-formatted data dump of all our
 > airports, countries, and regions, which we update every night.  You can
@@ -64,18 +63,20 @@ The waypoints database is based on files from the [X-Plane Airport & Navigation
 Data site][5]. We use these files under version 3 of the GPL, as permitted by
 their copyright notice:
 
-> Copyright © 2013, Robin A. Peel (robin@x-plane.com).
-> 
+> 600 Version - data cycle 201607, build 20161531, metadata FixXP700.
+>
+> Copyright © 2016, Robin A. Peel (robin@x-plane.com).
+>
 > This data is free software; you can redistribute it and/or modify it under
 > the terms of the GNU General Public License as published by the Free Software
 > Foundation; either version 2 of the License, or (at your option) any later
 > version.
-> 
+>
 > This program is distributed in the hope that it will be useful, but WITHOUT
 > ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 > FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
 > details.
-> 
+>
 > You should have received a copy of the GNU General Public License along with
 > this program ("AptNavGNULicence.txt"); if not, write to the Free Software
 > Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
@@ -84,4 +85,4 @@ their copyright notice:
   [2]: http://en.wikipedia.org/wiki/Comma-separated_values
   [3]: http://ourairports.com/about.html#credits
   [4]: http://en.wikipedia.org/wiki/Public_domain
-  [5]: http://data.x-plane.com/get_data.html
+  [5]: http://gateway.x-plane.com/navaids/LatestNavFix.zip
