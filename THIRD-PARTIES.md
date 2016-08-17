@@ -8,7 +8,7 @@ Geodesy
 -------
 
 The great circle functions and approach calculations are based on code from
-[Geodesy](https://github.com/chrisveness/geodesy):
+[Geodesy][1]:
 
 > The MIT License (MIT)
 
@@ -21,8 +21,8 @@ The great circle functions and approach calculations are based on code from
 > copies of the Software, and to permit persons to whom the Software is
 > furnished to do so, subject to the following conditions:
 
-> The above copyright notice and this permission notice shall be included in all
-> copies or substantial portions of the Software.
+> The above copyright notice and this permission notice shall be included in
+> all copies or substantial portions of the Software.
 
 > THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 > IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -35,19 +35,19 @@ The great circle functions and approach calculations are based on code from
 OurAirports
 -----------
 
-The ICAO airports database is based on files from OurAirports, which have been
-explicitly released into the public domain by the copyright author.  Here is an
-extract from [their website][1] (current at the time of writing):
+The ICAO airports database is based on files from OurAirports (2016/08/16),
+which have been explicitly released into the public domain by the copyright
+author.  Here is an extract from [their website][2] (current as of writing):
 
-> For more intense work, we have a [CSV][2]-formatted data dump of all our
+> For more intense work, we have a [CSV][3]-formatted data dump of all our
 > airports, countries, and regions, which we update every night.  You can
 > download these files and open them with almost any spreadsheet program or
 > import them into your own database.  You can even use them to set up your
 > own, competing airport web site if you'd like!  We'd love you to give us
-> credit, [like we give credit to our sources][3], but you're not required to.
+> credit, [like we give credit to our sources][4], but you're not required to.
 
 > **DOWNLOAD AND USE AT YOUR OWN RISK!**  We hereby release all of these files
-> into the [Public Domain][4], **with no warranty of any kind** — By
+> into the [Public Domain][5], **with no warranty of any kind** — By
 > downloading any of these files, you agree that OurAirports.com, Megginson
 > Technologies Ltd., and anyone involved with the web site or company hold **no
 > liability** for anything that happens when you use the data, including (but
@@ -60,7 +60,7 @@ X-Plane Airport & Navigation Data
 ---------------------------------
 
 The waypoints database is based on files from the [X-Plane Airport & Navigation
-Data site][5]. We use these files under version 3 of the GPL, as permitted by
+Data site][6]. We use these files under version 3 of the GPL, as permitted by
 their copyright notice:
 
 > 600 Version - data cycle 201607, build 20161531, metadata FixXP700.
@@ -81,8 +81,9 @@ their copyright notice:
 > this program ("AptNavGNULicence.txt"); if not, write to the Free Software
 > Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
-  [1]: http://ourairports.com/data/
-  [2]: http://en.wikipedia.org/wiki/Comma-separated_values
-  [3]: http://ourairports.com/about.html#credits
-  [4]: http://en.wikipedia.org/wiki/Public_domain
-  [5]: http://gateway.x-plane.com/navaids/LatestNavFix.zip
+  [1]: https://github.com/chrisveness/geodesy
+  [2]: http://ourairports.com/data/
+  [3]: http://en.wikipedia.org/wiki/Comma-separated_values
+  [4]: http://ourairports.com/about.html#credits
+  [5]: http://en.wikipedia.org/wiki/Public_domain
+  [6]: http://gateway.x-plane.com/navaids/LatestNavFix.zip
