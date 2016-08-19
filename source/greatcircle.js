@@ -1,67 +1,37 @@
 'use strict';
 
-// TODO: would like to remove dependency on autopilot at some point
-define(['autopilot/modes'], function (apModes) {
-  var timer, lat, lon;
-  var aircraft = gefs.aircraft;
-  var apHeading = apModes.heading;
-  
+define([ 'knockout', 'util' ], function (ko, util) {
+  var lat = ko.observable();
+  var lon = ko.observable();
+
   var atan2 = Math.atan2;
   var sin = Math.sin;
   var cos = Math.cos;
-  var round = Math.round;
-  var twoPi = Math.PI * 2;
-  
-  var decimalsOnly = /^[+-]?\d+\.?\d*$/;
-  
+
   function getHeading() {
-    var coords = aircraft.getCurrentCoordinates();
-    var lat1 = coords[0] * degreesToRad;
-    var lon1 = coords[1] * degreesToRad;
-    var lat2 = lat * degreesToRad;
-    var lon2 = lon * degreesToRad;
-    return fixAngle360(
+    var coords = gefs.aircraft.llaLocation;
+    var lat1 = util.deg2rad(coords[0]);
+    var lon1 = util.deg2rad(coords[1]);
+    var lat2 = util.deg2rad(lat());
+    var lon2 = util.deg2rad(lon());
+
+    if (!isFinite(lat2) || !isFinite(lon2)) return;
+
+    var heading = util.rad2deg(
       atan2(
         sin(lon2 - lon1) * cos(lat2),
         cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(lon2 - lon1)
-      ) % twoPi * radToDegrees
+      )
     );
+
+    return util.fixAngle360(heading);
   }
-  
-  // TODO: separate logic from view
-  function setHeading() {
-    if (typeof lat === 'number' && typeof lon === 'number') {
-      apHeading.set(round(getHeading(lat, lon)));
-      $('#Qantas94Heavy-ap-hdg > input').val(apHeading.value);
-    }
-  }
-  
+
   var gc =
-    { isEnabled: false
-    , enable: function () {
-        clearInterval(timer);
-        timer = setInterval(setHeading, 1000);
-        this.isEnabled = true;
-      }
-    , disable: function () {
-        clearInterval(timer);
-        timer = null;
-        this.isEnabled = false;
-      }
-    , getLatitude: function () {
-        return +lat;
-      }
-    , getLongitude: function () {
-        return +lon;
-      }
+    { latitude: lat
+    , longitude: lon
     , getHeading: getHeading
-    , setLatitude: function (newLat) {
-        if (decimalsOnly.test(newLat)) lat = clamp(parseFloat(newLat), -90, 90);
-      }
-    , setLongitude: function (newLon) {
-        if (decimalsOnly.test(newLon)) lon = clamp(parseFloat(newLon), -180, 180);
-      }
     };
-  
+
   return gc;
 });

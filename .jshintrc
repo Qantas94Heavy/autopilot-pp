@@ -19,10 +19,6 @@
   , "Indicator": false
   , "Aircraft": false
   , "Object3D": false
-  , "msToKnots": false
-  , "knotsToMs": false
-  , "metersToFeet": false
-  , "feetToMeters": false
   , "metersToLocalLat": false
   , "meridionalRadius": false
   , "airDensitySL": false

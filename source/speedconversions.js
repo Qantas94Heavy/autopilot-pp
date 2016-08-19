@@ -1,18 +1,20 @@
 'use strict';
 
 define(function () {
-  // NOTE: unless otherwise stated, all temperatures are in kelvin.
+  // NOTE: unless otherwise stated, all temperatures are in Kelvin.
 
-  // Mohr, P. J., Taylor, B. N. & Newell, D. B. (2012). CODATA recommended values of the fundamental physical constants: 2010.
+  // Mohr, P. J., Taylor, B. N. & Newell, D. B. (2012). CODATA recommended values of the
+  // fundamental physical constants: 2010.
   var molar = 8.3144621;
   var avogardo = 6.02214129e23;
   var boltzmann = 1.3806487924497035e-23;
 
   // International Committee of Weights and Measures. (1901).
-  // techically a bit high, but we'll use it anyway (meant to be 45 but actually 45.523... latitude)
+  // Techically a bit high, but we'll use it anyway (meant to be 45 but actually ~45.523 latitude).
   var gravity = 9.80665;
 
-  // Gatley, D. P., Herrmann, S. & Kretzschmar, H.-J. (2008). A Twenty-First Century Molar Mass for Dry Air.
+  // Gatley, D. P., Herrmann, S. & Kretzschmar, H.-J. (2008). A Twenty-First Century Molar Mass
+  // for Dry Air.
   // kilograms per mole
   // var airMass = 28.965369-3;
 
@@ -30,8 +32,10 @@ define(function () {
   // specific gas constant of air -- equal to molar divided by air mass per mole
   var airGasConstant = molar / airMass;
 
-  // @param {Number} temperature
-  // @returns {Number} Speed of sound in metres per second.
+  /**
+   * @param {Number} temperature
+   * @returns {Number} Speed of sound in metres per second.
+   */
   function speedOfSound(temperature) {
     return Math.sqrt(gamma * airGasConstant * temperature);
   }
@@ -79,23 +83,22 @@ define(function () {
     return ktas * Math.sqrt(density / densitySL);
   }
 
-  // TEST: TODO (i.e. check this)
   function easToTas(keas, density) {
     return keas * Math.sqrt(densitySL / density);
   }
 
   // TAS = EAS * mach / (machSL * Math.sqrt(pressure / pressureSL));
 
-  /** @param {Number} altitude */
+  /** @param {Number} altitude - In metres. */
   // National Aeronautics and Space Administration. (1976). U.S. Standard Atmosphere.
   // TEST: PASS
   function standardConditions(altitude) {
-    //altitude *= 0.3048;
     var exp = Math.exp;
     var min = Math.min;
     var pow = Math.pow;
 
-    // this uses geopotential height -- not sure whether we should be using geometric or geopotential height
+    // This uses geopotential height -- not sure whether we should be using geometric or
+    // geopotential height.
     var layers =
       [ [ 288.15, 0, -0.0065 ]
       , [ 216.65, 11000, 0 ]
@@ -107,24 +110,29 @@ define(function () {
       , [ 186.946, 84852, 0 ]
       ];
 
-    return layers.reduce(function (pressure, currentLayer, i, arr) {
-      if (Array.isArray(pressure)) return pressure;
+    var pressure = 101325;
+    var temperature = 288.15;
 
+    layers.some(function (currentLayer, i) {
       var baseTemperature = currentLayer[0];
       var layerHeight = currentLayer[1];
-      var nextLayerHeight = arr[min(i + 1, arr.length - 1)][1];
+      var nextLayerHeight = layers[min(i + 1, layers.length - 1)][1];
       var lapseRate = currentLayer[2];
-      var newTemperature = baseTemperature + (min(altitude, nextLayerHeight) - layerHeight) * lapseRate;
+      var heightDifference = min(altitude, nextLayerHeight) - layerHeight;
+      temperature = baseTemperature + heightDifference * lapseRate;
 
-      var newPressure;
-      if (lapseRate === 0) newPressure = pressure * exp(
-        -gravity * airMass * (min(altitude, nextLayerHeight) - layerHeight) / molar / baseTemperature
+      if (lapseRate === 0) pressure *= exp(
+        -gravity * airMass * heightDifference / molar / baseTemperature
       );
-      else newPressure = pressure * pow(baseTemperature / newTemperature, gravity * airMass / molar / lapseRate);
+      else pressure *= pow(
+        baseTemperature / temperature,
+        gravity * airMass / molar / lapseRate
+      );
 
-      if (nextLayerHeight >= altitude) return [ newPressure, newTemperature ];
-      return newPressure;
-    }, 101325);
+      if (nextLayerHeight >= altitude) return true;
+    });
+
+    return [ pressure, temperature ];
   }
 
   function tasToCas(ktas, pressure, temperature) {

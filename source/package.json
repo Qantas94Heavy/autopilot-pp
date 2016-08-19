@@ -1,0 +1,8 @@
+{ "name": "dependencies"
+, "version": "0.0.1"
+, "dependencies":
+  { "requirejs": "^2.2.0"
+  , "knockout": "^3.4.0"
+  }
+, "private": true
+}

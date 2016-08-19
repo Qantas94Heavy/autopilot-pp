@@ -1,55 +1,123 @@
-<div class="gefs-autopilot gefs-stopPropagation">
-	<h6>Autopilot</h6>
+<div id="Qantas94Heavy-ap-nav" class="mdl-grid mdl-grid--no-spacing">
+  <div class="mdl-cell mdl-cell--2-col">
+    <h6>Autopilot</h6>
+  </div>
+  <div class="mdl-cell mdl-cell--5-col">
+    <button id="Qantas94Heavy-ap-toggle"
+            class="mdl-button mdl-js-button mdl-button--raised"
+            data-bind="css: { 'mdl-button--colored': on },
+                       click: toggle, text: on() ? 'Engaged' : 'Disengaged'"></button>
+  </div>
 
-	<!-- top button menu -->
-	<div id="Qantas94Heavy-ap-button-div">
-		<button id="Qantas94Heavy-ap-toggle" class="btn btn-mini">Disengaged</button>
-		<button id="Qantas94Heavy-ap-mode" class="btn btn-mini">Heading mode</button>
-	</div>
+  <div class="mdl-cell mdl-cell--5-col">
+    <button class="mdl-button mdl-js-button mdl-button--raised"
+            data-bind="click: nextMode, text: currentModeText"></button>
+  </div>
+</div>
 
-	<!-- altitude and vertical speed -->
-	<div class="Qantas94Heavy-ap-container">
-		<div id="Qantas94Heavy-ap-alt" class="input-prepend pull-left" style="margin: 0 5px 0 0">
-			<span data-type="name" class="add-on">Alt.</span>
-			<input type="number" step="100" style="width: 66px">
-		</div>
+<div id="Qantas94Heavy-ap-displays">
+  <div class="mdl-grid mdl-grid--no-spacing">
+    <div class="mdl-cell mdl-cell--6-col">
+      <div class="Qantas94Heavy-switch-container">
+        <label class="mdl-switch mdl-js-switch">
+          <input type="checkbox" class="mdl-switch__input"
+                 data-bind="checked: altitudeEnabled, enable: on, mdlSwitch: true">
+        </label>
+      </div>
 
-		<div id="Qantas94Heavy-ap-vs" class="input-prepend pull-right" style="margin: 0 0 0 6px">
-			<span data-type="name" class="add-on">V/S.</span>
-			<input type="number" step="100" min="-9900" max="9900" style="width: 54px">
-		</div>
-	</div>
+      <div class="Qantas94Heavy-input-container">
+        <label>
+          Altitude
+          <input type="number" min="0" step="500" data-bind="value: altitude">
+        </label>
+      </div>
+    </div>
 
-	<!-- autopilot modes -->
-	<div id="Qantas94Heavy-ap-hdg" class="input-prepend input-append">
-		<span data-type="name" class="add-on">Hdg.</span>
-		<input type="number">
-		<span data-type="unit" class="add-on">deg.</span>
-	</div>
+    <div class="mdl-cell mdl-cell--6-col">
+      <div class="Qantas94Heavy-input-container">
+        <label>
+          V/S
+          <input type="number" placeholder="-----" step="50" data-bind="value: vs">
+        </label>
+      </div>
+    </div>
+  </div>
 
-	<!-- TODO: we're using styles for now as I need to fix CSS overriding order -->
-	<div class="Qantas94Heavy-gc-container" style="display: inline-block">
-		<div id="Qantas94Heavy-ap-gc-lat" class="input-prepend pull-left" style="margin: 0 5px 0 0">
-			<span data-type="name" class="add-on">Lat.</span>
-			<input type="number" style="width: 56px">
-		</div>
+  <div class="mdl-grid mdl-grid--no-spacing">
+    <div class="mdl-cell mdl-cell--6-col">
+      <div class="Qantas94Heavy-switch-container">
+        <label class="mdl-switch mdl-js-switch">
+          <input type="checkbox" class="mdl-switch__input"
+                 data-bind="checked: headingEnabled, enable: on, mdlSwitch: true">
+        </label>
+      </div>
 
-		<div id="Qantas94Heavy-ap-gc-lon" class="input-prepend pull-right" style="margin: 0 0 0 5px">
-			<span data-type="name" class="add-on">Lon.</span>
-			<input type="number" style="width: 65px">
-		</div>
-	</div>
+      <!-- Heading mode -->
+      <div class="Qantas94Heavy-input-container" data-bind="visible: currentMode() === 0">
+        <label>
+          Heading
+          <input type="number" min="1" max="360" step="1" data-bind="value: heading">
+        </label>
+      </div>
 
-	<div id="Qantas94Heavy-ap-icao" class="input-prepend input-append">
-		<span data-type="name" class="add-on">Wpt.</span>
-		<input type="text">
-		<span  data-type="unit" class="add-on">ICAO</span>
-	</div>
+      <!-- Lat/lon mode -->
+      <div class="Qantas94Heavy-input-container" data-bind="visible: currentMode() === 1">
+        <label>
+          Latitude
+          <input type="number" data-bind="value: lat">
+        </label>
+      </div>
 
-  <!-- speed selection-->
-	<div id="Qantas94Heavy-ap-spd" class="input-prepend input-append">
-		<span data-type="name" class="add-on">Spd.</span>
-		<input type="number" min="0" max="999">
-		<span data-type="unit" class="add-on">Kts.</span>
-	</div>
+      <!-- Waypoint mode -->
+      <div class="Qantas94Heavy-input-container" data-bind="visible: currentMode() === 2">
+        <label>
+          Waypoint
+          <input type="text" data-bind="value: waypoint">
+        </label>
+      </div>
+    </div>
+
+    <!-- Lat/lon mode -->
+    <div class="mdl-cell mdl-cell--6-col" data-bind="visible: currentMode() === 1">
+      <div class="Qantas94Heavy-input-container">
+        <label>
+          Longitude
+          <input type="number" data-bind="value: lon">
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="mdl-grid mdl-grid--no-spacing">
+    <div class="mdl-cell mdl-cell--6-col">
+      <div class="Qantas94Heavy-switch-container">
+        <label class="mdl-switch mdl-js-switch">
+          <input type="checkbox" class="mdl-switch__input"
+                 data-bind="checked: speedEnabled, enable: on, mdlSwitch: true">
+        </label>
+      </div>
+      <div class="Qantas94Heavy-input-container">
+        <label>
+          Speed
+          <input type="number" placeholder="0" min="0" step="10" data-bind="value: speed">
+        </label>
+      </div>
+    </div>
+
+    <div class="mdl-cell mdl-cell--3-col">
+      <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Qantas94Heavy-spd-kias">
+        <input type="radio" id="Qantas94Heavy-spd-kias" class="mdl-radio__button"
+               name="options" value="kias" data-bind="checked: speedMode, mdlRadio: true">
+        <span class="mdl-radio__label">KIAS</span>
+      </label>
+    </div>
+
+    <div class="mdl-cell mdl-cell--3-col">
+      <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Qantas94Heavy-spd-mach">
+        <input type="radio" id="Qantas94Heavy-spd-mach" class="mdl-radio__button"
+               name="options" value="mach" data-bind="checked: speedMode, mdlRadio: true">
+        <span class="mdl-radio__label">Mach</span>
+      </label>
+    </div>
+  </div>
 </div>

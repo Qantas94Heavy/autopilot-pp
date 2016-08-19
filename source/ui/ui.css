@@ -1,25 +1,94 @@
-/* necessary as .addon overrides the default .btn-warning style */
-.add-on.btn-warning {
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25) !important
-}
-
-.gefs-autopilot input {
-  text-overflow: clip;
-  width: 146px;
-}
-
-.Qantas94Heavy-ap-container {
-	margin-bottom: -1px;
-  display: inline-block;
-}
-
-#Qantas94Heavy-ap-button-div {
+#Qantas94Heavy-ap {
+  position: absolute;
+  bottom: 0;
+  box-sizing: border-box;
+  height: 150px;
   width: 100%;
-  display: inline-block;
+  padding: 0 10px 10px;
+  box-shadow: 0px 0px 16px #888 inset;
 }
 
-.gefs-autopilot button {
-  /* For some reason 5% doesn't work when it used to. Need to investigate. */
-  margin: 0 4% 5px;
-  width: 40%;
+#Qantas94Heavy-ap-nav > div {
+  text-align: right;
+}
+
+#Qantas94Heavy-ap-nav h6 {
+  margin: 10px 0;
+  line-height: 26px;
+}
+
+#Qantas94Heavy-ap-nav button {
+  margin: 10px 0;
+  width: 150px;
+  height: 26px;
+  line-height: 26px;
+  font-size: 12px;
+  padding: 0 5px;
+  text-align: center;
+  clear: both;
+}
+
+#Qantas94Heavy-ap label span {
+  /* display: inline-block; */
+  /* width: 30px; */
+  /* text-align: left; */
+}
+
+#Qantas94Heavy-ap label {
+  /* position: relative; */
+  /* text-align: right; */
+  /* width: 100%; */
+  /* line-height: 33px; */
+  /* display: block; */
+  float: right;
+  /* font-size: 16px; */
+}
+
+#Qantas94Heavy-ap-displays {
+  width: 100%;
+  margin: 0 10px 0 5px;
+}
+
+#Qantas94Heavy-ap-displays > div {
+  overflow: hidden;
+  margin: 3px 0;
+}
+
+#Qantas94Heavy-ap-displays input {
+  font-size: 18px;
+  padding: 0px;
+  width: 70px;
+  line-height: 18px;
+  text-align: right;
+  font-family: monospace;
+  color: #f93;
+  text-shadow: 0px 0px 8px #f93;
+  background-color: #000;
+  border: 2px inset;
+}
+
+#Qantas94Heavy-spd-container {
+  padding-right: 15px;
+}
+
+#Qantas94Heavy-spd-container > div {
+  width: 50%;
+}
+
+.Qantas94Heavy-pull-left {
+  float: left;
+}
+
+.Qantas94Heavy-pull-right {
+  float: right;
+}
+
+.Qantas94Heavy-switch-container {
+  width: 20%;
+  float: left;
+}
+
+.Qantas94Heavy-input-container {
+  overflow: auto;
+  width: 150px;
 }
