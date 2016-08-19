@@ -186,7 +186,7 @@ define([ 'module' ], function (module) {
       if (!buildMap[moduleName]) return;
 
       var content = text.jsEscape(buildMap[moduleName]);
-      write("define(['" + pluginName + '!' + moduleName + "'], function () { return '" +
+      write("define('" + pluginName + '!' + moduleName + "', function () { return '" +
             content + "';});\n");
     },
 
