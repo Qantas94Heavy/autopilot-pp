@@ -7,9 +7,9 @@ require.config(
 
 // Create the user interface for users to interact with Autopilot++.
 define([ 'knockout', 'autopilot', 'ui/apdisconnectsound', 'ui/autopilot', 'enablekcas'
-       , 'bugfixes/papi', 'text!ui/ui.html', 'text!ui/ui.css'
+       , 'bugfixes/papi', 'bugfixes/restrictions', 'text!ui/ui.html', 'text!ui/ui.css'
        ], function (ko, ap, apDisconnectSound, AutopilotVM, enableKcas,
-                    papiBugfix, uihtml, uicss) {
+                    papiBugfix, restrictionsBugfix, uihtml, uicss) {
   function init() {
     // Apply CSS for Autopilot++ to the document.
     $('<style>').text(uicss).appendTo('head');
@@ -35,6 +35,7 @@ define([ 'knockout', 'autopilot', 'ui/apdisconnectsound', 'ui/autopilot', 'enabl
     });
 
     papiBugfix();
+    if (!DEBUG) restrictionsBugfix();
     enableKcas();
 
     var viewModel = new AutopilotVM();
