@@ -3,6 +3,37 @@ README
 
 Autopilot++ v{0} for GEFS-Online
 
+How to Use
+----------
+
+First install Autopilot++ using the installation instructions below.
+
+After installing Autopilot++, load GEFS and open the "Nav" panel.  To activate
+the master switch, click the "Disengaged" button.  Once the master switch is
+enabled, toggle the sliders next to "Altitude", "Heading" or "Speed" to
+activate these modes.
+
+### Navigation Modes
+
+Click the "Heading mode" button to switch between the following modes:
+
+ - Heading mode
+ - Lat/lon mode
+ - Waypoint mode
+
+In the non-heading modes, the lateral mode of the autopilot is
+always activated.  To turn the lateral mode off, first switch to
+"Heading mode", then toggle the switch for "Heading".
+
+### Vertical Speed
+
+"-----" indicates that vertical speed (V/S) is under automatic control.
+
+To set the V/S manually, click the V/S input and enter the value to set.
+
+To return V/S to automatic control, clear the input and click outside the
+input field or press Enter.
+
 Installation Instructions
 -------------------------
 
@@ -43,24 +74,26 @@ install Autopilot++, not this method.**
 3. Drag and drop "{2}.crx" into the Extensions page.
 4. Click Install on the popup.
 
-How to Use
-----------
-
-Load up GEFS and open the Nav panel. To activate the master switch, click the
-"disconnected" button. Once the master switch is enabled, click the "Hdg",
-"Alt" or "Spd" buttons to activate the specific modes.
-
-Click the "Heading Mode" button to switch between heading mode, lat/long mode
-and ICAO airport mode. In the non-heading modes, the lateral mode of the
-autopilot is always activiated -- to turn the lateral mode off, first switch
-to "Heading Mode", then click "Hdg".
-
 Licence
 -------
 
-This is free, open source software released under the [GNU General Public
-License][1], version 3 or later.  Version 3 of the GPL is also included in
-LICENSE.html for your reference.
+    Copyright (c) 2013-2016 Karl Cheng  
+    Email: <qantas94heavy@gmail.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+[Version 3 of the GPL][1] is included in LICENSE.html for your reference.
 
 For the source code of this program, see [GitHub][2].
 
@@ -72,14 +105,21 @@ Release Notes
 
 ### Changes in this version
 
+ - Redesign of user interface and internal code to support GEFS 1.2c
+ - Improved autopilot control smoothness
+ - Update waypoints and ICAO airport database
+ - A little surprise?! ;)
+
+### Changes in v0.9.2 (last version)
+
  - Fixes bug with KCAS code that intermittently causes GEFS to stop running
 
-### Changes in v0.9.1 (last version)
+### Changes in v0.9.1
 
  - Fixes several bugs with loading and PAPI functioning
  - Reduce the size of Autopilot++ with smaller embedded audio file
 
-### Changes in v0.9.0 (last major version)
+### Changes in v0.9.0
 
 This version now supports the Cesium version of GEFS.
 
