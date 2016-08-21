@@ -28,20 +28,8 @@
   clear: both;
 }
 
-#Qantas94Heavy-ap label span {
-  /* display: inline-block; */
-  /* width: 30px; */
-  /* text-align: left; */
-}
-
 #Qantas94Heavy-ap label {
-  /* position: relative; */
-  /* text-align: right; */
-  /* width: 100%; */
-  /* line-height: 33px; */
-  /* display: block; */
   float: right;
-  /* font-size: 16px; */
 }
 
 #Qantas94Heavy-ap-displays {
