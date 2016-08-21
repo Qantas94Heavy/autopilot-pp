@@ -17,6 +17,9 @@ define([ 'knockout', 'autopilot/modes', 'autopilot/pidcontrols', 'greatcircle', 
 
   // Initialise the autopilot when it is turned on and off.
   on.subscribe(function (newValue) {
+    // Needed for compatibility with GEFS code.
+    controls.autopilot.on = newValue;
+
     // Toggle the autopilot indicator provided by GEFS.
     ui.hud.autopilotIndicator(newValue);
 
@@ -186,14 +189,13 @@ define([ 'knockout', 'autopilot/modes', 'autopilot/pidcontrols', 'greatcircle', 
     , maxDescentRate: -4000
     };
 
-  // Steps needed for compatibility with GEFS.
-  controls.autopilot = ap;
-  ap.turnOn = function () {
-    ap.on(true);
-  };
-  ap.turnOff = function () {
-    ap.on(false);
-  };
+  // Properties needed for compatibility with GEFS.
+  controls.autopilot =
+    { on: false
+    , toggle: toggle
+    , turnOff: function () { ap.on(false); }
+    , update: update
+    };
 
   return ap;
 });
