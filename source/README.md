@@ -105,12 +105,16 @@ Release Notes
 
 ### Changes in this version
 
+ - Fix issue with mixed roll and yaw not working properly
+
+### Changes in v0.10.0 (last version)
+
  - Redesign of user interface and internal code to support GEFS 1.2c
  - Improved autopilot control smoothness
  - Update waypoints and ICAO airport database
  - A little surprise?! ;)
 
-### Changes in v0.9.2 (last version)
+### Changes in v0.9.2
 
  - Fixes bug with KCAS code that intermittently causes GEFS to stop running
 
