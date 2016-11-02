@@ -6,10 +6,15 @@ require.config(
 });
 
 // Create the user interface for users to interact with Autopilot++.
+// TODO: add current mode indicator
 define([ 'knockout', 'autopilot', 'ui/apdisconnectsound', 'ui/autopilot', 'enablekcas'
        , 'bugfixes/papi', 'bugfixes/restrictions', 'text!ui/ui.html', 'text!ui/ui.css'
        ], function (ko, ap, apDisconnectSound, AutopilotVM, enableKcas,
                     papiBugfix, restrictionsBugfix, uihtml, uicss) {
+  function stopImmediatePropagation(event) {
+    event.stopImmediatePropagation();
+  }
+
   function init() {
     // Apply CSS for Autopilot++ to the document.
     $('<style>').text(uicss).appendTo('head');
@@ -18,6 +23,7 @@ define([ 'knockout', 'autopilot', 'ui/apdisconnectsound', 'ui/autopilot', 'enabl
     var $ap = $('.gefs-autopilot')
       .removeClass('gefs-autopilot')
       .prop('id', 'Qantas94Heavy-ap')
+      .keydown(stopImmediatePropagation)
       .html(uihtml);
 
     // Set ` key for autopilot disconnect, like the red sidestick button.
