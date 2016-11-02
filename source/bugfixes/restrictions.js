@@ -8,7 +8,10 @@ define(function () {
 
     function checkSpeedAndAltitude() {
       var values = gefs.aircraft.animationValue;
-      if (values.mach < 1 && values.altitude < 44444) return;
+      var maxLimits = gefs.aircraft.setup.maxLimits;
+      var maxMach = maxLimits ? maxLimits[0] : 1;
+      var maxAltitude = maxLimits ? maxLimits[1] : 44444;
+      if (values.mach < maxMach && values.altitude < maxAltitude) return;
 
       clearInterval(speedTimer);
       speedTimer = undefined;
@@ -48,7 +51,7 @@ define(function () {
       partsTimer = setInterval(function () {
         gefs.aircraft.object3d._children.forEach(function (object) {
           var position = object._localposition;
-          for (var j = 0; j < 2; j++) position[j] *= 1.01;
+          for (var i = 0; i < 2; i++) position[i] *= 1.01;
         });
       }, 100);
 
@@ -75,8 +78,10 @@ define(function () {
     var oldReset = Aircraft.prototype.reset;
     Aircraft.prototype.reset = function (bOnTheGround) {
       clearTimeout(deleteTimeout);
+
       clearInterval(deleteTimer);
       clearInterval(partsTimer);
+      clearInterval(speedTimer);
 
       if (activated) {
         gefs.aircraft.airfoils.forEach(function (airfoil) {
@@ -92,15 +97,12 @@ define(function () {
         activated = false;
       }
 
-      if (matchesName() && speedTimer === undefined) {
-        speedTimer = setInterval(checkSpeedAndAltitude, 5000);
-      }
-
+      if (matchesName()) speedTimer = setInterval(checkSpeedAndAltitude, 5000);
       oldReset.call(this, bOnTheGround);
     };
 
     function matchesName() {
-      return /^(?:md11|a380|\d+)$/.test(gefs.aircraft.name);
+      return /^(?:md11|a380|\d+)$/.test(gefs.aircraft.name) || gefs.aircraft.setup.maxLimits;
     }
 
     if (matchesName()) speedTimer = setInterval(checkSpeedAndAltitude, 5000);
