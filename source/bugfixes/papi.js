@@ -14,7 +14,9 @@ define([ 'util' ], function (util) {
         , this.papiLocation[2]
         ];
 
-      var distance = llaDistance(relativeAicraftLla, this.papiLocation, this.papiLocation);
+      var distance = gefs.utils.llaDistanceInMeters(
+        relativeAicraftLla, this.papiLocation, this.papiLocation
+      );
 
       var height = gefs.aircraft.llaLocation[2] - this.papiLocation[2];
       var path = util.rad2deg(Math.atan2(height, distance));
