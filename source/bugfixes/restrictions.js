@@ -75,6 +75,15 @@ define(function () {
       }, 12000);
     }
 
+    function matchesName() {
+      var aircraftName = gefs.aircraft.name;
+      return aircraftName === 'md11' || aircraftName === 'a380' || gefs.aircraft.setup.maxLimits;
+    }
+
+    function addRestrictions() {
+      if (matchesName()) speedTimer = setInterval(checkSpeedAndAltitude, 5000);
+    }
+
     var oldReset = Aircraft.prototype.reset;
     Aircraft.prototype.reset = function (bOnTheGround) {
       clearTimeout(deleteTimeout);
@@ -97,15 +106,17 @@ define(function () {
         activated = false;
       }
 
-      if (matchesName()) speedTimer = setInterval(checkSpeedAndAltitude, 5000);
+      addRestrictions();
       oldReset.call(this, bOnTheGround);
     };
 
-    function matchesName() {
-      return /^(?:md11|a380|\d+)$/.test(gefs.aircraft.name) || gefs.aircraft.setup.maxLimits;
-    }
-
-    if (matchesName()) speedTimer = setInterval(checkSpeedAndAltitude, 5000);
+    // Aircraft setup object might not be loaded yet.
+    var setupLoadTimer = setInterval(function () {
+      if (gefs.aircraft.setup) {
+        clearInterval(setupLoadTimer);
+        addRestrictions();
+      }
+    }, 1000);
   }
 
   return restrictionsBugfix;
