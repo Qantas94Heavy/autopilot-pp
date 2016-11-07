@@ -105,11 +105,15 @@ Release Notes
 
 ### Changes in this version
 
+ - Fix bug in internal code that prevented GEFS from loading
+
+### Changes in v0.10.2 (last version)
+
  - Fix compatibility issue caused by update to GEFS 1.4c
  - Fix issue with speed restrictions code and allow use by community aircraft
  - Fix input focus issue where pressing certain keys would trigger other functions
 
-### Changes in v0.10.1 (last version)
+### Changes in v0.10.1
 
  - Fix issue with mixed roll and yaw not working properly
 
