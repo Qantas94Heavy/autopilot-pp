@@ -1,5 +1,5 @@
 /*!
- * @license Copyright (c) Karl Cheng 2013-16
+ * @license Copyright (c) Karl Cheng 2013-17
  * Licensed under the GNU General Public Licence, version 3 or later.
  * See the LICENSE.md file for details.
  */
