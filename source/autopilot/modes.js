@@ -25,12 +25,12 @@ define([ 'knockout', 'speedconversions', 'util' ], function (ko, speedConversion
     };
 
   function toMach(kias) {
-    var altitude = util.ft2mtrs(gefs.aircraft.animationValue.altitude);
+    var altitude = util.ft2mtrs(geofs.aircraft.instance.animationValue.altitude);
     return speedConversions.casToMach(kias, altitude);
   }
 
   function toKias(mach) {
-    var altitude = util.ft2mtrs(gefs.aircraft.animationValue.altitude);
+    var altitude = util.ft2mtrs(geofs.aircraft.instance.animationValue.altitude);
     return speedConversions.machToCas(mach, altitude);
   }
 

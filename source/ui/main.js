@@ -20,8 +20,8 @@ define([ 'knockout', 'autopilot', 'ui/apdisconnectsound', 'ui/autopilot', 'enabl
     $('<style>').text(uicss).appendTo('head');
 
     // Replace CSS class to avoid nasty override issues with GEFS styling.
-    var $ap = $('.gefs-autopilot')
-      .removeClass('gefs-autopilot')
+    var $ap = $('.geofs-autopilot')
+      .removeClass('geofs-autopilot')
       .prop('id', 'Qantas94Heavy-ap')
       .keydown(stopImmediatePropagation)
       .html(uihtml);
@@ -37,7 +37,7 @@ define([ 'knockout', 'autopilot', 'ui/apdisconnectsound', 'ui/autopilot', 'enabl
 
     // Play autopilot disconnect sound when autopilot is turned off.
     ap.on.subscribe(function (newValue) {
-      if (!newValue && gefs.preferences.sound) apDisconnectSound.play();
+      if (!newValue && geofs.preferences.sound) apDisconnectSound.play();
     });
 
     papiBugfix();

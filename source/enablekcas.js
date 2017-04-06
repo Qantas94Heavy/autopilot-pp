@@ -3,7 +3,7 @@
 define([ 'speedconversions', 'util' ], function (speedConversions, util) {
   /** @private */
   function setKcas() {
-    var animationValue = gefs.aircraft.animationValue;
+    var animationValue = geofs.aircraft.instance.animationValue;
     animationValue.kcas = speedConversions.tasToCas(
       animationValue.ktas, util.ft2mtrs(animationValue.altitude)
     );
@@ -13,7 +13,7 @@ define([ 'speedconversions', 'util' ], function (speedConversions, util) {
     // Convert KTAS to KCAS.
     // Ensure "kcas" property is set before changing it.
     var timer = setInterval(function () {
-      if (window.gefs && gefs.aircraft && gefs.aircraft.animationValue) {
+      if (window.geofs && geofs.aircraft.instance && geofs.aircraft.instance.animationValue) {
         setKcas();
 
         [ 'airspeed', 'airspeedJet', 'airspeedSupersonic' ].forEach(function (prop) {

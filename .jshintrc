@@ -1,5 +1,5 @@
 { "globals":
-  { "gefs": false
+  { "geofs": false
   , "V3": false
   , "M33": false
   , "camera": false

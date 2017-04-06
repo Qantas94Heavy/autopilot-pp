@@ -7,8 +7,8 @@ define(function () {
     var activated = false;
 
     function checkSpeedAndAltitude() {
-      var values = gefs.aircraft.animationValue;
-      var maxLimits = gefs.aircraft.setup.maxLimits;
+      var values = geofs.aircraft.instance.animationValue;
+      var maxLimits = geofs.aircraft.instance.setup.maxLimits;
       var maxMach = maxLimits ? maxLimits[0] : 1;
       var maxAltitude = maxLimits ? maxLimits[1] : 44444;
       if (values.mach < maxMach && values.altitude < maxAltitude) return;
@@ -18,7 +18,7 @@ define(function () {
       activated = true;
 
       // Hey, can't fly without wings, can you?!
-      gefs.aircraft.airfoils.forEach(function (airfoil) {
+      geofs.aircraft.instance.airfoils.forEach(function (airfoil) {
         if (airfoil.area) airfoil.area /= 128;
         else if (airfoil.liftFactor) airfoil.liftFactor /= 128;
       });
@@ -26,7 +26,7 @@ define(function () {
       // Show some evil smoke!
       // ParticuleEmitter is spelt incorrectly in GEFS, as well as using "new" for a function with
       // side effects.
-      new gefs.fx.ParticuleEmitter(
+      new geofs.fx.ParticuleEmitter(
       { anchor: { worldPosition: [0, 0, 0] }
       , duration: 30000
       , rate: 0.05
@@ -39,17 +39,17 @@ define(function () {
       });
 
       // Disable the thrust.
-      gefs.aircraft.engines.forEach(function (engine) {
+      geofs.aircraft.instance.engines.forEach(function (engine) {
         engine.thrust /= 16384;
       });
 
       // Display thrust as zero.
-      oldMaxRPM = gefs.aircraft.setup.maxRPM;
-      gefs.aircraft.setup.maxRPM = gefs.aircraft.setup.minRPM + 1;
+      oldMaxRPM = geofs.aircraft.instance.setup.maxRPM;
+      geofs.aircraft.instance.setup.maxRPM = geofs.aircraft.instance.setup.minRPM + 1;
 
       // Let's have the parts a-flyin'!
       partsTimer = setInterval(function () {
-        gefs.aircraft.object3d._children.forEach(function (object) {
+        geofs.aircraft.instance.object3d._children.forEach(function (object) {
           var position = object._localposition;
           for (var i = 0; i < 2; i++) position[i] *= 1.01;
         });
@@ -60,7 +60,7 @@ define(function () {
         var i = 0;
 
         // Bye bye parts!!!
-        var parts = gefs.aircraft.object3d._children;
+        var parts = geofs.aircraft.instance.object3d._children;
         deleteTimer = setInterval(function () {
           ++i;
 
@@ -76,8 +76,9 @@ define(function () {
     }
 
     function matchesName() {
-      var aircraftName = gefs.aircraft.name;
-      return aircraftName === 'md11' || aircraftName === 'a380' || gefs.aircraft.setup.maxLimits;
+      var aircraftName = geofs.aircraft.instance.name;
+      var maxLimits = geofs.aircraft.instance.setup.maxLimits;
+      return aircraftName === 'md11' || aircraftName === 'a380' || maxLimits;
     }
 
     function addRestrictions() {
@@ -93,16 +94,16 @@ define(function () {
       clearInterval(speedTimer);
 
       if (activated) {
-        gefs.aircraft.airfoils.forEach(function (airfoil) {
+        geofs.aircraft.instance.airfoils.forEach(function (airfoil) {
           if (airfoil.area) airfoil.area *= 128;
           else if (airfoil.liftFactor) airfoil.liftFactor *= 128;
         });
 
-        gefs.aircraft.engines.forEach(function (engine) {
+        geofs.aircraft.instance.engines.forEach(function (engine) {
           engine.thrust *= 16384;
         });
 
-        gefs.aircraft.setup.maxRPM = oldMaxRPM;
+        geofs.aircraft.instance.setup.maxRPM = oldMaxRPM;
         activated = false;
       }
 
@@ -112,7 +113,7 @@ define(function () {
 
     // Aircraft setup object might not be loaded yet.
     var setupLoadTimer = setInterval(function () {
-      if (gefs.aircraft.setup) {
+      if (geofs.aircraft.instance.setup) {
         clearInterval(setupLoadTimer);
         addRestrictions();
       }

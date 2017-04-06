@@ -7,7 +7,7 @@ define([ 'knockout', 'autopilot/modes', 'autopilot/pidcontrols', 'greatcircle', 
   { read: _on
   , write: function (newValue) {
       // Check if autopilot is enabled for the current aircraft or not.
-      if (gefs.aircraft.setup.autopilot && newValue) _on(true);
+      if (geofs.aircraft.instance.setup.autopilot && newValue) _on(true);
       else _on(false);
     }
   });
@@ -46,7 +46,7 @@ define([ 'knockout', 'autopilot/modes', 'autopilot/pidcontrols', 'greatcircle', 
 
   apModes.altitude.enabled.subscribe(function (newValue) {
     if (newValue) {
-      pidControls.climb.init(gefs.aircraft.animationValue.atilt);
+      pidControls.climb.init(geofs.aircraft.instance.animationValue.atilt);
       pidControls.pitch.init(controls.rawPitch);
 
       // TODO: handle elevator trim better.
@@ -60,18 +60,18 @@ define([ 'knockout', 'autopilot/modes', 'autopilot/pidcontrols', 'greatcircle', 
   var lastGcHeadingUpdate = 0;
 
   /**
-   * Function called by the gefs.tick callback.
+   * Function called by the geofs.tick callback.
    *
    * @param {Number} dt - Time in seconds since the last frame.
    */
   function update(dt) {
-    var values = gefs.aircraft.animationValue;
+    var values = geofs.aircraft.instance.animationValue;
 
     // Calculate relative speed of aircraft as correction factor (TAS, not CAS).
     var speedRatio = util.clamp(values.ktas / 100, 0.5, 5);
 
     // Disable the autopilot below 500ft AGL and upon encountering abnormal flight conditions.
-    if (!DEBUG && (values.altitude - Math.max(util.mtrs2ft(gefs.groundElevation), -1000) < 500 ||
+    if (!DEBUG && (values.altitude - Math.max(util.mtrs2ft(geofs.groundElevation), -1000) < 500 ||
                    ui.hud.stallAlarmOn || Math.abs(values.aroll) > 45 || values.atilt > 20 ||
                    values.atilt < -35)) {
       ap.on(false);
@@ -110,7 +110,7 @@ define([ 'knockout', 'autopilot/modes', 'autopilot/pidcontrols', 'greatcircle', 
       controls.yaw = util.exponentialSmoothing('apYaw', controls.roll / 2, 0.1);
 
       // HACK: A380 ailerons suck
-      if (gefs.aircraft.name === 'a380') controls.roll *= 3.5;
+      if (geofs.aircraft.instance.name === 'a380') controls.roll *= 3.5;
 
       // TODO: add an aileron deflection and/or roll rate limiter
     }
@@ -153,8 +153,8 @@ define([ 'knockout', 'autopilot/modes', 'autopilot/pidcontrols', 'greatcircle', 
       var result = pidControls.pitch.compute(-values.atilt, dt, targetTilt);
       controls.rawPitch = util.exponentialSmoothing('apPitch', result / speedRatio, 0.9);
 
-      gefs.debug.watch('targetClimbrate', targetClimbRate);
-      gefs.debug.watch('aTargetTilt', targetTilt);
+      geofs.debug.watch('targetClimbrate', targetClimbRate);
+      geofs.debug.watch('aTargetTilt', targetTilt);
     }
 
     function updateThrottle() {
@@ -165,7 +165,7 @@ define([ 'knockout', 'autopilot/modes', 'autopilot/pidcontrols', 'greatcircle', 
 
       var result = pidControls.throttle.compute(values.kcas, dt, speed);
       controls.throttle = util.clamp(util.exponentialSmoothing('apThrottle', result, 0.9), 0, 1);
-      gefs.debug.watch('throttle', controls.throttle);
+      geofs.debug.watch('throttle', controls.throttle);
     }
 
     // Run updates for modes if they are enabled.

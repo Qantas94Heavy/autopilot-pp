@@ -13,22 +13,22 @@ if (DEBUG) require.config({ urlArgs: "_=" + Date.now(), waitSeconds: 15 });
 
 // Make sure code is run after GEFS is ready.
 require([ 'ui/main' ], function (initUI) {
-  // Check if gefs.init has already been called.
-  if (window.gefs && gefs.canvas) {
+  // Check if geofs.init has already been called.
+  if (window.geofs && geofs.canvas) {
     initUI();
     return;
   }
 
   var timer = setInterval(function () {
-    if (!window.gefs || !gefs.init) return;
+    if (!window.geofs || !geofs.init) return;
     clearInterval(timer);
 
-    // The original gefs.init function might have already run between two checks.
-    if (gefs.canvas) initUI();
+    // The original geofs.init function might have already run between two checks.
+    if (geofs.canvas) initUI();
     else {
-      var oldInit = gefs.init;
+      var oldInit = geofs.init;
 
-      gefs.init = function () {
+      geofs.init = function () {
         oldInit();
         initUI();
       };

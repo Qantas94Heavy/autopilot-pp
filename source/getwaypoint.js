@@ -11,8 +11,8 @@ define([ 'json!data/icaoairports.json', 'json!data/waypoints.json', 'util' ],
     // If the list only contains one element, it will be returned without calling the callback.
     return list.reduce(function (closestPoint, point) {
       // Current location of the aircraft.
-      var acLat = gefs.aircraft.llaLocation[0];
-      var acLon = gefs.aircraft.llaLocation[1];
+      var acLat = geofs.aircraft.instance.llaLocation[0];
+      var acLon = geofs.aircraft.instance.llaLocation[1];
 
       var deltaLat = util.deg2rad(acLat - point[0]);
       var deltaLon = util.deg2rad(acLon - point[1]);

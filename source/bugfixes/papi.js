@@ -6,19 +6,19 @@ define([ 'util' ], function (util) {
     var papiValues = [ 3.5, 19 / 6, 17 / 6, 2.5 ];
 
     function setPapi() {
-      var collResult = gefs.getGroundAltitude(this.papiLocation[0], this.papiLocation[1]);
+      var collResult = geofs.getGroundAltitude(this.papiLocation[0], this.papiLocation[1]);
       this.papiLocation[2] = collResult.location[2];
       var relativeAicraftLla =
-        [ gefs.aircraft.llaLocation[0]
-        , gefs.aircraft.llaLocation[1]
+        [ geofs.aircraft.instance.llaLocation[0]
+        , geofs.aircraft.instance.llaLocation[1]
         , this.papiLocation[2]
         ];
 
-      var distance = gefs.utils.llaDistanceInMeters(
+      var distance = geofs.utils.llaDistanceInMeters(
         relativeAicraftLla, this.papiLocation, this.papiLocation
       );
 
-      var height = gefs.aircraft.llaLocation[2] - this.papiLocation[2];
+      var height = geofs.aircraft.instance.llaLocation[2] - this.papiLocation[2];
       var path = util.rad2deg(Math.atan2(height, distance));
 
       var papi = this.papi;
@@ -29,7 +29,7 @@ define([ 'util' ], function (util) {
       });
     }
 
-    gefs.fx.RunwayLights.prototype.refreshPapi = function () {
+    geofs.fx.RunwayLights.prototype.refreshPapi = function () {
       var that = this;
       this.papiInterval = setInterval(function () {
         setPapi.call(that);
@@ -37,8 +37,8 @@ define([ 'util' ], function (util) {
     };
 
     // Remove old PAPI and replace with the new one.
-    Object.keys(gefs.fx.litRunways).forEach(function (id) {
-      var runway = gefs.fx.litRunways[id];
+    Object.keys(geofs.fx.litRunways).forEach(function (id) {
+      var runway = geofs.fx.litRunways[id];
 
       // Stop old PAPI update function.
       clearInterval(runway.papiInterval);

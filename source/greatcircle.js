@@ -9,7 +9,7 @@ define([ 'knockout', 'util' ], function (ko, util) {
   var cos = Math.cos;
 
   function getHeading() {
-    var coords = gefs.aircraft.llaLocation;
+    var coords = geofs.aircraft.instance.llaLocation;
     var lat1 = util.deg2rad(coords[0]);
     var lon1 = util.deg2rad(coords[1]);
     var lat2 = util.deg2rad(lat());

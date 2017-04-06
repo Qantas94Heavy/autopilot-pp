@@ -1,10 +1,9 @@
 Autopilot++
 ===========
 
-Autopilot++ is an unofficial plugin for GEFS-Online
-(http://www.gefs-online.com), a free online flight simulator.  It provides new
-mode settings for the autopilot currently in the simulator, as well as other
-minor changes.
+Autopilot++ is an unofficial plugin for [GeoFS](http://www.geo-fs.com),
+a free-to-play online flight simulator.  It provides new mode settings for
+the autopilot currently in the simulator, as well as other minor changes.
 
 How to contribute
 -----------------
