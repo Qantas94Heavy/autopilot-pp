@@ -1,14 +1,14 @@
 README
 ======
 
-Autopilot++ v{0} for GEFS-Online
+Autopilot++ v{0} for GeoFS
 
 How to Use
 ----------
 
 First install Autopilot++ using the installation instructions below.
 
-After installing Autopilot++, load GEFS and open the "Nav" panel.  To activate
+After installing Autopilot++, load GeoFS and open the "Nav" panel.  To activate
 the master switch, click the "Disengaged" button.  Once the master switch is
 enabled, toggle the sliders next to "Altitude", "Heading" or "Speed" to
 activate these modes.
@@ -105,9 +105,13 @@ Release Notes
 
 ### Changes in this version
 
+ - Update code to support new GeoFS website
+
+### Changes in v0.10.3 (last version)
+
  - Fix bug in internal code that prevented GEFS from loading
 
-### Changes in v0.10.2 (last version)
+### Changes in v0.10.2
 
  - Fix compatibility issue caused by update to GEFS 1.4c
  - Fix issue with speed restrictions code and allow use by community aircraft
