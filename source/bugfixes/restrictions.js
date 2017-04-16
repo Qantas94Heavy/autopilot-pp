@@ -85,8 +85,8 @@ define(function () {
       if (matchesName()) speedTimer = setInterval(checkSpeedAndAltitude, 5000);
     }
 
-    var oldReset = Aircraft.prototype.reset;
-    Aircraft.prototype.reset = function (bOnTheGround) {
+    var oldReset = geofs.aircraft.Aircraft.prototype.reset;
+    geofs.aircraft.Aircraft.prototype.reset = function (bOnTheGround) {
       clearTimeout(deleteTimeout);
 
       clearInterval(deleteTimer);
