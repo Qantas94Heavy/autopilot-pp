@@ -105,9 +105,13 @@ Release Notes
 
 ### Changes in this version
 
+ - Fix error in code that prevented autopilot from running
+
+### Changes in v0.10.4 (last version)
+
  - Update code to support new GeoFS website
 
-### Changes in v0.10.3 (last version)
+### Changes in v0.10.3
 
  - Fix bug in internal code that prevented GEFS from loading
 
