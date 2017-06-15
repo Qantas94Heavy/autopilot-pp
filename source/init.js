@@ -12,10 +12,16 @@ if (typeof DEBUG === 'undefined') window.DEBUG = true;
 if (DEBUG) require.config({ urlArgs: "_=" + Date.now(), waitSeconds: 15 });
 
 // Make sure code is run after GEFS is ready.
-require([ 'ui/main' ], function (initUI) {
+(function () {
+  function load() {
+    require([ 'ui/main' ], function (initUI) {
+      initUI();
+    });
+  }
+  
   // Check if geofs.init has already been called.
   if (window.geofs && geofs.canvas) {
-    initUI();
+    load();
     return;
   }
 
@@ -24,14 +30,14 @@ require([ 'ui/main' ], function (initUI) {
     clearInterval(timer);
 
     // The original geofs.init function might have already run between two checks.
-    if (geofs.canvas) initUI();
+    if (geofs.canvas) load();
     else {
       var oldInit = geofs.init;
 
       geofs.init = function () {
         oldInit();
-        initUI();
+        load();
       };
     }
   }, 16);
-});
+})();
