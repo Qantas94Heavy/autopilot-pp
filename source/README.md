@@ -105,9 +105,13 @@ Release Notes
 
 ### Changes in this version
 
+ - Update Autopilot++ loading code to work with changes to GeoFS
+
+### Changes in v0.10.5 (last version)
+
  - Fix error in code that prevented autopilot from running
 
-### Changes in v0.10.4 (last version)
+### Changes in v0.10.4
 
  - Update code to support new GeoFS website
 
