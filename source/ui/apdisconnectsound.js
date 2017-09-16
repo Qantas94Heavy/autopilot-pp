@@ -36,5 +36,5 @@ define(function () {
            + 'BNMhvZ4RaEZjuzKL6DaGkj4q9JOTyte7SZYvlabiq6hiMFgCZykw5Hm6qWQXLb2nIX5mtmtHizVbY6ytTwW5'
            + 'O7EFVfnSZnoh5HBwWAH0KTDvv4vCNaDcAecq090PRrOoTW37XdhdF0EwddAIYIAXGYSfjBA=';
 
-  return new Audio('data:audio/opus;base64,' + opus);
+  return new Audio('data:audio/ogg;base64,' + opus);
 });
