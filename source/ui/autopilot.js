@@ -158,20 +158,30 @@ define([ 'knockout', 'greatcircle', 'autopilot', 'util', 'getwaypoint' ],
   }
 
   // Handle MDL's annoying inputs that needs updating all the time.
-  function updateMdlSwitch(element) {
+  function updateMdlSwitch(element, _notUsed, bindings) {
+    // jshint unused:false
     var materialSwitch = element.parentNode.MaterialSwitch;
     if (!materialSwitch) return;
+
+    // Call these so the update is triggered when these bindings change.
+    bindings.get('checked')();
+    bindings.get('enable')();
 
     materialSwitch.checkDisabled();
     materialSwitch.checkToggleState();
   }
 
-  function updateMdlRadio(element) {
-    var materialSwitch = element.parentNode.MaterialRadio;
-    if (!materialSwitch) return;
+  function updateMdlRadio(element, _notUsed, bindings) {
+    // jshint unused:false
+    var materialRadio = element.parentNode.MaterialRadio;
+    if (!materialRadio) return;
 
-    materialSwitch.checkDisabled();
-    materialSwitch.checkToggleState();
+    // Call these so the update is triggered when these bindings change.
+    bindings.get('checked')();
+    bindings.get('enable')();
+
+    materialRadio.checkDisabled();
+    materialRadio.checkToggleState();
   }
 
   // Create a custom bninding that handles this issue.
