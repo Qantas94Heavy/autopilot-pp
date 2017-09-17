@@ -58,13 +58,15 @@ define([ 'knockout', 'greatcircle', 'autopilot', 'util', 'getwaypoint' ],
       // Pad with zeroes.
       while (str.length < 4) str = '0' + str;
 
-      return (value < 0 ? '-' : '+') + str;
+      // TODO: find a way of using "+" without triggering <input type="number"> validation.
+      return (value < 0 ? '-' : '') + str;
     }
 
     this.vs = ko.pureComputed(
     { read: function () {
         if (ap.modes.vs.enabled()) return formatVs(ap.modes.vs.value());
-        return '-----';
+        // Will be replaced by "-----" as this is the placeholder.
+        return '';
       }
     , write: function (val) {
         var target = ap.modes.vs.value;
@@ -81,6 +83,7 @@ define([ 'knockout', 'greatcircle', 'autopilot', 'util', 'getwaypoint' ],
     this.heading = ko.pureComputed(
     { read: function () {
         var str = ap.modes.heading.value();
+        // Pad the value to 3 digits.
         while (str.length < 3) str = '0' + str;
         return str;
       }
