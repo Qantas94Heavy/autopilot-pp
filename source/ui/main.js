@@ -27,10 +27,10 @@ define([ 'knockout', 'autopilot', 'ui/apdisconnectsound', 'ui/autopilot', 'enabl
       .html(uihtml);
 
     // Set ` key for autopilot disconnect, like the red sidestick button.
-    $(document).keydown(function (event) {
+    document.addEventListener('keydown', function () {
       // Use KeyboardEvent.code if supported, otherwise use KeyboardEvent.which.
-      if ('code' in event.originalEvent) {
-        if (event.originalEvent.code === 'Backquote') ap.turnOff();
+      if ('code' in event) {
+        if (event.code === 'Backquote') ap.turnOff();
       }
       else if (event.which === 192) ap.turnOff();
     });
