@@ -50,6 +50,8 @@ define([ 'knockout', 'autopilot/modes', 'autopilot/pidcontrols', 'greatcircle', 
       pidControls.pitch.init(controls.rawPitch);
 
       // TODO: handle elevator trim better.
+      controls.elevatorTrim = controls.rawPitch;
+      controls.rawPitch = 0;
     }
   });
 
