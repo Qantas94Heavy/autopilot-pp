@@ -47,7 +47,8 @@ define([ 'knockout', 'autopilot/modes', 'autopilot/pidcontrols', 'greatcircle', 
   apModes.altitude.enabled.subscribe(function (newValue) {
     if (newValue) {
       pidControls.climb.init(geofs.aircraft.instance.animationValue.atilt);
-      pidControls.pitch.init(controls.rawPitch);
+      // We don't want to set pitch outside the range for zero elevator trim.
+      pidControls.pitch.init(util.clamp(controls.pitch, -1, 1));
 
       // TODO: handle elevator trim better.
       controls.elevatorTrim = controls.rawPitch;

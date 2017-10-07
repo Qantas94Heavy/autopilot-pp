@@ -14,8 +14,9 @@ define([ 'pid' ], function (PID) {
       { kp: 0.02
       , ti: 2
       , td: 0.01
-      , min: -1
-      , max: 1
+        // Allow for some elevator authority even when divided by speedRatio.
+      , min: -3
+      , max: 3
       })
     , roll: new PID(
       { kp: 0.02
