@@ -6,6 +6,11 @@ define(function () {
     var speedTimer, partsTimer, deleteTimer, deleteTimeout, oldMaxRPM;
     var activated = false;
 
+    var restrictedAircraft = new Set();
+    restrictedAircraft.add('4'); // KLM 737
+    restrictedAircraft.add('7'); // MD-11
+    restrictedAircraft.add('9'); // A380
+
     function checkSpeedAndAltitude() {
       var values = geofs.aircraft.instance.animationValue;
       var maxLimits = geofs.aircraft.instance.setup.maxLimits;
@@ -76,9 +81,8 @@ define(function () {
     }
 
     function matchesName() {
-      var aircraftName = geofs.aircraft.instance.name;
       var maxLimits = geofs.aircraft.instance.setup.maxLimits;
-      return aircraftName === 'md11' || aircraftName === 'a380' || maxLimits;
+      return restrictedAircraft.has(geofs.aircraft.instance.id) || maxLimits;
     }
 
     function addRestrictions() {
