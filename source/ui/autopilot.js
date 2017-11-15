@@ -160,12 +160,17 @@ define([ 'knockout', 'greatcircle', 'autopilot', 'util', 'getwaypoint' ],
   // Handle MDL's annoying inputs that needs updating all the time.
   function updateMdlSwitch(element, _notUsed, bindings) {
     // jshint unused:false
-    var materialSwitch = element.parentNode.MaterialSwitch;
-    if (!materialSwitch) return;
 
     // Call these so the update is triggered when these bindings change.
-    bindings.get('checked')();
-    bindings.get('enable')();
+    var isChecked = bindings.get('checked');
+    var isEnabled = bindings.get('enable');
+    if (isChecked) isChecked();
+    if (isEnabled) isEnabled();
+
+    // This has to be done after the bindings call as MaterialSwitch isn't
+    // present yet when GeoFS is loaded.
+    var materialSwitch = element.parentNode.MaterialSwitch;
+    if (!materialSwitch) return;
 
     materialSwitch.checkDisabled();
     materialSwitch.checkToggleState();
@@ -173,12 +178,17 @@ define([ 'knockout', 'greatcircle', 'autopilot', 'util', 'getwaypoint' ],
 
   function updateMdlRadio(element, _notUsed, bindings) {
     // jshint unused:false
-    var materialRadio = element.parentNode.MaterialRadio;
-    if (!materialRadio) return;
 
     // Call these so the update is triggered when these bindings change.
-    bindings.get('checked')();
-    bindings.get('enable')();
+    var isChecked = bindings.get('checked');
+    var isEnabled = bindings.get('enable');
+    if (isChecked) isChecked();
+    if (isEnabled) isEnabled();
+
+    // This has to be done after the bindings call as MaterialRadio isn't
+    // present yet when GeoFS is loaded.
+    var materialRadio = element.parentNode.MaterialRadio;
+    if (!materialRadio) return;
 
     materialRadio.checkDisabled();
     materialRadio.checkToggleState();
