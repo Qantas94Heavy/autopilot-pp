@@ -37,7 +37,7 @@ input field or press Enter.
 Installation Instructions
 -------------------------
 
-> Please note that Internet Explorer and Microsoft Edge are *not* supported.
+> Please note that Internet Explorer is *not* supported.
 
 ### Firefox (recommended):
 
@@ -55,7 +55,14 @@ Installation Instructions
 5. Open a new tab, then drag and drop "{1}.user.js" into the window.
 6. Click "Install" in the window that appears.
 
-### Google Chrome (other) and Chromium:
+### Microsoft Edge (14.14393+):
+
+1. Install Tampermonkey, if you have not already done so.
+2. Extract this ZIP file into an empty folder.
+5. Open Microsoft Edge, then drag and drop "{1}.user.js" into the window.
+6. Click "Install" in the window that appears.
+
+### Google Chrome and Chromium:
 
 **Note: users of Google Chrome on Windows _must_ use the method above to
 install Autopilot++, not this method.**
@@ -67,7 +74,7 @@ install Autopilot++, not this method.**
 5. Drag and drop "{2}.crx" into the Extensions page.
 6. Click "Accept" when it asks for permissions.
 
-### Opera 15+:
+### Opera (15+):
 
 1. Extract this ZIP file into an empty folder.
 2. Open Opera, then click on the Opera menu button and click Extensions.
@@ -103,11 +110,20 @@ For the source code of this program, see [GitHub][2].
 Release Notes
 -------------
 
-### Changes in this version
+### Changes in v0.11.0 (current version)
+
+ - Fix playback of autopilot disconnect sound
+ - Fix autopilot not levelling off or descending for some aircraft
+ - Fix display of V/S changes
+ - Fix UI toggle buttons
+ - Update to newer version of waypoint data
+ - Internal code fixes and improvements
+
+### Changes in v0.10.6 (last version)
 
  - Update Autopilot++ loading code to work with changes to GeoFS
 
-### Changes in v0.10.5 (last version)
+### Changes in v0.10.5
 
  - Fix error in code that prevented autopilot from running
 
