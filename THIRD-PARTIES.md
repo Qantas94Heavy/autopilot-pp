@@ -63,7 +63,7 @@ The waypoints database is based on files from the [X-Plane Airport & Navigation
 Data site][6]. We use these files under version 3 of the GPL, as permitted by
 their copyright notice:
 
-> 600 Version - data cycle 201607, build 20161531, metadata FixXP700.
+> 1100 Version - data cycle 1611, build 20161011, metadata FixXP1100.
 >
 > Copyright © 2016, Robin A. Peel (robin@x-plane.com).
 >

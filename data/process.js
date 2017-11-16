@@ -1,17 +1,23 @@
 'use strict';
 
-var csv = require('csv-parser');
-var fs = require('fs');
+const fs = require('fs');
 
-var processed = {};
- 
-fs.createReadStream('airports.csv')
-  .pipe(csv())
-  .on('data', function (airport) {
-    processed[airport.ident] = [ +airport.latitude_deg, +airport.longitude_deg ];
-  })
-  .on('end', function () {
-    var a = JSON.stringify(processed);
-    a = a.replace(/\],"/g, ' ]\n, "').replace(/":\[/g, '": [ ').replace(/,(?=[-\d])/g, ', ');
-    fs.writeFileSync('test.json', a);
-  });
+let a = fs.readFileSync('earth_fix (1).dat', 'utf8');
+a = a.split('\n').slice(3, -2);
+console.log(a[0]);
+a = a.map(x => x.match(/(\-?\d+\.\d+) +(\-?\d+\.\d+) +(\w+) .*/).slice(1));
+
+const fixes = {};
+
+for (const fix of a) {
+  const name = fix[2];
+  if (!fixes[name]) fixes[name] = [];
+  fixes[name].push([ +fix[0], +fix[1] ]);
+}
+
+let results = JSON.stringify(fixes, null, 2);
+results = results.replace(/\[\n +/g, '[ ');
+results = results.replace(/(\d),\n +/g, '$1, ');
+results = results.replace(/\n +(\[|\])/g, ' $1');
+
+fs.writeFileSync('results', results);
