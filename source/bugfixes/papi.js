@@ -29,7 +29,7 @@ define([ 'util' ], function (util) {
       });
     }
 
-    geofs.fx.RunwayLights.prototype.refreshPapi = function () {
+    geofs.runwaysLights.prototype.refreshPapi = function () {
       var that = this;
       this.papiInterval = setInterval(function () {
         setPapi.call(that);
@@ -44,14 +44,16 @@ define([ 'util' ], function (util) {
       clearInterval(runway.papiInterval);
 
       // Remove old PAPI lights.
-      for (var i = 0; i < 4; ++i) {
-        runway.papi[i].red.destroy();
-        runway.papi[i].white.destroy();
+      for (var j = 0; j < runway.papis.length; j++) {
+        for (var i = 0; i < runway[j].ligths.length; ++i) {
+          runway.papis[j].lights[i].red.destroy();
+          runway.papis[j].lights[i].white.destroy();
+        }
       }
 
       // Create new PAPI lights.
-      var frame = M33.rotationZ(M33.identity(), util.deg2rad(runway.heading));
-      var papiStep = xy2ll(V2.scale(frame[0], 9), runway.location); // 9 meters
+      var frame = M33.rotationZ(M33.identity(), util.deg2rad(runway.runway.heading));
+      var papiStep = xy2ll(V2.scale(frame[0], 9), runway.runway.location); // 9 meters
       runway.addPapi(runway.papiLocation, papiStep);
     });
   }
