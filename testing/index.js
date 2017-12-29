@@ -18,7 +18,7 @@ exports.getBodyParts = function () {
       }),
 
       new RoboHydraHeadFilter({
-        path: '/gefs.php*',
+        path: '/geofs.php*',
         filter: function (buffer) {
           return buffer.toString().replace('</head>', script + '</head>');
         }
