@@ -8,6 +8,7 @@ define(function () {
 
     var restrictedAircraft = new Set();
     restrictedAircraft.add('4'); // KLM 737
+    restrictedAircraft.add('5'); // Phenom 100
     restrictedAircraft.add('7'); // MD-11
     restrictedAircraft.add('9'); // A380
 
