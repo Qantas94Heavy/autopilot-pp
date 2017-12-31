@@ -110,7 +110,11 @@ For the source code of this program, see [GitHub][2].
 Release Notes
 -------------
 
-### Changes in v0.11.0 (current version)
+### Changes in v0.11.1 (current version)
+
+ - Fix Autopilot++ not loading due to change in GeoFS PAPI implementation
+
+### Changes in v0.11.0 (last version)
 
  - Fix playback of autopilot disconnect sound
  - Fix autopilot not levelling off or descending for some aircraft
@@ -119,7 +123,7 @@ Release Notes
  - Update to newer version of waypoint data
  - Internal code fixes and improvements
 
-### Changes in v0.10.6 (last version)
+### Changes in v0.10.6
 
  - Update Autopilot++ loading code to work with changes to GeoFS
 
