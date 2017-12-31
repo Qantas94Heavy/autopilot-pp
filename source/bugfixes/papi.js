@@ -4,55 +4,50 @@ define([ 'util' ], function (util) {
   function papiBugfix() {
     // Make the angles used for PAPI more strict.  Assumes a 3 degree glideslope.
     var papiValues = [ 3.5, 19 / 6, 17 / 6, 2.5 ];
+    var aircraft = geofs.aircraft.instance;
 
     function setPapi() {
-      var collResult = geofs.getGroundAltitude(this.papiLocation[0], this.papiLocation[1]);
-      this.papiLocation[2] = collResult.location[2];
+      var collResult = geofs.getGroundAltitude(this.location[0], this.location[1]);
+      this.location[2] = collResult.location[2];
       var relativeAicraftLla =
-        [ geofs.aircraft.instance.llaLocation[0]
-        , geofs.aircraft.instance.llaLocation[1]
-        , this.papiLocation[2]
+        [ aircraft.llaLocation[0]
+        , aircraft.llaLocation[1]
+        , this.location[2]
         ];
 
       var distance = geofs.utils.llaDistanceInMeters(
-        relativeAicraftLla, this.papiLocation, this.papiLocation
+        relativeAicraftLla, this.location, this.location
       );
 
-      var height = geofs.aircraft.instance.llaLocation[2] - this.papiLocation[2];
+      var height = aircraft.llaLocation[2] - this.location[2];
       var path = util.rad2deg(Math.atan2(height, distance));
 
-      var papi = this.papi;
+      var lights = this.lights;
       papiValues.forEach(function (slope, i) {
         var belowAngle = path < slope;
-        papi[i].red.setVisibility(belowAngle);
-        papi[i].white.setVisibility(!belowAngle);
+        lights[i].red.setVisibility(belowAngle);
+        lights[i].white.setVisibility(!belowAngle);
       });
     }
 
-    geofs.fx.RunwayLights.prototype.refreshPapi = function () {
+    geofs.fx.papi.prototype.refresh = function () {
       var that = this;
       this.papiInterval = setInterval(function () {
         setPapi.call(that);
       }, 1000);
     };
 
-    // Remove old PAPI and replace with the new one.
+    // Make sure PAPI refresh function is updated if already loaded.
     Object.keys(geofs.fx.litRunways).forEach(function (id) {
       var runway = geofs.fx.litRunways[id];
 
-      // Stop old PAPI update function.
-      clearInterval(runway.papiInterval);
+      runway.papis.forEach(function (papi) {
+        // Stop old PAPI update function.
+        clearInterval(papi.papiInterval);
 
-      // Remove old PAPI lights.
-      for (var i = 0; i < 4; ++i) {
-        runway.papi[i].red.destroy();
-        runway.papi[i].white.destroy();
-      }
-
-      // Create new PAPI lights.
-      var frame = M33.rotationZ(M33.identity(), util.deg2rad(runway.heading));
-      var papiStep = xy2ll(V2.scale(frame[0], 9), runway.location); // 9 meters
-      runway.addPapi(runway.papiLocation, papiStep);
+        // Start new PAPI refresh function.
+        papi.refresh();
+      });
     });
   }
 
