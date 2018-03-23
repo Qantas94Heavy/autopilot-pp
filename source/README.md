@@ -84,7 +84,7 @@ install Autopilot++, not this method.**
 Licence
 -------
 
-    Copyright (c) 2013-2017 Karl Cheng  
+    Copyright (c) 2013-2018 Karl Cheng
     Email: <qantas94heavy@gmail.com>
 
     This program is free software: you can redistribute it and/or modify
