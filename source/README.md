@@ -110,11 +110,15 @@ For the source code of this program, see [GitHub][2].
 Release Notes
 -------------
 
-### Changes in v0.11.1 (current version)
+### Changes in v0.11.2 (current version)
+
+ - Allow Autopilot++ to load on the HTTPS version of the GeoFS website
+
+### Changes in v0.11.1 (last version)
 
  - Fix Autopilot++ not loading due to change in GeoFS PAPI implementation
 
-### Changes in v0.11.0 (last version)
+### Changes in v0.11.0
 
  - Fix playback of autopilot disconnect sound
  - Fix autopilot not levelling off or descending for some aircraft
