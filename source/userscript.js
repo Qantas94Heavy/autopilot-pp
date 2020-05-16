@@ -8,6 +8,6 @@
 // @match https://www.geo-fs.com/geofs.php*
 // @match https://geo-fs.com/geofs.php*
 // @run-at document-end
-// @version 0.11.3
+// @version 0.11.4
 // @grant none
 // ==/UserScript==
