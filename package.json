@@ -1,11 +1,16 @@
-{ "name": "autopilot-pp-utilities"
-, "version": "0.0.1"
-, "bugs": "https://github.com/Qantas94Heavy/autopilot-pp/issues"
-, "license": "GPL-3.0+"
-, "author": "Karl Cheng <qantas94heavy@gmail.com>"
-, "directories": {}
-, "repository": "Qantas94Heavy/autopilot-pp"
-, "dependencies": { "robohydra": "^0.6.2" }
-, "scripts": { "start": "robohydra -I ./ -n -P testing" }
-, "private": true
+{
+  "name": "autopilot-pp-utilities",
+  "version": "0.0.1",
+  "bugs": "https://github.com/Qantas94Heavy/autopilot-pp/issues",
+  "license": "GPL-3.0+",
+  "author": "Karl Cheng <qantas94heavy@gmail.com>",
+  "directories": {},
+  "repository": "Qantas94Heavy/autopilot-pp",
+  "dependencies": {
+    "robohydra": "^0.6.2"
+  },
+  "scripts": {
+    "start": "robohydra -I ./ -n -P testing"
+  },
+  "private": true
 }
