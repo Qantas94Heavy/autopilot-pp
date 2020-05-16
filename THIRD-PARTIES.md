@@ -35,7 +35,7 @@ The great circle functions and approach calculations are based on code from
 OurAirports
 -----------
 
-The ICAO airports database is based on files from OurAirports (2016/08/16),
+The ICAO airports database is based on files from OurAirports (2020/05/16),
 which have been explicitly released into the public domain by the copyright
 author.  Here is an extract from [their website][2] (current as of writing):
 
