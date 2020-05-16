@@ -110,11 +110,15 @@ For the source code of this program, see [GitHub][2].
 Release Notes
 -------------
 
-### Changes in v0.11.2 (current version)
+### Changes in v0.11.3 (current version)
+
+ - Fix the F-16 losing all thrust and lift and nosediving
+
+### Changes in v0.11.2 (last version)
 
  - Allow Autopilot++ to load on the HTTPS version of the GeoFS website
 
-### Changes in v0.11.1 (last version)
+### Changes in v0.11.1
 
  - Fix Autopilot++ not loading due to change in GeoFS PAPI implementation
 
