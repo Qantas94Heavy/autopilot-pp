@@ -110,7 +110,7 @@ For the source code of this program, see [GitHub][2].
 Release Notes
 -------------
 
-### Changes in v0.12.0 (last version)
+### Changes in v0.12.0 (current version)
 
  - Fix the F-16 losing all thrust and lift and nosediving
  - Update airport data
