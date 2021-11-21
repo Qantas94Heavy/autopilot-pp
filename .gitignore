@@ -3,6 +3,7 @@ node_modules
 package
 .directory
 npm-debug.log
+package-lock.json
 
 # OS generated files #
 ######################

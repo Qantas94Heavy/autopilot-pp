@@ -9,8 +9,8 @@ define(function () {
     var restrictedAircraft = new Set();
     restrictedAircraft.add('4'); // KLM 737
     restrictedAircraft.add('5'); // Phenom 100
-    restrictedAircraft.add('7'); // MD-11
-    restrictedAircraft.add('9'); // A380
+    restrictedAircraft.add('17'); // MD-11
+    restrictedAircraft.add('10'); // A380
 
     function checkSpeedAndAltitude() {
       var values = geofs.aircraft.instance.animationValue;
