@@ -14,7 +14,7 @@ in the file `CONTRIBUTING.md`.
 License
 -------
 
-    Copyright (c) 2013-2018 Karl Cheng
+    Copyright (c) 2013-2021 Karl Cheng
     Email: <qantas94heavy@gmail.com>
 
     This program is free software: you can redistribute it and/or modify
