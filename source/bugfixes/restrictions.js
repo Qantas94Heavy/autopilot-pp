@@ -13,11 +13,12 @@ define(function () {
     restrictedAircraft.add('10'); // A380
 
     function checkSpeedAndAltitude() {
+      var MACH_2_KTAS = 666.738661;
       var values = geofs.aircraft.instance.animationValue;
       var maxLimits = geofs.aircraft.instance.setup.maxLimits;
-      var maxMach = maxLimits ? maxLimits[0] : 1;
+      var maxKTAS = (maxLimits ? maxLimits[0] : 1) * MACH_2_KTAS;
       var maxAltitude = maxLimits ? maxLimits[1] : 44444;
-      if (values.mach < maxMach && values.altitude < maxAltitude) return;
+      if (values.ktas < maxKTAS && values.altitude < maxAltitude) return;
 
       clearInterval(speedTimer);
       speedTimer = undefined;
