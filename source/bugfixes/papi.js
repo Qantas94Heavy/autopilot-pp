@@ -30,7 +30,7 @@ define([ 'util' ], function (util) {
       });
     }
 
-    geofs.fx.papi.prototype.refresh = function () {
+    geofs.runwaysLights.PAPI.prototype.refresh = function () {
       var that = this;
       this.papiInterval = setInterval(function () {
         setPapi.call(that);
@@ -38,17 +38,17 @@ define([ 'util' ], function (util) {
     };
 
     // Make sure PAPI refresh function is updated if already loaded.
-    Object.keys(geofs.fx.litRunways).forEach(function (id) {
-      var runway = geofs.fx.litRunways[id];
-
-      runway.papis.forEach(function (papi) {
-        // Stop old PAPI update function.
-        clearInterval(papi.papiInterval);
-
-        // Start new PAPI refresh function.
-        papi.refresh();
-      });
-    });
+    Object.keys(geofs.runways.nearRunways).forEach(function (id) {
+      var runway = geofs.runways.nearRunways[id];
+      if (runway.PAPIs != undefined) {
+        runway.PAPIs.forEach(function (papi) {
+          // Stop old PAPI update function.
+          clearInterval(papi.papiInterval);
+  
+          // Start new PAPI refresh function.
+          papi.refresh();
+        });
+      }});
   }
 
   return papiBugfix;
